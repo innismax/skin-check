@@ -434,7 +434,7 @@
 <body>
 
 <!-- ══ WELCOME ══ -->
-<div class="screen active" id="screen-welcome">
+<div class="screen" id="screen-welcome">
   <div class="inner">
     <div class="brand-tag">Skin Check</div>
     <div class="welcome-title">今日<br>肌膚狀態</div>
@@ -446,12 +446,12 @@
     </div>
   </div>
   <div class="bottom">
-    <button class="btn-main" onclick="goTo('screen-ba')">開始測試</button>
+    <button class="btn-main" onclick="goTo('screen-s1')">開始測試</button>
   </div>
 </div>
 
 <!-- ══ BA 填資料頁 ══ -->
-<div class="screen" id="screen-ba">
+<div class="screen active" id="screen-ba">
   <div class="inner">
     <div class="ba-title">開始測試前</div>
     <div class="ba-sub">請 BA 先完成以下確認</div>
@@ -475,8 +475,7 @@
     </div>
   </div>
   <div class="bottom">
-    <button class="btn-main" id="ba-next" onclick="goTo('screen-s1')" disabled>確認，帶客人開始 →</button>
-    <button class="btn-back" onclick="goTo('screen-welcome')">返回</button>
+    <button class="btn-main" id="ba-next" onclick="goTo('screen-welcome')" disabled>確認，帶客人開始 →</button>
   </div>
 </div>
 
@@ -874,7 +873,7 @@
     document.getElementById('ba-next').disabled = true;
     document.getElementById('s2-hint').textContent = '可複選，最多選 2 個';
     document.getElementById('s3-hint').textContent = '可複選，最多選 2 個';
-    goTo('screen-welcome');
+    goTo('screen-ba');
   }
 </script>
 </body>
