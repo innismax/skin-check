@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>今日肌膚狀態</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --green:        #4A7C59;
+      --green-mid:    #6B9E7A;
+      --green-pale:   #EEF4EF;
+      --green-border: #D3E4D8;
+      --bg:           #F8F9F7;
+      --white:        #FFFFFF;
+      --text:         #1C1C1E;
+      --text-mid:     #6B7280;
+      --text-soft:    #9CA3AF;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: -apple-system, 'PingFang TC', 'Helvetica Neue', sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Screens ── */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+    }
+    .screen.active { display: flex; }
+
+    .inner {
+      width: 100%;
+      max-width: 580px;
+      padding: 0 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Progress ── */
+    .progress {
+      width: 100%;
+      max-width: 580px;
+      padding: 24px 32px 0;
+      display: flex;
+      gap: 6px;
+    }
+    .prog-seg {
+      height: 2px;
+      flex: 1;
+      border-radius: 2px;
+      background: var(--green-border);
+      transition: background 0.4s;
+    }
+    .prog-seg.done { background: var(--green); }
+
+    /* ── Welcome ── */
+    #screen-welcome .inner {
+      justify-content: center;
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .brand-tag {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .welcome-title {
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 36px;
+    }
+    .welcome-body {
+      font-size: 16px;
+      color: var(--text-mid);
+      line-height: 2;
+      margin-bottom: 72px;
+    }
+
+    /* ── Step header ── */
+    .step-hd {
+      padding-top: 44px;
+      padding-bottom: 28px;
+    }
+    .step-tag {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .step-q {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .step-hint {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    /* ── Option cards ── */
+    .opts {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 16px;
+    }
+    .opt {
+      background: var(--white);
+      border: 1.5px solid #E8EAE8;
+      border-radius: 16px;
+      padding: 18px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .opt:active { transform: scale(0.985); }
+    .opt.selected {
+      border-color: var(--green);
+      background: var(--green-pale);
+    }
+    .opt-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .opt-label {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .opt-tag {
+      font-size: 11px;
+      color: var(--text-soft);
+      letter-spacing: 0.3px;
+    }
+    .opt.selected .opt-tag { color: var(--green-mid); }
+    .opt-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid #CECECE;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .opt.selected .opt-dot {
+      background: var(--green);
+      border-color: var(--green);
+    }
+    .opt.selected .opt-dot::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    /* ── Bottom actions ── */
+    .bottom {
+      width: 100%;
+      max-width: 580px;
+      padding: 12px 32px 48px;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 18px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-main:active { transform: scale(0.98); opacity: 0.88; }
+    .btn-main:disabled {
+      background: #DCDCDC;
+      color: #ABABAB;
+      cursor: default;
+    }
+    .btn-back {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--text-soft);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    /* ── 你的選擇 card ── */
+    .your-choice-card {
+      background: var(--green-pale);
+      border: 1.5px solid var(--green-border);
+      border-radius: 20px;
+      padding: 22px 22px;
+      margin-bottom: 12px;
+    }
+    .your-choice-title {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .choice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .choice-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .choice-check {
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Result page ── */
+    #screen-result .inner {
+      padding-top: 52px;
+      padding-bottom: 24px;
+    }
+    .res-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .res-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .res-card {
+      background: var(--white);
+      border: 1px solid #EAEAEA;
+      border-radius: 20px;
+      padding: 26px 22px;
+      margin-bottom: 12px;
+    }
+    .res-text {
+      font-size: 15px;
+      color: var(--text-mid);
+      line-height: 2;
+    }
+    .res-divider {
+      width: 36px;
+      height: 2px;
+      background: var(--green-border);
+      margin: 28px 0;
+    }
+
+    /* ── Tips list ── */
+    .tips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tip-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+    .tip-check {
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    /* Highlight the last tip (product recommendation) */
+    .tip-row.highlight .tip-check { color: var(--green); }
+    .tip-row.highlight span {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Extra advice from STEP 2 / 3 ── */
+    .res-extra {
+      border-top: 1px solid #F0F0F0;
+      margin-top: 18px;
+      padding-top: 16px;
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.9;
+    }
+
+    /* ── Restart ── */
+    .btn-restart {
+      width: calc(100% - 64px);
+      margin: 8px 32px 48px;
+      padding: 17px;
+      background: transparent;
+      color: var(--green);
+      border: 1.5px solid var(--green-border);
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-restart:active { background: var(--green-pale); }
+
+    /* ── Animation ── */
+    .screen.active { animation: fadeUp 0.22s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ WELCOME ══ -->
+<div class="screen active" id="screen-welcome">
+  <div class="inner">
+    <div class="brand-tag">Skin Check</div>
+    <div class="welcome-title">今日<br>肌膚狀態</div>
+    <div class="welcome-body">
+      今天的肌膚，<br>
+      最近是不是也有一點小情緒？<br><br>
+      用 30 秒，<br>
+      看看肌膚最近想告訴你什麼。
+    </div>
+  </div>
+  <div class="bottom">
+    <button class="btn-main" onclick="goTo('screen-s1')">開始測試</button>
+  </div>
+</div>
+
+<!-- ══ STEP 1 ══ -->
+<div class="screen" id="screen-s1">
+  <div class="progress">
+    <div class="prog-seg done"></div>
+    <div class="prog-seg"></div>
+    <div class="prog-seg"></div>
+  </div>
+  <div class="inner">
+    <div class="step-hd">
+      <div class="step-tag">Step 01</div>
+      <div class="step-q">請選擇現在最在意的肌膚狀況</div>
+      <div class="step-hint">單選</div>
+    </div>
+    <div class="opts" id="s1-opts">
+      <div class="opt" data-v="fatigue" onclick="pickOne(this,'s1')">
+        <div class="opt-body"><span class="opt-label">最近皮膚看起來有點疲憊</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="dryness" onclick="pickOne(this,'s1')">
+        <div class="opt-body"><span class="opt-label">最近臉常常覺得乾乾緊緊的</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="oiliness" onclick="pickOne(this,'s1')">
+        <div class="opt-body"><span class="opt-label">下午開始容易出油，毛孔也變明顯</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="sensitive" onclick="pickOne(this,'s1')">
+        <div class="opt-body"><span class="opt-label">最近肌膚很容易鬧脾氣</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="roughness" onclick="pickOne(this,'s1')">
+        <div class="opt-body"><span class="opt-label">臉摸起來粗粗的，不太平滑</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="acne" onclick="pickOne(this,'s1')">
+        <div class="opt-body"><span class="opt-label">痘痘粉刺總是反覆冒出來</span></div>
+        <span class="opt-dot"></span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <button class="btn-main" id="s1-next" onclick="goTo('screen-s2')" disabled>下一步</button>
+    <button class="btn-back" onclick="goTo('screen-welcome')">返回</button>
+  </div>
+</div>
+
+<!-- ══ STEP 2 ══ -->
+<div class="screen" id="screen-s2">
+  <div class="progress">
+    <div class="prog-seg done"></div>
+    <div class="prog-seg done"></div>
+    <div class="prog-seg"></div>
+  </div>
+  <div class="inner">
+    <div class="step-hd">
+      <div class="step-tag">Step 02</div>
+      <div class="step-q">最近比較像<br>哪種生活狀態？</div>
+      <div class="step-hint" id="s2-hint">可複選，最多選 2 個</div>
+    </div>
+    <div class="opts" id="s2-opts">
+      <div class="opt" data-v="late_night" onclick="pickMulti(this,'s2',2)">
+        <div class="opt-body"><span class="opt-label">最近熬夜比較多</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="ac_room" onclick="pickMulti(this,'s2',2)">
+        <div class="opt-body"><span class="opt-label">長時間待冷氣房</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="hot_weather" onclick="pickMulti(this,'s2',2)">
+        <div class="opt-body"><span class="opt-label">最近天氣太熱太悶</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="stress" onclick="pickMulti(this,'s2',2)">
+        <div class="opt-body"><span class="opt-label">最近壓力有點大</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="irregular" onclick="pickMulti(this,'s2',2)">
+        <div class="opt-body"><span class="opt-label">最近生活作息比較亂</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="outdoor" onclick="pickMulti(this,'s2',2)">
+        <div class="opt-body"><span class="opt-label">最近常待在戶外</span></div>
+        <span class="opt-dot"></span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <button class="btn-main" id="s2-next" onclick="goTo('screen-s3')" disabled>下一步</button>
+    <button class="btn-back" onclick="goTo('screen-s1')">返回</button>
+  </div>
+</div>
+
+<!-- ══ STEP 3 ══ -->
+<div class="screen" id="screen-s3">
+  <div class="progress">
+    <div class="prog-seg done"></div>
+    <div class="prog-seg done"></div>
+    <div class="prog-seg done"></div>
+  </div>
+  <div class="inner">
+    <div class="step-hd">
+      <div class="step-tag">Step 03</div>
+      <div class="step-q">今天想讓肌膚<br>變成什麼感覺？</div>
+      <div class="step-hint" id="s3-hint">可複選，最多選 2 個</div>
+    </div>
+    <div class="opts" id="s3-opts">
+      <div class="opt" data-v="energetic" onclick="pickMulti(this,'s3',2)">
+        <div class="opt-body"><span class="opt-label">想看起來比較有精神</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="calm" onclick="pickMulti(this,'s3',2)">
+        <div class="opt-body"><span class="opt-label">想讓肌膚舒服穩定一點</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="light" onclick="pickMulti(this,'s3',2)">
+        <div class="opt-body"><span class="opt-label">想清爽不黏膩</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="bright" onclick="pickMulti(this,'s3',2)">
+        <div class="opt-body"><span class="opt-label">想讓肌膚看起來比較亮</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="rescue" onclick="pickMulti(this,'s3',2)">
+        <div class="opt-body"><span class="opt-label">想快速急救一下</span></div>
+        <span class="opt-dot"></span>
+      </div>
+      <div class="opt" data-v="smooth" onclick="pickMulti(this,'s3',2)">
+        <div class="opt-body"><span class="opt-label">想讓皮膚摸起來嫩一點</span></div>
+        <span class="opt-dot"></span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <button class="btn-main" id="s3-next" onclick="showResult()" disabled>查看今日肌膚狀態 →</button>
+    <button class="btn-back" onclick="goTo('screen-s2')">返回</button>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="screen-result">
+  <div class="inner">
+    <div id="result-body"></div>
+  </div>
+  <button class="btn-restart" onclick="restart()">重新測試</button>
+</div>
+
+<script>
+  // ── State ──
+  const sel = { s1: null, s2: [], s3: [] };
+
+  // ── 選項文字對照（用於「你的選擇」顯示）──
+  const labelMap = {
+    // STEP 1
+    fatigue:   '最近皮膚看起來有點疲憊',
+    dryness:   '最近臉常常覺得乾乾緊緊的',
+    oiliness:  '下午開始容易出油，毛孔也變明顯',
+    sensitive: '最近肌膚很容易鬧脾氣',
+    roughness: '臉摸起來粗粗的，不太平滑',
+    acne:      '痘痘粉刺總是反覆冒出來',
+    // STEP 2
+    late_night:  '最近熬夜比較多',
+    ac_room:     '長時間待冷氣房',
+    hot_weather: '最近天氣太熱太悶',
+    stress:      '最近壓力有點大',
+    irregular:   '最近生活作息比較亂',
+    outdoor:     '最近常待在戶外',
+    // STEP 3
+    energetic: '想看起來比較有精神',
+    calm:      '想讓肌膚舒服穩定一點',
+    light:     '想清爽不黏膩',
+    bright:    '想讓肌膚看起來比較亮',
+    rescue:    '想快速急救一下',
+    smooth:    '想讓皮膚摸起來嫩一點'
+  };
+
+  // ── STEP 1 content（肌膚狀態 + 保養建議 ✓ bullets）──
+  const step1Data = {
+    fatigue: {
+      status: '最近肌膚看起來比較容易疲憊、<br>缺乏光澤與精神感。<br><br>肌膚在疲勞狀態下，<br>也容易看起來比較暗沉、沒氣色。',
+      tips: [
+        '先幫肌膚補充水分與光澤感',
+        '加強肌膚保護層保養',
+        '建議搭配「提亮光澤型精華」加強保養'
+      ]
+    },
+    dryness: {
+      status: '近期肌膚可能有缺水與乾燥感，<br>容易出現緊繃與不舒服的狀況。',
+      tips: [
+        '先舒緩乾燥與緊繃感',
+        '加強肌膚補水與保濕',
+        '建議搭配「補水保濕型精華」加強保養'
+      ]
+    },
+    oiliness: {
+      status: '近期肌膚可能因悶熱與出油，<br>讓毛孔與肌膚狀態看起來比較明顯。',
+      tips: [
+        '保養以清爽型為主',
+        '加強補水並降低肌膚悶黏感',
+        '建議搭配「清爽調理型安瓶／精華」加強保養'
+      ]
+    },
+    sensitive: {
+      status: '近期肌膚狀態可能比較敏感，<br>容易出現乾癢、泛紅與不舒服的感覺。<br><br>當肌膚狀態不穩定時，<br>也可能更容易受到外在環境影響。',
+      tips: [
+        '先降低肌膚負擔與不適感',
+        '加強肌膚保護層與保濕保養',
+        '建議搭配「舒緩修護型精華」加強保養'
+      ]
+    },
+    roughness: {
+      status: '近期肌膚摸起來可能比較粗糙，<br>整體膚觸也較不細緻平滑。',
+      tips: [
+        '加強肌膚柔嫩與平滑感保養',
+        '幫助肌膚維持細緻膚觸',
+        '建議搭配「平滑膚觸型精華」加強保養'
+      ]
+    },
+    acne: {
+      status: '近期肌膚可能較容易出現粉刺與痘痘反覆狀況，<br>整體膚況也比較不穩定。',
+      tips: [
+        '保養以穩定膚況為優先',
+        '避免過度厚重與刺激型保養',
+        '建議搭配「粉刺痘痘調理型精華」加強保養'
+      ]
+    }
+  };
+
+  // ── STEP 2 content（加入今日肌膚狀態）──
+  const step2Text = {
+    late_night:  '可能和近期作息不穩與睡眠不足有關。',
+    ac_room:     '長時間待在乾燥環境，也可能讓肌膚更容易流失水分。',
+    hot_weather: '高溫與悶熱環境，可能讓肌膚更容易出油與不穩定。',
+    stress:      '壓力與疲勞狀態，也可能影響肌膚穩定度。',
+    irregular:   '不規律的生活習慣，也可能讓肌膚狀態看起來比較疲憊。',
+    outdoor:     '長時間接觸外在環境，也可能讓肌膚更容易乾燥與粗糙。'
+  };
+
+  // ── STEP 3 content（加入今日保養建議）──
+  const step3Text = {
+    energetic: '建議先加強肌膚水分感與氣色感，讓整體狀態看起來更有精神。',
+    calm:      '建議先降低肌膚負擔，讓肌膚回到比較舒服穩定的狀態。',
+    light:     '保養可偏向輕盈、清爽型的補水方式，避免增加肌膚悶黏感。',
+    bright:    '可加強肌膚透亮與光澤感保養，讓肌膚看起來更明亮細緻。',
+    rescue:    '可優先加強立即補水與舒緩，先改善當下的不適與疲憊感。',
+    smooth:    '建議加強保濕與柔嫩感保養，讓膚觸摸起來更細緻平滑。'
+  };
+
+  // ── Navigation ──
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ── Single select ──
+  function pickOne(card, group) {
+    document.querySelectorAll('#' + group + '-opts .opt').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    sel[group] = card.dataset.v;
+    document.getElementById(group + '-next').disabled = false;
+  }
+
+  // ── Multi select ──
+  function pickMulti(card, group, max) {
+    const on = card.classList.contains('selected');
+    if (on) {
+      card.classList.remove('selected');
+      sel[group] = sel[group].filter(v => v !== card.dataset.v);
+    } else {
+      if (sel[group].length >= max) return;
+      card.classList.add('selected');
+      sel[group].push(card.dataset.v);
+    }
+    const n = sel[group].length;
+    const hint = document.getElementById(group + '-hint');
+    if (n === 0)       hint.textContent = '可複選，最多選 ' + max + ' 個';
+    else if (n >= max) hint.textContent = '已選 ' + n + ' 個（已達上限）';
+    else               hint.textContent = '可複選，最多選 ' + max + ' 個（已選 ' + n + ' 個）';
+    document.getElementById(group + '-next').disabled = (n === 0);
+  }
+
+  // ── Build result ──
+  function showResult() {
+    const d = step1Data[sel.s1];
+
+    // ① 你的選擇
+    const allChoices = [sel.s1, ...sel.s2, ...sel.s3].filter(Boolean);
+    const choiceItems = allChoices.map(v =>
+      `<div class="choice-item">
+        <span class="choice-check">✓</span>
+        <span>${labelMap[v] || v}</span>
+      </div>`
+    ).join('');
+
+    // ② 今日肌膚狀態：STEP 1 + STEP 2
+    const s2parts = sel.s2.map(v => step2Text[v]).filter(Boolean);
+    let statusHtml = d.status;
+    if (s2parts.length > 0) {
+      statusHtml += '<br><br>' + s2parts.join('<br>');
+    }
+
+    // ③ 今日保養建議：STEP 1 tips + STEP 3
+    const tipRows = d.tips.map((t, i) => {
+      const isLast = (i === d.tips.length - 1);
+      return `<div class="tip-row${isLast ? ' highlight' : ''}">
+        <span class="tip-check">✓</span>
+        <span>${t}</span>
+      </div>`;
+    }).join('');
+
+    const s3parts = sel.s3.map(v => step3Text[v]).filter(Boolean);
+    const s3html = s3parts.length > 0
+      ? `<div class="res-extra">${s3parts.join('<br>')}</div>`
+      : '';
+
+    document.getElementById('result-body').innerHTML = `
+      <div class="your-choice-card">
+        <div class="your-choice-title">你的選擇</div>
+        <div class="choice-list">${choiceItems}</div>
+      </div>
+
+      <div class="res-divider"></div>
+
+      <div class="res-label">Your Skin Today</div>
+      <div class="res-title">今日肌膚狀態</div>
+      <div class="res-card">
+        <div class="res-text">${statusHtml}</div>
+      </div>
+
+      <div class="res-divider"></div>
+
+      <div class="res-title">今日保養建議</div>
+      <div class="res-card">
+        <div class="tips-list">${tipRows}</div>
+        ${s3html}
+      </div>
+    `;
+
+    goTo('screen-result');
+  }
+
+  // ── Restart ──
+  function restart() {
+    sel.s1 = null; sel.s2 = []; sel.s3 = [];
+    document.querySelectorAll('.opt').forEach(c => c.classList.remove('selected'));
+    ['s1-next','s2-next','s3-next'].forEach(id => document.getElementById(id).disabled = true);
+    document.getElementById('s2-hint').textContent = '可複選，最多選 2 個';
+    document.getElementById('s3-hint').textContent = '可複選，最多選 2 個';
+    goTo('screen-welcome');
+  }
+</script>
+</body>
+</html>
