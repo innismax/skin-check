@@ -327,7 +327,8 @@
       font-weight: 600;
       white-space: nowrap;
       padding-top: 3px;
-      min-width: 52px;
+      width: 64px;
+      flex-shrink: 0;
     }
     .care-step-body {
       font-size: 15px;
@@ -831,19 +832,23 @@
       statusHtml += '<br><br>' + s2parts.join('<br>');
     }
 
-    // ③ 今日保養建議：STEP 01 / 02 / 03 流程
-    const tipSteps = d.tips.map((t, i) => {
-      const isLast = (i === d.tips.length - 1);
+    // ③ 今日保養建議：STEP 01 / 02(精華highlight) / 03 流程
+    const orderedTips = [
+      { text: d.tips[0], highlight: false },
+      { text: d.tips[2], highlight: true  },
+      { text: d.tips[1], highlight: false }
+    ];
+    const tipSteps = orderedTips.map((item, i) => {
       const stepNum = `STEP 0${i + 1}`;
-      if (isLast) {
+      if (item.highlight) {
         return `<div class="care-step is-product">
           <div class="care-step-num">${stepNum}</div>
-          <div class="care-step-body">${t}</div>
+          <div class="care-step-body">${item.text}</div>
         </div>`;
       }
       return `<div class="care-step">
         <div class="care-step-num">${stepNum}</div>
-        <div class="care-step-body">${t}</div>
+        <div class="care-step-body">${item.text}</div>
       </div>`;
     }).join('');
 
