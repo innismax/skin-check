@@ -325,10 +325,12 @@
       margin-top: 1px;
     }
     /* Highlight the last tip (product recommendation) */
-    .tip-row.highlight .tip-check { color: #D94F4F; }
+    .tip-row.highlight .tip-check { color: var(--text); font-weight: 700; }
     .tip-row.highlight span {
-      color: #D94F4F;
+      color: var(--text);
       font-weight: 700;
+      background: linear-gradient(transparent 45%, rgba(255, 220, 0, 0.55) 45%);
+      padding: 0 2px;
     }
 
     /* ── Extra advice from STEP 2 / 3 ── */
