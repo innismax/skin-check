@@ -304,43 +304,53 @@
       margin: 28px 0;
     }
 
-    /* ── Tips list ── */
-    .tips-list {
+    /* ── Care Steps (保養建議流程) ── */
+    .care-steps {
       display: flex;
       flex-direction: column;
-      gap: 12px;
     }
-    .tip-row {
+    .care-step {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      font-size: 15px;
-      color: var(--text-mid);
-      line-height: 1.7;
+      gap: 20px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--green-border);
     }
-    .tip-check {
+    .care-step:last-child {
+      border-bottom: none;
+      padding-bottom: 4px;
+    }
+    .care-step-num {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--green-mid);
+      font-weight: 600;
+      white-space: nowrap;
+      padding-top: 3px;
+      min-width: 52px;
+    }
+    .care-step-body {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.75;
+      flex: 1;
+    }
+    /* STEP 3 product highlight */
+    .care-step.is-product {
+      background: var(--green-pale);
+      border: 1.5px solid var(--green-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 12px;
+    }
+    .care-step.is-product .care-step-num {
       color: var(--green);
       font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
     }
-    /* Highlight the last tip (product recommendation) */
-    .tip-row.highlight .tip-check { color: var(--text); font-weight: 700; }
-    .tip-row.highlight span {
-      color: var(--text);
+    .care-step.is-product .care-step-body {
+      color: var(--green);
       font-weight: 700;
-      background: linear-gradient(transparent 45%, rgba(255, 220, 0, 0.55) 45%);
-      padding: 0 2px;
-    }
-
-    /* ── Extra advice from STEP 2 / 3 ── */
-    .res-extra {
-      border-top: 1px solid #F0F0F0;
-      margin-top: 18px;
-      padding-top: 16px;
-      font-size: 14px;
-      color: var(--text-soft);
-      line-height: 1.9;
+      font-size: 16px;
     }
 
     /* ── Restart ── */
@@ -821,19 +831,21 @@
       statusHtml += '<br><br>' + s2parts.join('<br>');
     }
 
-    // ③ 今日保養建議：STEP 1 tips + STEP 3
-    const tipRows = d.tips.map((t, i) => {
+    // ③ 今日保養建議：STEP 01 / 02 / 03 流程
+    const tipSteps = d.tips.map((t, i) => {
       const isLast = (i === d.tips.length - 1);
-      return `<div class="tip-row${isLast ? ' highlight' : ''}">
-        <span class="tip-check">✓</span>
-        <span>${t}</span>
+      const stepNum = `STEP 0${i + 1}`;
+      if (isLast) {
+        return `<div class="care-step is-product">
+          <div class="care-step-num">${stepNum}</div>
+          <div class="care-step-body">${t}</div>
+        </div>`;
+      }
+      return `<div class="care-step">
+        <div class="care-step-num">${stepNum}</div>
+        <div class="care-step-body">${t}</div>
       </div>`;
     }).join('');
-
-    const s3parts = sel.s3.map(v => step3Text[v]).filter(Boolean);
-    const s3html = s3parts.length > 0
-      ? `<div class="res-extra">${s3parts.join('<br>')}</div>`
-      : '';
 
     document.getElementById('result-body').innerHTML = `
       <div class="your-choice-card">
@@ -844,9 +856,8 @@
       <div class="res-divider"></div>
 
       <div class="res-title">今日保養建議</div>
-      <div class="res-card">
-        <div class="tips-list">${tipRows}</div>
-        ${s3html}
+      <div class="care-steps">
+        ${tipSteps}
       </div>
     `;
 
