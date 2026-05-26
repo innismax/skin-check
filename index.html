@@ -92,7 +92,7 @@
       margin-bottom: 36px;
     }
     .welcome-body {
-      font-size: 16px;
+      font-size: 22px;
       color: var(--text-mid);
       line-height: 2;
       margin-bottom: 72px;
@@ -117,10 +117,11 @@
       color: var(--text);
     }
     .step-hint {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-top: 8px;
-      min-height: 18px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #D94F4F;
+      margin-top: 10px;
+      min-height: 22px;
     }
 
     /* ── Option cards ── */
@@ -323,10 +324,10 @@
       margin-top: 1px;
     }
     /* Highlight the last tip (product recommendation) */
-    .tip-row.highlight .tip-check { color: var(--green); }
+    .tip-row.highlight .tip-check { color: #D94F4F; }
     .tip-row.highlight span {
-      color: var(--text);
-      font-weight: 600;
+      color: #D94F4F;
+      font-weight: 700;
     }
 
     /* ── Extra advice from STEP 2 / 3 ── */
@@ -439,8 +440,6 @@
     <div class="brand-tag">Skin Check</div>
     <div class="welcome-title">今日<br>肌膚狀態</div>
     <div class="welcome-body">
-      今天的肌膚，<br>
-      最近是不是也有一點小情緒？<br><br>
       用 30 秒，<br>
       看看肌膚最近想告訴你什麼。
     </div>
@@ -837,14 +836,6 @@
       <div class="your-choice-card">
         <div class="your-choice-title">你的選擇</div>
         <div class="choice-list">${choiceItems}</div>
-      </div>
-
-      <div class="res-divider"></div>
-
-      <div class="res-label">Your Skin Today</div>
-      <div class="res-title">今日肌膚狀態</div>
-      <div class="res-card">
-        <div class="res-text">${statusHtml}</div>
       </div>
 
       <div class="res-divider"></div>
