@@ -122,39 +122,36 @@
       margin-top:52px; margin-bottom:40px;
     }
 
-    /* 按鈕外層（做跑光動畫） */
+    /* 按鈕外層 */
     .w-btn-outer {
       position:relative; width:100%; max-width:300px;
-      border-radius:50px; padding:2px;
-      overflow:hidden;
     }
-    .w-btn-outer::before {
-      content:'';
-      position:absolute;
-      width:200%; height:200%;
-      top:-50%; left:-50%;
-      background:conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        rgba(200,200,255,0.9) 40deg,
-        rgba(255,255,255,1) 60deg,
-        rgba(200,200,255,0.9) 80deg,
-        transparent 120deg,
-        transparent 360deg
-      );
-      animation:spinBorder 2.5s linear infinite;
+    /* SVG 跑光邊框 */
+    .btn-svg {
+      position:absolute; top:0; left:0;
+      width:100%; height:100%; pointer-events:none;
+      overflow:visible;
     }
-    @keyframes spinBorder {
-      to { transform:rotate(360deg); }
+    .btn-svg rect {
+      fill:none;
+      stroke:url(#glowGrad);
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-dasharray:60 640;
+      stroke-dashoffset:0;
+      animation:runBorder 2.4s linear infinite;
+    }
+    @keyframes runBorder {
+      to { stroke-dashoffset:-700; }
     }
     /* 毛玻璃按鈕 */
     .w-btn {
-      position:relative; z-index:1;
       width:100%; padding:16px 32px;
       background:rgba(240,240,248,0.75);
       backdrop-filter:blur(12px);
       -webkit-backdrop-filter:blur(12px);
-      border:none; border-radius:50px;
+      border:1px solid rgba(200,200,230,0.4);
+      border-radius:50px;
       font-size:15px; font-weight:400;
       color:#4A4A62; font-family:inherit; cursor:pointer;
       letter-spacing:2px;
@@ -343,6 +340,18 @@
   <div class="w-sub">透過幾個簡單問題，<br>一起看看最近的肌膚需要什麼保養 ✨</div>
 
   <div class="w-btn-outer">
+    <svg class="btn-svg" viewBox="0 0 300 54" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="rgba(180,180,255,0)"/>
+          <stop offset="40%"  stop-color="rgba(200,200,255,0.7)"/>
+          <stop offset="50%"  stop-color="rgba(255,255,255,1)"/>
+          <stop offset="60%"  stop-color="rgba(200,200,255,0.7)"/>
+          <stop offset="100%" stop-color="rgba(180,180,255,0)"/>
+        </linearGradient>
+      </defs>
+      <rect x="1" y="1" width="298" height="52" rx="26" ry="26"/>
+    </svg>
     <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
   </div>
 </div>
