@@ -120,8 +120,10 @@
     .w-sub {
       font-size:16px; color:#5A5A72; letter-spacing:0.5px;
       line-height:2; text-align:center;
-      position:relative; z-index:1; padding:0 20px;
-      margin-bottom:40px;
+      position:absolute; z-index:1;
+      top:50%; left:50%;
+      transform:translate(-50%, -50%);
+      width:80%;
     }
 
     /* 按鈕外層 */
@@ -343,7 +345,7 @@
   <div class="glow-wrap">
     <div class="w-title">今日肌膚檢測</div>
     <div class="glow-circle">
-      <div class="w-sub">透過幾個簡單問題，<br>看看最近的肌膚需要什麼保養 ✨</div>
+      <div class="w-sub">透過幾個簡單問題，<br>看看最近的肌膚需要什麼保養</div>
     </div>
   </div>
 
