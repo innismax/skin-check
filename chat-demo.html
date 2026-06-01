@@ -66,27 +66,82 @@
 
     /* ══ WELCOME ══ */
     #screen-welcome {
-      align-items:center; justify-content:center;
-      background:var(--white); padding:48px 32px;
+      align-items:center; justify-content:space-between;
+      background:linear-gradient(160deg, #EDEDF4 0%, #E6E6EF 50%, #DCDCE8 100%);
+      padding:64px 32px 56px;
     }
-    .w-inner { max-width:440px; width:100%; }
-    .w-brand {
-      font-size:11px; letter-spacing:4px; color:var(--green);
-      text-transform:uppercase; margin-bottom:40px;
-    }
-    .w-emoji { font-size:40px; margin-bottom:20px; }
+    .w-top { text-align:center; }
     .w-title {
-      font-size:34px; font-weight:700; line-height:1.3;
-      color:var(--text); margin-bottom:24px; letter-spacing:-0.5px;
+      font-size:36px; font-weight:300; letter-spacing:8px;
+      color:#3A3A4A; margin-bottom:14px; line-height:1.3;
     }
-    .w-body {
-      font-size:16px; color:var(--text-mid); line-height:2;
-      margin-bottom:56px;
+    .w-sub {
+      font-size:13px; color:#8888A0; letter-spacing:0.5px; line-height:1.8;
     }
+
+    /* 發光圓圈 */
+    .glow-wrap {
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; position:relative;
+      width:100%; flex:1; margin:20px 0;
+    }
+    .glow-circle {
+      width:270px; height:270px; border-radius:50%;
+      border:1.5px solid rgba(180,180,220,0.55);
+      box-shadow:
+        0 0 24px rgba(160,160,220,0.25),
+        0 0 60px rgba(180,180,240,0.15),
+        inset 0 0 40px rgba(200,200,245,0.1);
+      position:relative;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:10px;
+    }
+    /* 橫向光線 */
+    .glow-circle::before {
+      content:'';
+      position:absolute;
+      width:340px; height:1.5px;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(180,180,240,0.4) 20%,
+        rgba(230,230,255,0.85) 50%,
+        rgba(180,180,240,0.4) 80%,
+        transparent 100%);
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+    }
+    /* 地面倒影 */
+    .glow-circle::after {
+      content:'';
+      position:absolute;
+      bottom:-38px; left:50%;
+      transform:translateX(-50%);
+      width:65%; height:32px;
+      background:radial-gradient(ellipse at center,
+        rgba(180,180,240,0.28) 0%, transparent 70%);
+    }
+    .circle-label {
+      font-size:9px; letter-spacing:3px; color:#9090B0;
+      text-transform:uppercase; z-index:1;
+    }
+    .circle-text {
+      font-size:15px; color:#4A4A60; line-height:1.8;
+      text-align:center; z-index:1; font-weight:300;
+    }
+
+    /* 毛玻璃按鈕 */
     .w-btn {
-      width:100%; padding:18px; background:var(--green); color:#fff;
-      border:none; border-radius:50px; font-size:16px; font-weight:600;
-      font-family:inherit; cursor:pointer; letter-spacing:1px;
+      width:100%; max-width:320px; padding:17px 32px;
+      background:rgba(255,255,255,0.55);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,0.75);
+      border-radius:50px; font-size:16px; font-weight:400;
+      color:#4A4A60; font-family:inherit; cursor:pointer;
+      letter-spacing:2px;
+      box-shadow:0 4px 24px rgba(150,150,200,0.18);
+      display:flex; align-items:center; justify-content:center; gap:12px;
     }
 
     /* ══ CHAT HEADER ══ */
@@ -263,13 +318,19 @@
 
 <!-- ══ WELCOME ══ -->
 <div id="screen-welcome" class="screen">
-  <div class="w-inner">
-    <div class="w-brand">innisfree</div>
-    <div class="w-emoji">👋</div>
-    <div class="w-title">今日肌膚分析</div>
-    <div class="w-body">只要 1 分鐘，<br>看看最近的肌膚<br>比較需要什麼保養 ✨</div>
-    <button class="w-btn" onclick="startChat()">開始體驗</button>
+  <div class="w-top">
+    <div class="w-title">今日肌膚檢測</div>
+    <div class="w-sub">透過幾個簡單問題，<br>一起看看最近的肌膚需要什麼保養 ✨</div>
   </div>
+
+  <div class="glow-wrap">
+    <div class="glow-circle">
+      <div class="circle-label">AI BEAUTY ADVISOR</div>
+      <div class="circle-text">了解現在的肌膚狀態<br>找到最適合的保養方向</div>
+    </div>
+  </div>
+
+  <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
 </div>
 
 <!-- ══ CHAT ══ -->
