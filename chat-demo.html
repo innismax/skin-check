@@ -200,34 +200,26 @@
     .cg-row { display:grid; grid-template-columns:72px 1fr; gap:8px; }
     .cg-label { font-size:12px; color:var(--text-soft); padding-top:1px; }
     .cg-val { font-size:14px; color:var(--text); font-weight:500; line-height:1.6; }
-    .prod-section { margin-bottom:22px; }
-    .prod-title {
-      font-size:10px; letter-spacing:2px; color:var(--green);
-      font-weight:700; margin-bottom:10px;
-    }
-    .prod-tags { display:flex; flex-wrap:wrap; gap:8px; }
-    .prod-tag {
-      background:var(--green-pale); border:1.5px solid var(--green-border);
-      color:var(--green); font-size:13px; font-weight:600;
-      padding:6px 14px; border-radius:50px;
-    }
     .steps-divider { height:1px; background:var(--green-border); margin-bottom:18px; }
     .steps-title {
       font-size:10px; letter-spacing:2px; color:var(--green);
       font-weight:700; margin-bottom:14px;
     }
     .step-row {
-      display:flex; gap:14px; padding:12px 0;
+      display:flex; gap:14px; padding:14px 0;
       border-bottom:1px solid var(--green-border);
     }
     .step-row:last-child { border-bottom:none; padding-bottom:0; }
     .step-num {
       font-size:10px; letter-spacing:1px; color:var(--green-mid);
-      font-weight:600; width:52px; flex-shrink:0; padding-top:2px;
+      font-weight:600; width:52px; flex-shrink:0; padding-top:3px;
     }
-    .step-txt { font-size:14px; color:var(--text); line-height:1.7; flex:1; }
-    .step-row.hl .step-num { color:var(--green); font-weight:700; }
-    .step-row.hl .step-txt { color:var(--green); font-weight:700; font-size:15px; }
+    .step-content { flex:1; }
+    .step-action { font-size:12px; color:var(--text-soft); margin-bottom:5px; line-height:1.5; }
+    .step-product { font-size:15px; color:var(--text); font-weight:600; line-height:1.5; }
+    .step-row.hero .step-num { color:var(--green); font-weight:700; }
+    .step-row.hero .step-product { color:var(--green); font-size:16px; }
+    .step-row.s04 .step-product { font-size:14px; font-weight:400; color:var(--text-mid); }
 
     /* ══ RESTART ══ */
     .restart-btn {
@@ -331,25 +323,49 @@
       opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
   ];
 
-  const productMap = {
-    '想讓肌膚看起來比較有精神':    ['維他命C淨亮精華'],
-    '想讓肌膚看起來透亮一點':      ['維他命C淨亮精華'],
-    '想讓肌膚感覺水潤有光澤':      ['綠茶籽玻尿酸保濕精華'],
-    '想讓肌膚維持油水平衡':        ['綠茶籽玻尿酸保濕精華'],
-    '想讓肌膚維持穩定不容易鬧脾氣':['綠茶神經醯胺牛奶水精華','綠茶籽玻尿酸保濕精華'],
-    '想改善痘痘粉刺問題':          ['A醇淨膚超修護安瓶'],
-    '想讓肌膚摸起來更細緻':        ['A醇淨膚超修護安瓶'],
-    '想讓肌膚看起來更緊緻有彈力':  ['1%A醇PDRN水光安瓶'],
-    '想讓毛孔看起來更緊緻':        ['1%A醇PDRN水光安瓶']
+  // ── STEP 01：依肌膚困擾的調理型商品 ──
+  const step01Data = {
+    '疲憊暗沉':  { action:'先提亮肌膚，恢復光澤感',       product:'維他命C淨亮棉片' },
+    '乾燥缺水':  { action:'先補充水分，舒緩緊繃感',       product:'綠茶神經醯胺牛奶水精華' },
+    '出油毛孔':  { action:'先控油調理，維持清爽感',       product:'火山泥PHA毛孔緊緻露' },
+    '敏感泛紅':  { action:'先舒緩肌膚，降低不適感',       product:'綠茶神經醯胺牛奶水精華' },
+    '粗糙不平滑':{ action:'先調理角質，改善膚觸粗糙感',   product:'A醇淨膚毛孔修護棉片' },
+    '痘痘粉刺':  { action:'先調理老廢角質，減少粉刺生成', product:'A醇淨膚毛孔修護棉片' }
+  };
+  // 生活習慣 override：熬夜或作息混亂
+  const step01LifestyleOverride = {
+    action:'先修護疲憊，穩定肌膚狀態', product:'紅茶極效修護晶露'
   };
 
-  const careTips = {
-    '疲憊暗沉':  { s01:'先幫肌膚恢復光澤與精神感',     s03:'加強肌膚保濕修護' },
-    '乾燥缺水':  { s01:'先舒緩乾燥與緊繃感',          s03:'幫助肌膚鎖住水分與維持保濕感' },
-    '出油毛孔':  { s01:'先補水並維持油水平衡',         s03:'幫助肌膚維持清爽與細緻感' },
-    '敏感泛紅':  { s01:'先降低肌膚不適感',            s03:'減少肌膚水分流失與乾燥感' },
-    '粗糙不平滑':{ s01:'先加強肌膚柔嫩與平滑感保養',   s03:'搭配週期性角質與毛孔清潔保養' },
-    '痘痘粉刺':  { s01:'先調理老廢角質',              s03:'維持穩定清爽的保養習慣' }
+  // ── STEP 02：依肌膚困擾決定核心精華（最高優先）──
+  const step02Data = {
+    '疲憊暗沉':  { action:'提亮氣色，對抗暗沉疲憊',     product:'維他命C淨亮精華' },
+    '乾燥缺水':  { action:'深層補水，持續維持保濕感',   product:'綠茶籽玻尿酸保濕精華' },
+    '出油毛孔':  { action:'調理膚況，優化毛孔與油脂',   product:'A醇淨膚超修護安瓶' },
+    '敏感泛紅':  { action:'補水舒緩，強化肌膚穩定度',   product:'綠茶籽玻尿酸保濕精華' },
+    '粗糙不平滑':{ action:'深層修護，改善膚觸與粗糙感', product:'A醇淨膚超修護安瓶' },
+    '痘痘粉刺':  { action:'調理底層，減少痘痘粉刺循環', product:'A醇淨膚超修護安瓶' }
+  };
+
+  // ── Q5 目標 → 對應商品（用來判斷是否顯示 STEP 03）──
+  const q5ProductMap = {
+    '想讓肌膚看起來比較有精神':    '維他命C淨亮精華',
+    '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
+    '想讓肌膚感覺水潤有光澤':      '綠茶籽玻尿酸保濕精華',
+    '想讓肌膚維持油水平衡':        '綠茶籽玻尿酸保濕精華',
+    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶籽玻尿酸保濕精華',
+    '想改善痘痘粉刺問題':          'A醇淨膚超修護安瓶',
+    '想讓肌膚摸起來更細緻':        'A醇淨膚超修護安瓶',
+    '想讓肌膚看起來更緊緻有彈力':  '1%A醇PDRN水光安瓶',
+    '想讓毛孔看起來更緊緻':        '1%A醇PDRN水光安瓶'
+  };
+
+  // ── STEP 03 商品的 action text ──
+  const step03Actions = {
+    '維他命C淨亮精華':      '加強提亮，改善氣色暗沉',
+    '綠茶籽玻尿酸保濕精華': '加強補水，維持水潤光澤',
+    'A醇淨膚超修護安瓶':    '加強調理，改善細緻感',
+    '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
   };
 
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -465,6 +481,15 @@
     }
   }
 
+  function makeStepRow(num, action, product, extraClass) {
+    return '<div class="step-row ' + (extraClass||'') + '">' +
+      '<div class="step-num">STEP 0' + num + '</div>' +
+      '<div class="step-content">' +
+        '<div class="step-action">' + action + '</div>' +
+        '<div class="step-product">→ ' + product + '</div>' +
+      '</div></div>';
+  }
+
   function showResult(){
     const name   = answers.name || '你';
     const s1arr  = Array.isArray(answers.s1) ? answers.s1 : [answers.s1 || ''];
@@ -472,19 +497,42 @@
     const s3arr  = Array.isArray(answers.s3) ? answers.s3 : [answers.s3 || ''];
     const makeup = answers.makeup || '—';
     const stype  = answers.skin_type || '—';
-
-    const prodSet = new Set();
-    s3arr.forEach(function(v){ (productMap[v] || []).forEach(function(p){ prodSet.add(p); }); });
-    const products = Array.from(prodSet);
-
     const mainConcern = s1arr[0] || '';
-    const tips = careTips[mainConcern] || { s01:'先依肌膚狀況調整保養', s03:'維持日常保濕保養習慣' };
 
-    const step02 = products.length === 1
-      ? '搭配「' + products[0] + '」加強保養'
-      : products.length >= 2
-        ? '搭配「' + products[0] + '」<br>及「' + products[1] + '」加強保養'
-        : '依肌膚狀況搭配適合精華加強保養';
+    // ── STEP 01 ──
+    var s01 = step01Data[mainConcern] || null;
+    var hasNightlife = s2arr.some(function(v){ return v.indexOf('熬夜') >= 0 || v.indexOf('作息') >= 0; });
+    if (hasNightlife && (!s01 || mainConcern === '疲憊暗沉')) {
+      s01 = step01LifestyleOverride;
+    }
+
+    // ── STEP 02 ──
+    var s02 = step02Data[mainConcern] || { action:'核心精華加強保養', product:'綠茶籽玻尿酸保濕精華' };
+
+    // ── STEP 03：Q5 目標對應商品，若與 STEP 02 不同才顯示 ──
+    var s03 = null;
+    var seenProducts = new Set([s02.product]);
+    for (var i = 0; i < s3arr.length; i++) {
+      var p = q5ProductMap[s3arr[i]];
+      if (p && !seenProducts.has(p)) {
+        s03 = { action: step03Actions[p] || '加強今日保養目標', product: p };
+        seenProducts.add(p);
+        break;
+      }
+    }
+
+    // ── STEP 04：依膚質推薦維持效果 ──
+    var s04product = (stype === '油性肌' || stype === '混合偏油肌')
+      ? '搭配輕透乳液，維持保濕不悶黏'
+      : '搭配保濕乳霜，加強鎖住保養效果';
+
+    // ── 組合 steps HTML ──
+    var stepNum = 1;
+    var stepsHtml = '';
+    if (s01) { stepsHtml += makeStepRow(stepNum++, s01.action, s01.product, ''); }
+    stepsHtml += makeStepRow(stepNum++, s02.action, s02.product, 'hero');
+    if (s03) { stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, ''); }
+    stepsHtml += makeStepRow(stepNum++, '維持保養效果', s04product, 's04');
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
 
@@ -500,16 +548,9 @@
           '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') + '</div></div>' +
           '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
         '</div>' +
-        (products.length > 0
-          ? '<div class="prod-section"><div class="prod-title">今日推薦商品</div><div class="prod-tags">' +
-            products.map(function(p){ return '<div class="prod-tag">' + p + '</div>'; }).join('') +
-            '</div></div>'
-          : '') +
         '<div class="steps-divider"></div>' +
         '<div class="steps-title">今日保養建議</div>' +
-        '<div class="step-row"><div class="step-num">STEP 01</div><div class="step-txt">' + tips.s01 + '</div></div>' +
-        '<div class="step-row hl"><div class="step-num">STEP 02</div><div class="step-txt">' + step02 + '</div></div>' +
-        '<div class="step-row"><div class="step-num">STEP 03</div><div class="step-txt">' + tips.s03 + '</div></div>';
+        stepsHtml;
 
       chat.appendChild(card);
       scrollDown();
