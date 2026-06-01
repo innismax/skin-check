@@ -66,24 +66,20 @@
 
     /* ══ WELCOME ══ */
     #screen-welcome {
-      align-items:center; justify-content:space-between;
+      align-items:center; justify-content:center;
       background:linear-gradient(160deg, #EDEDF4 0%, #E6E6EF 50%, #DCDCE8 100%);
-      padding:64px 32px 56px;
-    }
-    .w-top { text-align:center; }
-    .w-title {
-      font-size:36px; font-weight:300; letter-spacing:8px;
-      color:#3A3A4A; margin-bottom:14px; line-height:1.3;
-    }
-    .w-sub {
-      font-size:13px; color:#8888A0; letter-spacing:0.5px; line-height:1.8;
+      padding:40px 32px 56px; gap:0;
     }
 
-    /* 發光圓圈 */
+    /* 發光圓圈區塊 */
     .glow-wrap {
       display:flex; flex-direction:column; align-items:center;
-      justify-content:center; position:relative;
-      width:100%; flex:1; margin:20px 0;
+      position:relative; width:100%; margin:0;
+    }
+    .w-title {
+      font-size:32px; font-weight:300; letter-spacing:8px;
+      color:#3A3A4A; line-height:1.3; text-align:center;
+      margin-bottom:20px;
     }
     .glow-circle {
       width:270px; height:270px; border-radius:50%;
@@ -93,9 +89,6 @@
         0 0 60px rgba(180,180,240,0.15),
         inset 0 0 40px rgba(200,200,245,0.1);
       position:relative;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      gap:10px;
     }
     /* 橫向光線 */
     .glow-circle::before {
@@ -115,32 +108,56 @@
     .glow-circle::after {
       content:'';
       position:absolute;
-      bottom:-38px; left:50%;
+      bottom:-36px; left:50%;
       transform:translateX(-50%);
       width:65%; height:32px;
       background:radial-gradient(ellipse at center,
         rgba(180,180,240,0.28) 0%, transparent 70%);
     }
-    .circle-label {
-      font-size:9px; letter-spacing:3px; color:#9090B0;
-      text-transform:uppercase; z-index:1;
-    }
-    .circle-text {
-      font-size:15px; color:#4A4A60; line-height:1.8;
-      text-align:center; z-index:1; font-weight:300;
+
+    /* 副標（圓圈下方） */
+    .w-sub {
+      font-size:16px; color:#5A5A72; letter-spacing:0.5px;
+      line-height:2; text-align:center;
+      margin-top:52px; margin-bottom:40px;
     }
 
+    /* 按鈕外層（做跑光動畫） */
+    .w-btn-outer {
+      position:relative; width:100%; max-width:300px;
+      border-radius:50px; padding:2px;
+      overflow:hidden;
+    }
+    .w-btn-outer::before {
+      content:'';
+      position:absolute;
+      width:200%; height:200%;
+      top:-50%; left:-50%;
+      background:conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(200,200,255,0.9) 40deg,
+        rgba(255,255,255,1) 60deg,
+        rgba(200,200,255,0.9) 80deg,
+        transparent 120deg,
+        transparent 360deg
+      );
+      animation:spinBorder 2.5s linear infinite;
+    }
+    @keyframes spinBorder {
+      to { transform:rotate(360deg); }
+    }
     /* 毛玻璃按鈕 */
     .w-btn {
-      width:100%; max-width:320px; padding:17px 32px;
-      background:rgba(255,255,255,0.55);
+      position:relative; z-index:1;
+      width:100%; padding:16px 32px;
+      background:rgba(240,240,248,0.75);
       backdrop-filter:blur(12px);
       -webkit-backdrop-filter:blur(12px);
-      border:1px solid rgba(255,255,255,0.75);
-      border-radius:50px; font-size:16px; font-weight:400;
-      color:#4A4A60; font-family:inherit; cursor:pointer;
+      border:none; border-radius:50px;
+      font-size:15px; font-weight:400;
+      color:#4A4A62; font-family:inherit; cursor:pointer;
       letter-spacing:2px;
-      box-shadow:0 4px 24px rgba(150,150,200,0.18);
       display:flex; align-items:center; justify-content:center; gap:12px;
     }
 
@@ -318,19 +335,16 @@
 
 <!-- ══ WELCOME ══ -->
 <div id="screen-welcome" class="screen">
-  <div class="w-top">
-    <div class="w-title">今日肌膚檢測</div>
-    <div class="w-sub">透過幾個簡單問題，<br>一起看看最近的肌膚需要什麼保養 ✨</div>
-  </div>
-
   <div class="glow-wrap">
-    <div class="glow-circle">
-      <div class="circle-label">AI BEAUTY ADVISOR</div>
-      <div class="circle-text">了解現在的肌膚狀態<br>找到最適合的保養方向</div>
-    </div>
+    <div class="w-title">今日肌膚檢測</div>
+    <div class="glow-circle"></div>
   </div>
 
-  <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
+  <div class="w-sub">透過幾個簡單問題，<br>一起看看最近的肌膚需要什麼保養 ✨</div>
+
+  <div class="w-btn-outer">
+    <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
+  </div>
 </div>
 
 <!-- ══ CHAT ══ -->
