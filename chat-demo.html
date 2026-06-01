@@ -398,6 +398,22 @@
   let step = 0, answers = {}, selectedOpts = [];
   const guData = { store:'', name:'', date:'' };
 
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
+
+  function logToSheet(s1arr, s2arr, s3arr) {
+    var params = new URLSearchParams({
+      store:  guData.store,
+      ba:     guData.name,
+      date:   document.getElementById('gu-date').value,
+      step1:  (answers.skin_type || '') + '｜' + s1arr.join('、'),
+      step2:  s2arr.join('、'),
+      step3:  s3arr.join('、'),
+      makeup: answers.makeup || '',
+      source: 'chat'
+    });
+    fetch(SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' }).catch(function(){});
+  }
+
   // 自動填今天日期
   document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
 
@@ -644,6 +660,7 @@
     stepsHtml += makeStepRow(stepNum++, '維持保養效果', s04product, 's04');
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
+    logToSheet(s1arr, s2arr, s3arr);
 
     setTimeout(function(){
       const card = document.createElement('div');
