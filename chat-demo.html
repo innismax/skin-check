@@ -183,11 +183,36 @@
     .h-name { font-size:14px; font-weight:600; }
     .h-sub  { font-size:11px; color:var(--green); }
 
+    /* ══ CHAT 背景 ══ */
+    #screen-chat {
+      background:
+        linear-gradient(to top, rgba(190,185,240,0.28) 0%, transparent 18%),
+        linear-gradient(160deg, #EDEDF4 0%, #E8E8F0 55%, #DCDCE8 100%);
+      position:relative;
+    }
+    /* 右側大弧線 */
+    #screen-chat::before {
+      content:'';
+      position:fixed; top:6vh; right:-155px;
+      width:360px; height:360px; border-radius:50%;
+      border:1.5px solid rgba(190,185,235,0.38);
+      pointer-events:none; z-index:0;
+    }
+    /* 右側小弧線 */
+    #screen-chat::after {
+      content:'';
+      position:fixed; top:18vh; right:-115px;
+      width:270px; height:270px; border-radius:50%;
+      border:1px solid rgba(190,185,235,0.22);
+      pointer-events:none; z-index:0;
+    }
+
     /* ══ CHAT AREA ══ */
     .chat-body {
       flex:1; padding:20px 20px 120px;
       max-width:600px; width:100%; margin:0 auto;
       display:flex; flex-direction:column;
+      position:relative; z-index:1;
     }
 
     /* ══ BUBBLES ══ */
