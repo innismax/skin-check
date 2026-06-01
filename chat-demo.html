@@ -362,7 +362,7 @@
       <input class="gu-input" id="gu-date" type="date">
     </div>
 
-    <button class="gu-btn" id="gu-next" onclick="goTo('screen-welcome')">確認，帶客人開始 →</button>
+    <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
   </div>
 </div>
 
@@ -404,7 +404,7 @@
     var params = new URLSearchParams({
       store:  guData.store,
       ba:     guData.name,
-      date:   document.getElementById('gu-date').value,
+      date:   guData.date,
       step1:  (answers.skin_type || '') + '｜' + s1arr.join('、'),
       step2:  s2arr.join('、'),
       step3:  s3arr.join('、'),
