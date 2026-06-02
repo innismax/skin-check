@@ -400,12 +400,13 @@
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
-  function logToSheet(s1arr, s2arr, s3arr) {
+  function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
+    var allConcerns = mainConcern + (s1arr.length ? '、' + s1arr.join('、') : '');
     var params = new URLSearchParams({
       store:  guData.store,
       ba:     guData.name,
       date:   guData.date,
-      step1:  (answers.skin_type || '') + '｜' + s1arr.join('、'),
+      step1:  (answers.skin_type || '') + '｜' + allConcerns,
       step2:  s2arr.join('、'),
       step3:  s3arr.join('、'),
       makeup: answers.makeup || '',
@@ -430,12 +431,16 @@
   }
 
   const questions = [
-    { key:'name', type:'name', q:'請問該怎麼稱呼你呢？' },
+    { key:'name', type:'name',
+      q:'請問該怎麼稱呼你呢？' },
     { key:'skin_type', multi:0,
       q:'{name}，你平常比較接近哪種膚質呢？',
-      opts:['油性肌','混合偏油肌','混合偏乾肌','乾性肌','敏感肌'] },
+      opts:['油性肌','混合肌','乾性肌','敏感肌'] },
+    { key:'main', multi:0,
+      q:'最近最困擾你的肌膚問題是？\n※ 請選一個最想優先改善的',
+      opts:['疲憊暗沉','乾燥缺水','出油毛孔','敏感泛紅','粗糙不平滑','痘痘粉刺'] },
     { key:'s1', multi:2, hint:'（可複選，最多選 2 個）',
-      q:'了解！最近肌膚最困擾你的是？',
+      q:'除了剛剛的問題之外，還有其他困擾嗎？',
       opts:['疲憊暗沉','乾燥缺水','出油毛孔','敏感泛紅','粗糙不平滑','痘痘粉刺'] },
     { key:'s2', multi:2, hint:'（可複選，最多選 2 個）',
       q:'最近的生活狀態，哪幾個跟你比較接近呢？',
@@ -491,6 +496,16 @@
     '綠茶籽玻尿酸保濕精華': '加強補水，維持水潤光澤',
     'A醇淨膚超修護安瓶':    '加強調理，改善細緻感',
     '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
+  };
+
+  // ── STEP 04：顧問建議文字（依主困擾）──
+  const step04Advisory = {
+    '疲憊暗沉':  '定期加強亮白保養，維持透亮光澤',
+    '乾燥缺水':  '持續補水並加強鎖水保養',
+    '出油毛孔':  '加強週期性毛孔清潔保養',
+    '敏感泛紅':  '持續加強舒緩保養，維持肌膚穩定',
+    '粗糙不平滑':'加強週期性角質與毛孔清潔保養',
+    '痘痘粉刺':  '維持規律角質調理與毛孔清潔保養'
   };
 
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -616,25 +631,23 @@
   }
 
   function showResult(){
-    const name   = answers.name || '你';
-    const s1arr  = Array.isArray(answers.s1) ? answers.s1 : [answers.s1 || ''];
-    const s2arr  = Array.isArray(answers.s2) ? answers.s2 : [answers.s2 || ''];
-    const s3arr  = Array.isArray(answers.s3) ? answers.s3 : [answers.s3 || ''];
-    const makeup = answers.makeup || '—';
-    const stype  = answers.skin_type || '—';
-    const mainConcern = s1arr[0] || '';
+    const name        = answers.name || '你';
+    const mainConcern = answers.main || '';
+    const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
+    const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
+    const s3arr       = Array.isArray(answers.s3) ? answers.s3 : (answers.s3 ? [answers.s3] : []);
+    const makeup      = answers.makeup || '—';
+    const stype       = answers.skin_type || '—';
 
-    // ── STEP 01 ──
+    // ── STEP 01：主困擾調理商品，熬夜/作息可 override ──
     var s01 = step01Data[mainConcern] || null;
     var hasNightlife = s2arr.some(function(v){ return v.indexOf('熬夜') >= 0 || v.indexOf('作息') >= 0; });
-    if (hasNightlife && (!s01 || mainConcern === '疲憊暗沉')) {
-      s01 = step01LifestyleOverride;
-    }
+    if (hasNightlife) { s01 = step01LifestyleOverride; }
 
-    // ── STEP 02 ──
+    // ── STEP 02：主困擾核心精華 ──
     var s02 = step02Data[mainConcern] || { action:'核心精華加強保養', product:'綠茶籽玻尿酸保濕精華' };
 
-    // ── STEP 03：Q5 目標對應商品，若與 STEP 02 不同才顯示 ──
+    // ── STEP 03：Q6 目標商品，只有不同才顯示 ──
     var s03 = null;
     var seenProducts = new Set([s02.product]);
     for (var i = 0; i < s3arr.length; i++) {
@@ -646,10 +659,8 @@
       }
     }
 
-    // ── STEP 04：依膚質推薦維持效果 ──
-    var s04product = (stype === '油性肌' || stype === '混合偏油肌')
-      ? '搭配輕透乳液，維持保濕不悶黏'
-      : '搭配保濕乳霜，加強鎖住保養效果';
+    // ── STEP 04：顧問建議文字 ──
+    var s04text = step04Advisory[mainConcern] || '持續加強日常保濕保養';
 
     // ── 組合 steps HTML ──
     var stepNum = 1;
@@ -657,10 +668,14 @@
     if (s01) { stepsHtml += makeStepRow(stepNum++, s01.action, s01.product, ''); }
     stepsHtml += makeStepRow(stepNum++, s02.action, s02.product, 'hero');
     if (s03) { stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, ''); }
-    stepsHtml += makeStepRow(stepNum++, '維持保養效果', s04product, 's04');
+    stepsHtml += makeStepRow(stepNum++, '加強保養建議', s04text, 's04');
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
-    logToSheet(s1arr, s2arr, s3arr);
+    logToSheet(mainConcern, s1arr, s2arr, s3arr);
+
+    // 「你的選擇」顯示：主困擾 + 次要困擾
+    var concernVal = '✓ ' + mainConcern;
+    if (s1arr.length > 0) { concernVal += '<br>' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>'); }
 
     setTimeout(function(){
       const card = document.createElement('div');
@@ -669,9 +684,9 @@
         '<div class="res-headline">今日肌膚關鍵字</div>' +
         '<div class="choices-grid">' +
           '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>') + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
           '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
         '</div>' +
         '<div class="steps-divider"></div>' +
