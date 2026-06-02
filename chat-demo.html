@@ -326,6 +326,17 @@
     .step-row.hero .step-product { color:var(--green); font-size:16px; }
     .step-row.s04 .step-product { font-size:14px; font-weight:400; color:var(--text-mid); }
 
+    /* ══ 回上一步 ══ */
+    .btn-back-step {
+      display:block; margin:2px 0 6px auto;
+      background:transparent; border:none;
+      color:var(--text-soft); font-size:12px;
+      cursor:pointer; padding:4px 10px;
+      font-family:inherit; letter-spacing:0.5px;
+      opacity:0; animation:fadeUp .2s ease .1s forwards;
+    }
+    .btn-back-step:active { color:var(--text-mid); }
+
     /* ══ RESTART ══ */
     .restart-btn {
       display:block; margin:16px auto 0;
@@ -526,12 +537,42 @@
     const row = document.createElement('div');
     row.className = 'msg-row ' + type;
     if(type==='brand'){
+      row.dataset.questionStep = step; // 標記這是第幾題的問題
       row.innerHTML = '<div class="bav">IS</div><div class="bubble">' + text.replace(/\n/g,'<br>') + '</div>';
     } else {
       row.innerHTML = '<div class="bubble">' + text + '</div>';
     }
     chat.appendChild(row);
     scrollDown();
+  }
+
+  function addBackButton(){
+    const btn = document.createElement('button');
+    btn.className = 'btn-back-step';
+    btn.textContent = '↩ 重新選擇';
+    btn.onclick = handleGoBack;
+    chat.appendChild(btn);
+    scrollDown();
+  }
+
+  function handleGoBack(){
+    // 找到最後一個品牌問題
+    const brandMsgs = Array.from(chat.querySelectorAll('[data-question-step]'));
+    if(brandMsgs.length === 0) return;
+    const lastMsg = brandMsgs[brandMsgs.length - 1];
+    const targetStep = parseInt(lastMsg.dataset.questionStep);
+
+    // 清除這題的答案
+    if(questions[targetStep]) delete answers[questions[targetStep].key];
+    selectedOpts = [];
+
+    // 移除從這個問題到最後的所有元素
+    while(lastMsg.nextSibling){ chat.removeChild(lastMsg.nextSibling); }
+    chat.removeChild(lastMsg);
+
+    // 退回這一步重問
+    step = targetStep;
+    setTimeout(nextStep, 200);
   }
 
   function addNameInput(){
@@ -585,8 +626,10 @@
     if(multi <= 1){
       wrap.remove();
       answers[questions[step].key] = opt;
-      addMsg(opt, 'user'); step++;
-      setTimeout(nextStep, 500);
+      addMsg(opt, 'user');
+      addBackButton();
+      step++;
+      setTimeout(nextStep, 600);
     } else {
       if(btn.classList.contains('sel')){
         btn.classList.remove('sel');
@@ -603,8 +646,10 @@
     if(selectedOpts.length === 0) return;
     wrap.remove(); if(sendBtn) sendBtn.remove();
     answers[questions[step].key] = selectedOpts.slice();
-    addMsg(selectedOpts.join('、'), 'user'); step++;
-    setTimeout(nextStep, 500);
+    addMsg(selectedOpts.join('、'), 'user');
+    addBackButton();
+    step++;
+    setTimeout(nextStep, 600);
   }
 
   async function nextStep(){
