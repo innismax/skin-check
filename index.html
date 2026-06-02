@@ -63,20 +63,6 @@
       opacity:.4; pointer-events:none; transition:opacity .2s;
     }
     .gu-btn.ready { opacity:1; pointer-events:auto; }
-    .admin-link {
-      display:block;
-      width:100%;
-      margin-top:14px;
-      padding:12px;
-      border:1.5px solid var(--green-border);
-      border-radius:50px;
-      color:var(--green);
-      background:transparent;
-      text-align:center;
-      text-decoration:none;
-      font-size:13px;
-      font-weight:600;
-    }
 
     /* ══ WELCOME ══ */
     #screen-welcome {
@@ -388,7 +374,6 @@
     </div>
 
     <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
-    <a class="admin-link" href="https://docs.google.com/spreadsheets/d/1SRg08VueumjFa-W51HIjnjUqDDXkxzE6c-MhXIL0p3A/edit?usp=drivesdk" target="_blank" rel="noopener">查看後台統計</a>
   </div>
 </div>
 
@@ -427,14 +412,22 @@
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
   function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
-    var allConcerns = mainConcern + (s1arr.length ? '、' + s1arr.join('、') : '');
     var params = new URLSearchParams({
-      store:  guData.store,
-      ba:     guData.name,
-      date:   guData.date,
-      step1:  (answers.skin_type || '') + '｜' + allConcerns,
-      step2:  s2arr.join('、'),
-      step3:  s3arr.join('、'),
+      timestamp: new Date().toLocaleString('zh-TW'),
+      date: guData.date,
+      store: guData.store,
+      gu: guData.name,
+      ba: guData.name,
+      customer_name: answers.name || '',
+      q1_skin_type: answers.skin_type || '',
+      q2_main_concern: mainConcern || '',
+      q3_other_concerns: s1arr.join('、'),
+      q4_lifestyle: s2arr.join('、'),
+      q5_goal: s3arr.join('、'),
+      q6_makeup: answers.makeup || '',
+      step1: (answers.skin_type || '') + '｜' + (mainConcern || '') + (s1arr.length ? '、' + s1arr.join('、') : ''),
+      step2: s2arr.join('、'),
+      step3: s3arr.join('、'),
       makeup: answers.makeup || '',
       source: 'chat'
     });
