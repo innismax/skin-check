@@ -56,6 +56,19 @@
       color:var(--text); background:var(--white); outline:none;
     }
     .gu-input:focus { border-color:var(--green); }
+    .gu-name-row {
+      display:flex; flex-wrap:wrap; gap:10px;
+    }
+    .gu-name-btn {
+      padding:10px 20px; border:1.5px solid var(--green-border);
+      border-radius:50px; background:var(--white);
+      color:var(--text-mid); font-size:15px; font-weight:500;
+      font-family:inherit; cursor:pointer; transition:all .15s;
+    }
+    .gu-name-btn.sel {
+      background:var(--green-pale); border-color:var(--green);
+      color:var(--green); font-weight:700;
+    }
     .gu-btn {
       width:100%; padding:17px; background:var(--green); color:#fff;
       border:none; border-radius:50px; font-size:15px; font-weight:600;
@@ -178,7 +191,7 @@
     .h-av {
       width:36px; height:36px; background:var(--green); border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:11px; font-weight:700; flex-shrink:0;
+      color:#fff; font-size:18px; font-weight:700; flex-shrink:0;
     }
     .h-name { font-size:14px; font-weight:600; }
     .h-sub  { font-size:11px; color:var(--green); }
@@ -363,9 +376,9 @@
       </div>
     </div>
 
-    <div class="gu-block">
+    <div class="gu-block" id="gu-name-block" style="display:none">
       <span class="gu-label">GU 姓名</span>
-      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="checkGU()">
+      <div class="gu-name-row" id="gu-name-row"></div>
     </div>
 
     <div class="gu-block">
@@ -395,7 +408,7 @@
 <!-- ══ CHAT ══ -->
 <div id="screen-chat" class="screen">
   <div class="chat-header">
-    <div class="h-av">IS</div>
+    <div class="h-av">😊</div>
     <div>
       <div class="h-name">INNISFREE 肌膚顧問</div>
       <div class="h-sub">● 線上中</div>
@@ -412,14 +425,22 @@
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
   function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
-    var allConcerns = mainConcern + (s1arr.length ? '、' + s1arr.join('、') : '');
     var params = new URLSearchParams({
-      store:  guData.store,
-      ba:     guData.name,
-      date:   guData.date,
-      step1:  (answers.skin_type || '') + '｜' + allConcerns,
-      step2:  s2arr.join('、'),
-      step3:  s3arr.join('、'),
+      timestamp: new Date().toLocaleString('zh-TW'),
+      date: guData.date,
+      store: guData.store,
+      gu: guData.name,
+      ba: guData.name,
+      customer_name: answers.name || '',
+      q1_skin_type: answers.skin_type || '',
+      q2_main_concern: mainConcern || '',
+      q3_other_concerns: s1arr.join('、'),
+      q4_lifestyle: s2arr.join('、'),
+      q5_goal: s3arr.join('、'),
+      q6_makeup: answers.makeup || '',
+      step1: (answers.skin_type || '') + '｜' + (mainConcern || '') + (s1arr.length ? '、' + s1arr.join('、') : ''),
+      step2: s2arr.join('、'),
+      step3: s3arr.join('、'),
       makeup: answers.makeup || '',
       source: 'chat'
     });
@@ -429,14 +450,39 @@
   // 自動填今天日期
   document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
 
+  // 各門市 GU 名單
+  const storeStaff = {
+    'A11':      ['Zoni','小白','Wendy','Niny','妙竹'],
+    '台北SOGO': ['Alice','Shiny','Luna','思凡']
+  };
+
   function pickStore(btn){
     document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
     btn.classList.add('sel');
     guData.store = btn.dataset.store;
+    guData.name = '';
+
+    // 顯示該門市的 GU 名單
+    var nameRow = document.getElementById('gu-name-row');
+    nameRow.innerHTML = '';
+    var names = storeStaff[guData.store] || [];
+    names.forEach(function(name){
+      var nb = document.createElement('button');
+      nb.className = 'gu-name-btn';
+      nb.textContent = name;
+      nb.onclick = function(){
+        document.querySelectorAll('.gu-name-btn').forEach(function(b){ b.classList.remove('sel'); });
+        nb.classList.add('sel');
+        guData.name = name;
+        checkGU();
+      };
+      nameRow.appendChild(nb);
+    });
+    document.getElementById('gu-name-block').style.display = 'block';
     checkGU();
   }
+
   function checkGU(){
-    guData.name = document.getElementById('gu-name').value.trim();
     const ready = guData.store && guData.name;
     document.getElementById('gu-next').classList.toggle('ready', !!ready);
   }
@@ -464,28 +510,20 @@
       opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
   ];
 
-  // ── STEP 01：依肌膚困擾的調理型商品 ──
-  const step01Data = {
-    '疲憊暗沉':  { action:'先提亮肌膚，恢復光澤感',       product:'維他命C淨亮棉片' },
-    '乾燥缺水':  { action:'先補充水分，舒緩緊繃感',       product:'綠茶神經醯胺牛奶水精華' },
-    '出油毛孔':  { action:'先控油調理，維持清爽感',       product:'火山泥PHA毛孔緊緻露' },
-    '敏感泛紅':  { action:'先舒緩肌膚，降低不適感',       product:'綠茶神經醯胺牛奶水精華' },
-    '粗糙不平滑':{ action:'先調理角質，改善膚觸粗糙感',   product:'A醇淨膚毛孔修護棉片' },
-    '痘痘粉刺':  { action:'先調理老廢角質，減少粉刺生成', product:'A醇淨膚毛孔修護棉片' }
-  };
-  // 生活習慣 override：熬夜或作息混亂
-  const step01LifestyleOverride = {
-    action:'先修護疲憊，穩定肌膚狀態', product:'紅茶極效修護晶露'
+  // ── STEP 01：敏感泛紅特殊規則，先穩定膚況 ──
+  const sensitiveFirst = {
+    action:'穩定膚況保養',
+    product:'綠茶神經醯胺牛奶水精華'
   };
 
-  // ── STEP 02：依肌膚困擾決定核心精華（最高優先）──
+  // ── STEP 02：依肌膚困擾決定核心精華 ──
   const step02Data = {
-    '疲憊暗沉':  { action:'提亮氣色，對抗暗沉疲憊',     product:'維他命C淨亮精華' },
-    '乾燥缺水':  { action:'深層補水，持續維持保濕感',   product:'綠茶籽玻尿酸保濕精華' },
-    '出油毛孔':  { action:'調理膚況，優化毛孔與油脂',   product:'A醇淨膚超修護安瓶' },
-    '敏感泛紅':  { action:'補水舒緩，強化肌膚穩定度',   product:'綠茶籽玻尿酸保濕精華' },
-    '粗糙不平滑':{ action:'深層修護，改善膚觸與粗糙感', product:'A醇淨膚超修護安瓶' },
-    '痘痘粉刺':  { action:'調理底層，減少痘痘粉刺循環', product:'A醇淨膚超修護安瓶' }
+    '疲憊暗沉':  { action:'提亮氣色，對抗暗沉疲憊',       product:'維他命C淨亮精華' },
+    '乾燥缺水':  { action:'深層補水，持續維持保濕感',     product:'綠茶籽玻尿酸保濕精華' },
+    '出油毛孔':  { action:'調理膚況，優化毛孔與油脂',     product:'A醇淨膚超修護安瓶' },
+    '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感',     product:'綠茶神經醯胺牛奶水精華' },
+    '粗糙不平滑':{ action:'調理粗糙膚觸，改善細緻感',     product:'A醇淨膚超修護安瓶' },
+    '痘痘粉刺':  { action:'調理粉刺痘痘反覆狀況',         product:'A醇淨膚超修護安瓶' }
   };
 
   // ── Q5 目標 → 對應商品（用來判斷是否顯示 STEP 03）──
@@ -493,8 +531,8 @@
     '想讓肌膚看起來比較有精神':    '維他命C淨亮精華',
     '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
     '想讓肌膚感覺水潤有光澤':      '綠茶籽玻尿酸保濕精華',
-    '想讓肌膚維持油水平衡':        '綠茶籽玻尿酸保濕精華',
-    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶籽玻尿酸保濕精華',
+    '想讓肌膚維持油水平衡':        'A醇淨膚超修護安瓶',
+    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶神經醯胺牛奶水精華',
     '想改善痘痘粉刺問題':          'A醇淨膚超修護安瓶',
     '想讓肌膚摸起來更細緻':        'A醇淨膚超修護安瓶',
     '想讓肌膚看起來更緊緻有彈力':  '1%A醇PDRN水光安瓶',
@@ -509,14 +547,14 @@
     '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
   };
 
-  // ── STEP 04：顧問建議文字（依主困擾）──
-  const step04Advisory = {
-    '疲憊暗沉':  '定期加強亮白保養，維持透亮光澤',
-    '乾燥缺水':  '持續補水並加強鎖水保養',
-    '出油毛孔':  '加強週期性毛孔清潔保養',
-    '敏感泛紅':  '持續加強舒緩保養，維持肌膚穩定',
-    '粗糙不平滑':'加強週期性角質與毛孔清潔保養',
-    '痘痘粉刺':  '維持規律角質調理與毛孔清潔保養'
+  // ── STEP 04：依生活狀態給保養加強建議，不直接推薦商品 ──
+  const lifestyleAdvisory = {
+    '最近熬夜比較多': '建議加強夜間修護保養',
+    '長時間待在冷氣房': '建議加強補水與保濕保養',
+    '最近臉容易覺得黏膩不舒服': '建議加強油水平衡保養',
+    '最近壓力有點大': '建議加強穩定膚況保養',
+    '最近生活作息比較亂': '建議加強穩定膚況保養',
+    '最近常待在戶外': '建議加強防曬與曬後保養'
   };
 
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -676,6 +714,15 @@
       '</div></div>';
   }
 
+  function makeAdviceRow(num, adviceText) {
+    return '<div class="step-row s04">' +
+      '<div class="step-num">STEP 0' + num + '</div>' +
+      '<div class="step-content">' +
+        '<div class="step-action">保養加強建議</div>' +
+        '<div class="step-product">' + adviceText + '</div>' +
+      '</div></div>';
+  }
+
   function showResult(){
     const name        = answers.name || '你';
     const mainConcern = answers.main || '';
@@ -685,36 +732,39 @@
     const makeup      = answers.makeup || '—';
     const stype       = answers.skin_type || '—';
 
-    // ── STEP 01：主困擾調理商品，熬夜/作息可 override ──
-    var s01 = step01Data[mainConcern] || null;
-    var hasNightlife = s2arr.some(function(v){ return v.indexOf('熬夜') >= 0 || v.indexOf('作息') >= 0; });
-    if (hasNightlife) { s01 = step01LifestyleOverride; }
+    // ── 顧問邏輯：穩定膚況 → 核心精華 → 第二支精華 → 生活建議 ──
+    var stepNum = 1;
+    var stepsHtml = '';
+    var seenProducts = new Set();
+    var concernList = [mainConcern].concat(s1arr).filter(Boolean);
 
-    // ── STEP 02：主困擾核心精華 ──
-    var s02 = step02Data[mainConcern] || { action:'核心精華加強保養', product:'綠茶籽玻尿酸保濕精華' };
+    if (concernList.indexOf('敏感泛紅') >= 0) {
+      stepsHtml += makeStepRow(stepNum++, sensitiveFirst.action, sensitiveFirst.product, 'hero');
+      seenProducts.add(sensitiveFirst.product);
+    }
 
-    // ── STEP 03：Q6 目標商品，只有不同才顯示 ──
-    var s03 = null;
-    var seenProducts = new Set([s02.product]);
+    for (var ci = 0; ci < concernList.length; ci++) {
+      var data = step02Data[concernList[ci]];
+      if (data && !seenProducts.has(data.product)) {
+        stepsHtml += makeStepRow(stepNum++, data.action, data.product, 'hero');
+        seenProducts.add(data.product);
+        break;
+      }
+    }
+
     for (var i = 0; i < s3arr.length; i++) {
       var p = q5ProductMap[s3arr[i]];
       if (p && !seenProducts.has(p)) {
-        s03 = { action: step03Actions[p] || '加強今日保養目標', product: p };
+        stepsHtml += makeStepRow(stepNum++, step03Actions[p] || '加強今日保養目標', p, 'hero');
         seenProducts.add(p);
         break;
       }
     }
 
-    // ── STEP 04：顧問建議文字 ──
-    var s04text = step04Advisory[mainConcern] || '持續加強日常保濕保養';
-
-    // ── 組合 steps HTML ──
-    var stepNum = 1;
-    var stepsHtml = '';
-    if (s01) { stepsHtml += makeStepRow(stepNum++, s01.action, s01.product, ''); }
-    stepsHtml += makeStepRow(stepNum++, s02.action, s02.product, 'hero');
-    if (s03) { stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, ''); }
-    stepsHtml += makeStepRow(stepNum++, '加強保養建議', s04text, 's04');
+    var adviceList = s2arr.map(function(v){ return lifestyleAdvisory[v]; }).filter(Boolean);
+    if (adviceList.length > 0) {
+      stepsHtml += makeAdviceRow(stepNum++, adviceList.join('<br>'));
+    }
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
@@ -747,8 +797,10 @@
         btn.className = 'restart-btn'; btn.textContent = '再測一次';
         btn.onclick = function(){
           chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
-          document.getElementById('gu-name').value = '';
           document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+          document.querySelectorAll('.gu-name-btn').forEach(function(b){ b.classList.remove('sel'); });
+          document.getElementById('gu-name-block').style.display = 'none';
+          document.getElementById('gu-name-row').innerHTML = '';
           guData.store = ''; guData.name = '';
           document.getElementById('gu-next').classList.remove('ready');
           document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
