@@ -547,28 +547,29 @@
   }
 
   function addBackButton(){
+    const targetStep = step; // 記住這個按鈕對應的步驟
     const btn = document.createElement('button');
     btn.className = 'btn-back-step';
     btn.textContent = '↩ 重新選擇';
-    btn.onclick = handleGoBack;
+    btn.onclick = function(){ handleGoBack(targetStep); };
     chat.appendChild(btn);
     scrollDown();
   }
 
-  function handleGoBack(){
-    // 找到最後一個品牌問題
-    const brandMsgs = Array.from(chat.querySelectorAll('[data-question-step]'));
-    if(brandMsgs.length === 0) return;
-    const lastMsg = brandMsgs[brandMsgs.length - 1];
-    const targetStep = parseInt(lastMsg.dataset.questionStep);
+  function handleGoBack(targetStep){
+    // 找到這一題對應的品牌訊息泡泡
+    const brandMsg = chat.querySelector('[data-question-step="' + targetStep + '"]');
+    if(!brandMsg) return;
 
-    // 清除這題的答案
-    if(questions[targetStep]) delete answers[questions[targetStep].key];
+    // 清除從這題開始所有後續的答案
+    for(var i = targetStep; i < questions.length; i++){
+      if(questions[i]) delete answers[questions[i].key];
+    }
     selectedOpts = [];
 
-    // 移除從這個問題到最後的所有元素
-    while(lastMsg.nextSibling){ chat.removeChild(lastMsg.nextSibling); }
-    chat.removeChild(lastMsg);
+    // 移除這題訊息到最後所有 DOM 元素
+    while(brandMsg.nextSibling){ chat.removeChild(brandMsg.nextSibling); }
+    chat.removeChild(brandMsg);
 
     // 退回這一步重問
     step = targetStep;
