@@ -669,76 +669,52 @@
     smooth:    '想讓肌膚摸起來更細緻'
   };
 
-  // ── STEP 1 content（肌膚狀態 + 保養建議 ✓ bullets）──
-  const step1Data = {
-    fatigue: {
-      status: '最近肌膚看起來比較容易疲憊、<br>缺乏光澤與精神感。<br><br>肌膚在疲勞狀態下，<br>也容易看起來比較暗沉、沒氣色。',
-      tips: [
-        '先幫肌膚恢復光澤與精神感',
-        '加強肌膚保濕修護',
-        '搭配「提亮光澤型精華」加強保養'
-      ]
-    },
-    dryness: {
-      status: '近期肌膚可能有缺水與乾燥感，<br>容易出現緊繃與不舒服的狀況。',
-      tips: [
-        '先舒緩乾燥與緊繃感',
-        '幫助肌膚鎖住水分與維持保濕感',
-        '搭配「補水保濕型精華」加強補充水分'
-      ]
-    },
-    oiliness: {
-      status: '近期肌膚可能因悶熱與出油，<br>讓毛孔與肌膚狀態看起來比較明顯。',
-      tips: [
-        '先補水並維持油水平衡',
-        '幫助肌膚維持清爽與細緻感',
-        '搭配「角質調理安瓶／精華」加強保養'
-      ]
-    },
-    sensitive: {
-      status: '近期肌膚狀態可能比較敏感，<br>容易出現乾癢、泛紅與不舒服的感覺。<br><br>當肌膚狀態不穩定時，<br>也可能更容易受到外在環境影響。',
-      tips: [
-        '先降低肌膚不適感',
-        '減少肌膚水分流失與乾燥感',
-        '搭配「舒緩修護型商品」加強舒緩'
-      ]
-    },
-    roughness: {
-      status: '近期肌膚摸起來可能比較粗糙，<br>整體膚觸也較不細緻平滑。',
-      tips: [
-        '先加強肌膚柔嫩與平滑感保養',
-        '搭配週期性角質與毛孔清潔保養',
-        '建議搭配「角質代謝型精華」加強保養'
-      ]
-    },
-    acne: {
-      status: '近期肌膚可能較容易出現粉刺與痘痘反覆狀況，<br>整體膚況也比較不穩定。',
-      tips: [
-        '先調理老廢角質',
-        '使用A醇修護霜終結痘痘循環',
-        '搭配「粉刺痘痘調理安瓶」加強保養'
-      ]
-    }
+  // ── 保養顧問邏輯：肌膚困擾 → 保養方向 → 對應精華 ──
+  const productByConcern = {
+    fatigue:   '維他命C淨亮精華',
+    dryness:   '綠茶籽玻尿酸保濕精華',
+    oiliness:  'A醇淨膚超修護安瓶',
+    roughness: 'A醇淨膚超修護安瓶',
+    acne:      'A醇淨膚超修護安瓶',
+    energetic: '維他命C淨亮精華',
+    bright:    '維他命C淨亮精華',
+    rescue:    '綠茶籽玻尿酸保濕精華',
+    light:     'A醇淨膚超修護安瓶',
+    smooth:    'A醇淨膚超修護安瓶',
+    calm:      '綠茶神經醯胺牛奶水精華',
+    firming:   '1%A醇PDRN水光安瓶'
   };
 
-  // ── STEP 2 content（加入今日肌膚狀態）──
-  const step2Text = {
-    late_night:  '可能和近期作息不穩與睡眠不足有關。',
-    ac_room:     '長時間待在乾燥環境，也可能讓肌膚更容易流失水分。',
-    hot_weather: '高溫與悶熱環境，可能讓肌膚更容易出油與不穩定。',
-    stress:      '壓力與疲勞狀態，也可能影響肌膚穩定度。',
-    irregular:   '不規律的生活習慣，也可能讓肌膚狀態看起來比較疲憊。',
-    outdoor:     '長時間接觸外在環境，也可能讓肌膚更容易乾燥與粗糙。'
+  const productIntro = {
+    '綠茶神經醯胺牛奶水精華': '先穩定肌膚狀態，搭配「綠茶神經醯胺牛奶水精華」',
+    '維他命C淨亮精華': '核心精華可搭配「維他命C淨亮精華」',
+    '綠茶籽玻尿酸保濕精華': '核心精華可搭配「綠茶籽玻尿酸保濕精華」',
+    'A醇淨膚超修護安瓶': '核心精華可搭配「A醇淨膚超修護安瓶」',
+    '1%A醇PDRN水光安瓶': '核心精華可搭配「1%A醇PDRN水光安瓶」'
   };
 
-  // ── STEP 3 content（加入今日保養建議）──
-  const step3Text = {
-    energetic: '建議先加強肌膚水分感與氣色感，讓整體狀態看起來更有精神。',
-    calm:      '建議先降低肌膚負擔，讓肌膚回到比較舒服穩定的狀態。',
-    light:     '保養可偏向輕盈、清爽型的補水方式，避免增加肌膚悶黏感。',
-    bright:    '可加強肌膚透亮與光澤感保養，讓肌膚看起來更明亮細緻。',
-    rescue:    '可優先加強立即補水與舒緩，先改善當下的不適與疲憊感。',
-    smooth:    '建議加強保濕與柔嫩感保養，讓膚觸摸起來更細緻平滑。'
+  const concernDirection = {
+    fatigue:   '協助改善疲憊暗沉，讓肌膚看起來更有光澤感。',
+    dryness:   '協助補充水分，改善乾燥與緊繃感。',
+    oiliness:  '協助調理膚況，讓肌膚維持清爽與細緻感。',
+    roughness: '協助調理粗糙膚觸，讓肌膚摸起來更平滑。',
+    acne:      '協助調理粉刺痘痘反覆狀況，維持穩定膚況。',
+    energetic: '協助加強氣色感，讓肌膚看起來更有精神。',
+    bright:    '協助加強透亮感，讓肌膚看起來更明亮。',
+    rescue:    '協助補充水分，讓肌膚感覺水潤有光澤。',
+    light:     '協助維持油水平衡，降低悶黏不適感。',
+    smooth:    '協助加強細緻膚觸，讓肌膚摸起來更平滑。',
+    calm:      '協助穩定不適膚況，讓肌膚回到舒服狀態。',
+    firming:   '協助加強緊緻彈力，提升肌膚水光感。'
+  };
+
+  const lifestyleAdvice = {
+    late_night:  '建議加強夜間修護保養',
+    ac_room:     '建議加強補水與保濕保養',
+    hot_weather: '建議加強油水平衡保養',
+    stress:      '建議加強穩定膚況保養',
+    irregular:   '建議加強穩定膚況保養',
+    outdoor:     '建議加強防曬與曬後保養'
   };
 
   // ── 選門市 ──
@@ -807,8 +783,6 @@
 
   // ── Build result ──
   function showResult() {
-    const d = step1Data[sel.s1];
-
     // ① 你的選擇
     const allChoices = [sel.s1, ...sel.s2, ...sel.s3].filter(Boolean);
     const choiceItems = allChoices.map(v =>
@@ -818,32 +792,57 @@
       </div>`
     ).join('');
 
-    // ② 今日肌膚狀態：STEP 1 + STEP 2
-    const s2parts = sel.s2.map(v => step2Text[v]).filter(Boolean);
-    let statusHtml = d.status;
-    if (s2parts.length > 0) {
-      statusHtml += '<br><br>' + s2parts.join('<br>');
+    // ② 今日保養建議：穩定膚況 → 核心精華 → 第二支精華 → 加強建議
+    const issueKeys = [sel.s1, ...sel.s3].filter(Boolean);
+    const steps = [];
+    const usedProducts = new Set();
+
+    if (sel.s1 === 'sensitive') {
+      const stableProduct = '綠茶神經醯胺牛奶水精華';
+      usedProducts.add(stableProduct);
+      steps.push({
+        label: 'STEP 01',
+        text: `${productIntro[stableProduct]}<br>敏感泛紅屬於肌膚穩定度問題，建議先穩定膚況再進行後續保養。`,
+        highlight: true
+      });
     }
 
-    // ③ 今日保養建議：STEP 01 / 02(精華highlight) / 03 流程
-    const orderedTips = [
-      { text: d.tips[0], highlight: false },
-      { text: d.tips[2], highlight: true  },
-      { text: d.tips[1], highlight: false }
-    ];
-    const tipSteps = orderedTips.map((item, i) => {
-      const stepNum = `STEP 0${i + 1}`;
-      if (item.highlight) {
-        return `<div class="care-step is-product">
-          <div class="care-step-num">${stepNum}</div>
-          <div class="care-step-body">${item.text}</div>
-        </div>`;
-      }
-      return `<div class="care-step">
-        <div class="care-step-num">${stepNum}</div>
+    const productCandidates = [];
+    issueKeys.forEach(key => {
+      const product = productByConcern[key];
+      if (!product || usedProducts.has(product)) return;
+      usedProducts.add(product);
+      productCandidates.push({
+        product,
+        key
+      });
+    });
+
+    productCandidates.slice(0, 2).forEach(item => {
+      const stepNo = steps.length + 1;
+      steps.push({
+        label: `STEP 0${stepNo}`,
+        text: `${productIntro[item.product]}<br>${concernDirection[item.key]}`,
+        highlight: true
+      });
+    });
+
+    const adviceList = sel.s2.map(v => lifestyleAdvice[v]).filter(Boolean);
+    if (adviceList.length > 0) {
+      const stepNo = steps.length + 1;
+      steps.push({
+        label: `STEP 0${stepNo}`,
+        text: adviceList.join('<br>'),
+        highlight: false
+      });
+    }
+
+    const tipSteps = steps.map(item =>
+      `<div class="care-step${item.highlight ? ' is-product' : ''}">
+        <div class="care-step-num">${item.label}</div>
         <div class="care-step-body">${item.text}</div>
-      </div>`;
-    }).join('');
+      </div>`
+    ).join('');
 
     document.getElementById('result-body').innerHTML = `
       <div class="your-choice-card">
