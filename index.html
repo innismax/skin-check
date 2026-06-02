@@ -3,880 +3,765 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>今日肌膚狀態</title>
+  <title>innisfree 肌膚諮詢</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     :root {
-      --green:        #4A7C59;
-      --green-mid:    #6B9E7A;
-      --green-pale:   #EEF4EF;
-      --green-border: #D3E4D8;
-      --bg:           #F8F9F7;
-      --white:        #FFFFFF;
-      --text:         #1C1C1E;
-      --text-mid:     #6B7280;
-      --text-soft:    #9CA3AF;
+      --green:#4A7C59; --green-mid:#6B9E7A; --green-pale:#EEF4EF;
+      --green-border:#D3E4D8; --bg:#F2F4F0; --white:#fff;
+      --text:#1C1C1E; --text-mid:#6B7280; --text-soft:#9CA3AF;
+      --red:#D94F4F;
     }
+    html,body { min-height:100%; background:var(--bg);
+      font-family:-apple-system,'PingFang TC','Helvetica Neue',sans-serif;
+      color:var(--text); -webkit-font-smoothing:antialiased; }
 
-    html, body {
-      min-height: 100%;
-      background: var(--bg);
-    }
+    /* ══ SCREENS ══ */
+    .screen { display:none; min-height:100vh; }
+    .screen.active { display:flex; flex-direction:column; }
 
-    body {
-      font-family: -apple-system, 'PingFang TC', 'Helvetica Neue', sans-serif;
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
+    /* ══ GU 頁 ══ */
+    #screen-gu {
+      align-items:center; justify-content:center;
+      background:var(--white); padding:48px 32px;
     }
-
-    /* ── Screens ── */
-    .screen {
-      display: none;
-      min-height: 100vh;
-      flex-direction: column;
-      align-items: center;
+    .gu-inner { max-width:440px; width:100%; }
+    .gu-title {
+      font-size:24px; font-weight:700; color:var(--text);
+      margin-bottom:6px;
     }
-    .screen.active { display: flex; }
-
-    .inner {
-      width: 100%;
-      max-width: 580px;
-      padding: 0 32px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+    .gu-sub {
+      font-size:14px; color:var(--red); font-weight:700;
+      margin-bottom:36px;
     }
-
-    /* ── Progress ── */
-    .progress {
-      width: 100%;
-      max-width: 580px;
-      padding: 24px 32px 0;
-      display: flex;
-      gap: 6px;
+    .gu-block { margin-bottom:24px; }
+    .gu-label {
+      font-size:12px; color:var(--text-soft); letter-spacing:1px;
+      margin-bottom:8px; display:block;
     }
-    .prog-seg {
-      height: 2px;
-      flex: 1;
-      border-radius: 2px;
-      background: var(--green-border);
-      transition: background 0.4s;
-    }
-    .prog-seg.done { background: var(--green); }
-
-    /* ── Welcome ── */
-    #screen-welcome .inner {
-      justify-content: center;
-      padding-top: 80px;
-      padding-bottom: 80px;
-    }
-    .brand-tag {
-      font-size: 10px;
-      letter-spacing: 4px;
-      color: var(--green);
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-    .welcome-title {
-      font-size: 44px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      line-height: 1.15;
-      color: var(--text);
-      margin-bottom: 36px;
-    }
-    .welcome-body {
-      font-size: 22px;
-      color: var(--text-mid);
-      line-height: 2;
-      margin-bottom: 72px;
-    }
-
-    /* ── Step header ── */
-    .step-hd {
-      padding-top: 44px;
-      padding-bottom: 28px;
-    }
-    .step-tag {
-      font-size: 10px;
-      letter-spacing: 4px;
-      color: var(--green);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-    .step-q {
-      font-size: 22px;
-      font-weight: 700;
-      line-height: 1.5;
-      color: var(--text);
-      white-space: nowrap;
-    }
-    .step-hint {
-      font-size: 16px;
-      font-weight: 600;
-      color: #D94F4F;
-      margin-top: 10px;
-      min-height: 22px;
-    }
-
-    /* ── Option cards ── */
-    .opts {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-bottom: 16px;
-    }
-    .opt {
-      background: var(--white);
-      border: 1.5px solid #E8EAE8;
-      border-radius: 16px;
-      padding: 18px 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: border-color 0.15s, background 0.15s, transform 0.1s;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    .opt:active { transform: scale(0.985); }
-    .opt.selected {
-      border-color: var(--green);
-      background: var(--green-pale);
-    }
-    .opt-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .opt-label {
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 1.5;
-      color: var(--text);
-    }
-    .opt-tag {
-      font-size: 11px;
-      color: var(--text-soft);
-      letter-spacing: 0.3px;
-    }
-    .opt.selected .opt-tag { color: var(--green-mid); }
-    .opt-dot {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 1.5px solid #CECECE;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-    .opt.selected .opt-dot {
-      background: var(--green);
-      border-color: var(--green);
-    }
-    .opt.selected .opt-dot::after {
-      content: '';
-      display: block;
-      width: 5px;
-      height: 9px;
-      border: 2px solid #fff;
-      border-top: none;
-      border-left: none;
-      transform: rotate(45deg) translate(-1px, -1px);
-    }
-
-    /* ── Bottom actions ── */
-    .bottom {
-      width: 100%;
-      max-width: 580px;
-      padding: 12px 32px 48px;
-    }
-    .btn-main {
-      width: 100%;
-      padding: 18px;
-      background: var(--green);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    .btn-main:active { transform: scale(0.98); opacity: 0.88; }
-    .btn-main:disabled {
-      background: #DCDCDC;
-      color: #ABABAB;
-      cursor: default;
-    }
-    .btn-back {
-      display: block;
-      width: 100%;
-      text-align: center;
-      margin-top: 14px;
-      font-size: 14px;
-      color: var(--text-soft);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px;
-    }
-
-    /* ── 你的選擇 card ── */
-    .your-choice-card {
-      background: var(--green-pale);
-      border: 1.5px solid var(--green-border);
-      border-radius: 20px;
-      padding: 22px 22px;
-      margin-bottom: 12px;
-    }
-    .your-choice-title {
-      font-size: 12px;
-      letter-spacing: 3px;
-      color: var(--green);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-    .choice-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .choice-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .choice-check {
-      color: var(--green);
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    /* ── Result page ── */
-    #screen-result .inner {
-      padding-top: 52px;
-      padding-bottom: 24px;
-    }
-    .res-label {
-      font-size: 10px;
-      letter-spacing: 4px;
-      color: var(--green);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .res-title {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 16px;
-    }
-    .res-card {
-      background: var(--white);
-      border: 1px solid #EAEAEA;
-      border-radius: 20px;
-      padding: 26px 22px;
-      margin-bottom: 12px;
-    }
-    .res-text {
-      font-size: 15px;
-      color: var(--text-mid);
-      line-height: 2;
-    }
-    .res-divider {
-      width: 36px;
-      height: 2px;
-      background: var(--green-border);
-      margin: 28px 0;
-    }
-
-    /* ── Care Steps (保養建議流程) ── */
-    .care-steps {
-      display: flex;
-      flex-direction: column;
-    }
-    .care-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 22px 0;
-      border-bottom: 1px solid var(--green-border);
-    }
-    .care-step:last-child {
-      border-bottom: none;
-      padding-bottom: 4px;
-    }
-    .care-step-num {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--green-mid);
-      font-weight: 600;
-      white-space: nowrap;
-      padding-top: 3px;
-      width: 64px;
-      flex-shrink: 0;
-    }
-    .care-step-body {
-      font-size: 15px;
-      color: var(--text);
-      line-height: 1.75;
-      flex: 1;
-    }
-    /* STEP 2 product highlight */
-    .care-step.is-product .care-step-num {
-      color: var(--green);
-      font-weight: 700;
-    }
-    .care-step.is-product .care-step-body {
-      color: var(--green);
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    /* ── Restart ── */
-    .btn-restart {
-      width: calc(100% - 64px);
-      margin: 8px 32px 48px;
-      padding: 17px;
-      background: transparent;
-      color: var(--green);
-      border: 1.5px solid var(--green-border);
-      border-radius: 50px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .btn-restart:active { background: var(--green-pale); }
-
-    /* ── BA 填資料頁 ── */
-    #screen-ba .inner {
-      padding-top: 52px;
-      padding-bottom: 24px;
-    }
-    .ba-title {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .ba-sub {
-      font-size: 14px;
-      color: var(--text-soft);
-      margin-bottom: 36px;
-    }
-    .form-block {
-      margin-bottom: 24px;
-    }
-    .form-label {
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: var(--green);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      display: block;
-    }
-    .store-row {
-      display: flex;
-      gap: 10px;
-    }
+    .store-row { display:flex; gap:10px; }
     .store-btn {
-      flex: 1;
-      padding: 16px 12px;
-      background: var(--white);
-      border: 1.5px solid #E8EAE8;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s;
-      -webkit-user-select: none;
-      user-select: none;
+      flex:1; padding:12px; border:1.5px solid var(--green-border);
+      border-radius:12px; background:var(--white); color:var(--text-mid);
+      font-size:15px; font-weight:500; font-family:inherit; cursor:pointer;
+      transition:all .15s;
     }
-    .store-btn:active { transform: scale(0.97); }
-    .store-btn.selected {
-      border-color: var(--green);
-      background: var(--green-pale);
-      color: var(--green);
+    .store-btn.sel {
+      background:var(--green-pale); border-color:var(--green);
+      color:var(--green); font-weight:700;
     }
-    .form-input {
-      width: 100%;
-      padding: 15px 18px;
-      background: var(--white);
-      border: 1.5px solid #E8EAE8;
-      border-radius: 14px;
-      font-size: 15px;
-      color: var(--text);
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.15s;
-      -webkit-appearance: none;
+    .gu-input {
+      width:100%; padding:13px 16px; border:1.5px solid var(--green-border);
+      border-radius:12px; font-size:15px; font-family:inherit;
+      color:var(--text); background:var(--white); outline:none;
     }
-    .form-input:focus { border-color: var(--green); }
-    .form-input::placeholder { color: var(--text-soft); }
+    .gu-input:focus { border-color:var(--green); }
+    .gu-btn {
+      width:100%; padding:17px; background:var(--green); color:#fff;
+      border:none; border-radius:50px; font-size:15px; font-weight:600;
+      font-family:inherit; cursor:pointer; margin-top:12px;
+      opacity:.4; pointer-events:none; transition:opacity .2s;
+    }
+    .gu-btn.ready { opacity:1; pointer-events:auto; }
 
-    /* ── Animation ── */
-    .screen.active { animation: fadeUp 0.22s ease; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ══ WELCOME ══ */
+    #screen-welcome {
+      align-items:center; justify-content:center;
+      background:linear-gradient(160deg, #EDEDF4 0%, #E6E6EF 50%, #DCDCE8 100%);
+      padding:40px 32px 56px; gap:0;
+    }
+
+    /* 發光圓圈區塊 */
+    .glow-wrap {
+      display:flex; flex-direction:column; align-items:center;
+      position:relative; width:100%; margin:0;
+    }
+    .w-title {
+      font-size:32px; font-weight:300; letter-spacing:8px;
+      color:#3A3A4A; line-height:1.3; text-align:center;
+      margin-bottom:20px;
+    }
+    .glow-circle {
+      width:300px; height:300px; border-radius:50%;
+      border:1.5px solid rgba(180,180,220,0.55);
+      box-shadow:
+        0 0 24px rgba(160,160,220,0.25),
+        0 0 60px rgba(180,180,240,0.15),
+        inset 0 0 40px rgba(200,200,245,0.1);
+      position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    /* 橫向光線 */
+    .glow-circle::before {
+      content:'';
+      position:absolute;
+      width:340px; height:1.5px;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(180,180,240,0.4) 20%,
+        rgba(230,230,255,0.85) 50%,
+        rgba(180,180,240,0.4) 80%,
+        transparent 100%);
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+    }
+    /* 地面倒影 */
+    .glow-circle::after {
+      content:'';
+      position:absolute;
+      bottom:-36px; left:50%;
+      transform:translateX(-50%);
+      width:65%; height:32px;
+      background:radial-gradient(ellipse at center,
+        rgba(180,180,240,0.28) 0%, transparent 70%);
+    }
+
+    /* 副標（圓圈中間） */
+    .w-sub {
+      font-size:16px; color:#5A5A72; letter-spacing:0.5px;
+      line-height:2; text-align:center;
+      position:absolute; z-index:1;
+      top:50%; left:50%;
+      transform:translate(-50%, -50%);
+      width:88%; white-space:nowrap;
+    }
+
+    /* 按鈕外層 */
+    .w-btn-outer {
+      position:relative; width:100%; max-width:300px;
+      border-radius:50px; padding:2px;
+      background:rgba(190,190,220,0.2);
+      overflow:hidden;
+      margin-top:48px;
+    }
+    /* 旋轉光圈：從中心旋轉，只有邊框2px露出來 */
+    .btn-ring {
+      position:absolute;
+      top:50%; left:50%;
+      width:220%; height:700%;
+      transform:translate(-50%,-50%);
+      background:conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 310deg,
+        rgba(160,155,255,0.7) 330deg,
+        rgba(255,255,255,1)   348deg,
+        rgba(160,155,255,0.7) 360deg
+      );
+      animation:spinRing 1.4s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes spinRing {
+      to { transform:translate(-50%,-50%) rotate(360deg); }
+    }
+    /* 毛玻璃按鈕 */
+    .w-btn {
+      position:relative; z-index:1;
+      width:100%; padding:16px 32px;
+      background:rgba(240,240,248,0.85);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(200,200,230,0.4);
+      border-radius:50px;
+      font-size:15px; font-weight:400;
+      color:#4A4A62; font-family:inherit; cursor:pointer;
+      letter-spacing:2px;
+      display:flex; align-items:center; justify-content:center; gap:12px;
+    }
+
+    /* ══ CHAT HEADER ══ */
+    .chat-header {
+      background:var(--white); border-bottom:1px solid var(--green-border);
+      padding:13px 20px; display:flex; align-items:center; gap:12px;
+      position:sticky; top:0; z-index:10; flex-shrink:0;
+    }
+    .h-av {
+      width:36px; height:36px; background:var(--green); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:11px; font-weight:700; flex-shrink:0;
+    }
+    .h-name { font-size:14px; font-weight:600; }
+    .h-sub  { font-size:11px; color:var(--green); }
+
+    /* ══ CHAT 背景 ══ */
+    #screen-chat {
+      background:
+        linear-gradient(to top, rgba(190,185,240,0.28) 0%, transparent 18%),
+        linear-gradient(160deg, #EDEDF4 0%, #E8E8F0 55%, #DCDCE8 100%);
+      position:relative;
+    }
+    /* 右側大弧線 */
+    #screen-chat::before {
+      content:'';
+      position:fixed; top:6vh; right:-155px;
+      width:360px; height:360px; border-radius:50%;
+      border:1.5px solid rgba(190,185,235,0.38);
+      pointer-events:none; z-index:0;
+    }
+    /* 右側小弧線 */
+    #screen-chat::after {
+      content:'';
+      position:fixed; top:18vh; right:-115px;
+      width:270px; height:270px; border-radius:50%;
+      border:1px solid rgba(190,185,235,0.22);
+      pointer-events:none; z-index:0;
+    }
+
+    /* ══ CHAT AREA ══ */
+    .chat-body {
+      flex:1; padding:20px 20px 120px;
+      max-width:600px; width:100%; margin:0 auto;
+      display:flex; flex-direction:column;
+      position:relative; z-index:1;
+    }
+
+    /* ══ BUBBLES ══ */
+    .msg-row {
+      display:flex; align-items:flex-end; gap:8px; margin-bottom:6px;
+      opacity:0; transform:translateY(8px);
+      animation:fadeUp .3s ease forwards;
+    }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .msg-row.brand { justify-content:flex-start; }
+    .msg-row.user  { justify-content:flex-end; }
+    .bav {
+      width:28px; height:28px; background:var(--green); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:9px; font-weight:700; flex-shrink:0; margin-bottom:2px;
+    }
+    .bubble {
+      max-width:75%; padding:11px 15px; font-size:15px; line-height:1.65;
+    }
+    .brand .bubble {
+      background:var(--white); color:var(--text);
+      border-radius:4px 18px 18px 18px;
+      box-shadow:0 1px 4px rgba(0,0,0,.07);
+    }
+    .user .bubble {
+      background:var(--green); color:#fff;
+      border-radius:18px 18px 4px 18px;
+    }
+
+    /* ══ HINT ══ */
+    .q-hint {
+      padding:2px 0 8px 36px; font-size:13px;
+      color:var(--red); font-weight:600;
+      opacity:0; animation:fadeUp .3s ease .1s forwards;
+    }
+
+    /* ══ OPTIONS ══ */
+    .opts-wrap {
+      padding:4px 0 12px 36px; display:flex; flex-wrap:wrap; gap:8px;
+      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    }
+    .opt-btn {
+      background:var(--white); border:1.5px solid var(--green-border);
+      color:var(--green); font-size:14px; font-weight:500;
+      padding:8px 16px; border-radius:50px; cursor:pointer;
+      font-family:inherit; transition:all .15s;
+    }
+    .opt-btn.sel { background:var(--green); color:#fff; border-color:var(--green); }
+    .opt-btn:active { transform:scale(.95); }
+
+    /* ══ NAME INPUT ══ */
+    .name-wrap {
+      padding:4px 0 12px 36px; display:flex; gap:8px;
+      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    }
+    .name-input {
+      flex:1; padding:10px 16px; border:1.5px solid var(--green-border);
+      border-radius:50px; font-size:15px; font-family:inherit;
+      color:var(--text); background:var(--white); outline:none;
+    }
+    .name-input:focus { border-color:var(--green); }
+    .name-go {
+      padding:10px 20px; background:var(--green); color:#fff;
+      border:none; border-radius:50px; font-size:14px; font-weight:600;
+      font-family:inherit; cursor:pointer;
+    }
+
+    /* ══ SEND BTN ══ */
+    .send-btn {
+      margin:2px 0 8px 36px; padding:10px 24px;
+      background:var(--green); color:#fff; border:none;
+      border-radius:50px; font-size:14px; font-weight:600;
+      font-family:inherit; cursor:pointer;
+      opacity:0; animation:fadeUp .25s ease .3s forwards;
+    }
+
+    /* ══ RESULT CARD ══ */
+    .res-card {
+      background:var(--white); border-radius:20px; padding:24px 20px;
+      margin:8px 0 8px 36px;
+      box-shadow:0 2px 16px rgba(74,124,89,.1);
+      border:1.5px solid var(--green-border);
+      opacity:0; animation:fadeUp .4s ease forwards;
+    }
+    .res-headline {
+      font-size:10px; letter-spacing:3px; color:var(--green);
+      text-transform:uppercase; font-weight:700; margin-bottom:18px;
+    }
+    .choices-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+    .cg-row { display:grid; grid-template-columns:72px 1fr; gap:8px; }
+    .cg-label { font-size:12px; color:var(--text-soft); padding-top:1px; }
+    .cg-val { font-size:14px; color:var(--text); font-weight:500; line-height:1.6; }
+    .steps-divider { height:1px; background:var(--green-border); margin-bottom:18px; }
+    .steps-title {
+      font-size:10px; letter-spacing:2px; color:var(--green);
+      font-weight:700; margin-bottom:14px;
+    }
+    .step-row {
+      display:flex; gap:14px; padding:14px 0;
+      border-bottom:1px solid var(--green-border);
+    }
+    .step-row:last-child { border-bottom:none; padding-bottom:0; }
+    .step-num {
+      font-size:10px; letter-spacing:1px; color:var(--green-mid);
+      font-weight:600; width:52px; flex-shrink:0; padding-top:3px;
+    }
+    .step-content { flex:1; }
+    .step-action { font-size:12px; color:var(--text-soft); margin-bottom:5px; line-height:1.5; }
+    .step-product { font-size:15px; color:var(--text); font-weight:600; line-height:1.5; }
+    .step-row.hero .step-num { color:var(--green); font-weight:700; }
+    .step-row.hero .step-product { color:var(--green); font-size:16px; }
+    .step-row.s04 .step-product { font-size:14px; font-weight:400; color:var(--text-mid); }
+
+    /* ══ 回上一步 ══ */
+    .btn-back-step {
+      display:block; margin:2px 0 6px auto;
+      background:transparent; border:none;
+      color:var(--text-soft); font-size:12px;
+      cursor:pointer; padding:4px 10px;
+      font-family:inherit; letter-spacing:0.5px;
+      opacity:0; animation:fadeUp .2s ease .1s forwards;
+    }
+    .btn-back-step:active { color:var(--text-mid); }
+
+    /* ══ RESTART ══ */
+    .restart-btn {
+      display:block; margin:16px auto 0;
+      padding:12px 32px; background:transparent;
+      border:1.5px solid var(--green-border); border-radius:50px;
+      color:var(--green); font-size:14px; font-family:inherit; cursor:pointer;
+      opacity:0; animation:fadeUp .3s ease .2s forwards;
     }
   </style>
 </head>
 <body>
 
-<!-- ══ WELCOME ══ -->
-<div class="screen" id="screen-welcome">
-  <div class="inner">
-    <div class="brand-tag">Skin Check</div>
-    <div class="welcome-title">今日<br>肌膚狀態</div>
-    <div class="welcome-body">
-      用 30 秒，<br>
-      看看肌膚最近想告訴你什麼。
-    </div>
-  </div>
-  <div class="bottom">
-    <button class="btn-main" onclick="goTo('screen-s1')">開始測試</button>
-  </div>
-</div>
+<!-- ══ GU 頁 ══ -->
+<div id="screen-gu" class="screen active">
+  <div class="gu-inner">
+    <div class="gu-title">開始測試前</div>
+    <div class="gu-sub">請 GU 先完成以下確認</div>
 
-<!-- ══ BA 填資料頁 ══ -->
-<div class="screen active" id="screen-ba">
-  <div class="inner">
-    <div class="ba-title">開始測試前</div>
-    <div class="ba-sub" style="color:#D94F4F;font-weight:700;">請 GU 先完成以下確認</div>
-
-    <div class="form-block">
-      <span class="form-label">門市</span>
+    <div class="gu-block">
+      <span class="gu-label">門市</span>
       <div class="store-row">
         <button class="store-btn" data-store="A11" onclick="pickStore(this)">A11</button>
         <button class="store-btn" data-store="台北SOGO" onclick="pickStore(this)">台北SOGO</button>
       </div>
     </div>
 
-    <div class="form-block">
-      <span class="form-label">GU 姓名</span>
-      <input class="form-input" id="ba-name" type="text" placeholder="請輸入你的名字" oninput="validateBA()">
+    <div class="gu-block">
+      <span class="gu-label">GU 姓名</span>
+      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="checkGU()">
     </div>
 
-    <div class="form-block">
-      <span class="form-label">日期</span>
-      <input class="form-input" id="ba-date" type="date">
+    <div class="gu-block">
+      <span class="gu-label">日期</span>
+      <input class="gu-input" id="gu-date" type="date">
     </div>
-  </div>
-  <div class="bottom">
-    <button class="btn-main" id="ba-next" onclick="goTo('screen-welcome')" disabled>確認，帶客人開始 →</button>
+
+    <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
   </div>
 </div>
 
-<!-- ══ STEP 1 ══ -->
-<div class="screen" id="screen-s1">
-  <div class="progress">
-    <div class="prog-seg done"></div>
-    <div class="prog-seg"></div>
-    <div class="prog-seg"></div>
-  </div>
-  <div class="inner">
-    <div class="step-hd">
-      <div class="step-tag">Step 01</div>
-      <div class="step-q">請選擇現在最在意的肌膚狀況</div>
-      <div class="step-hint">單選</div>
-    </div>
-    <div class="opts" id="s1-opts">
-      <div class="opt" data-v="fatigue" onclick="pickOne(this,'s1')">
-        <div class="opt-body"><span class="opt-label">最近皮膚看起來有點疲憊跟暗沉</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="dryness" onclick="pickOne(this,'s1')">
-        <div class="opt-body"><span class="opt-label">最近臉常常覺得乾乾緊緊的</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="oiliness" onclick="pickOne(this,'s1')">
-        <div class="opt-body"><span class="opt-label">下午開始容易出油，毛孔也變明顯</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="sensitive" onclick="pickOne(this,'s1')">
-        <div class="opt-body"><span class="opt-label">最近皮膚容易敏感泛紅</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="roughness" onclick="pickOne(this,'s1')">
-        <div class="opt-body"><span class="opt-label">臉摸起來粗粗的，不太平滑</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="acne" onclick="pickOne(this,'s1')">
-        <div class="opt-body"><span class="opt-label">痘痘粉刺總是反覆冒出來</span></div>
-        <span class="opt-dot"></span>
-      </div>
+<!-- ══ WELCOME ══ -->
+<div id="screen-welcome" class="screen">
+  <div class="glow-wrap">
+    <div class="w-title">今日肌膚檢測</div>
+    <div class="glow-circle">
+      <div class="w-sub">透過幾個簡單問題，<br>看看最近的肌膚需要什麼保養</div>
     </div>
   </div>
-  <div class="bottom">
-    <button class="btn-main" id="s1-next" onclick="goTo('screen-s2')" disabled>下一步</button>
-    <button class="btn-back" onclick="goTo('screen-welcome')">返回</button>
+
+  <div class="w-btn-outer">
+    <div class="btn-ring"></div>
+    <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
   </div>
 </div>
 
-<!-- ══ STEP 2 ══ -->
-<div class="screen" id="screen-s2">
-  <div class="progress">
-    <div class="prog-seg done"></div>
-    <div class="prog-seg done"></div>
-    <div class="prog-seg"></div>
-  </div>
-  <div class="inner">
-    <div class="step-hd">
-      <div class="step-tag">Step 02</div>
-      <div class="step-q">最近哪種狀況與你比較接近？</div>
-      <div class="step-hint" id="s2-hint">可複選，最多選 2 個</div>
-    </div>
-    <div class="opts" id="s2-opts">
-      <div class="opt" data-v="late_night" onclick="pickMulti(this,'s2',2)">
-        <div class="opt-body"><span class="opt-label">最近熬夜比較多</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="ac_room" onclick="pickMulti(this,'s2',2)">
-        <div class="opt-body"><span class="opt-label">長時間待冷氣房</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="hot_weather" onclick="pickMulti(this,'s2',2)">
-        <div class="opt-body"><span class="opt-label">最近臉容易覺得黏膩不舒服</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="stress" onclick="pickMulti(this,'s2',2)">
-        <div class="opt-body"><span class="opt-label">最近壓力有點大</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="irregular" onclick="pickMulti(this,'s2',2)">
-        <div class="opt-body"><span class="opt-label">最近生活作息比較亂</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="outdoor" onclick="pickMulti(this,'s2',2)">
-        <div class="opt-body"><span class="opt-label">最近常待在戶外</span></div>
-        <span class="opt-dot"></span>
-      </div>
+<!-- ══ CHAT ══ -->
+<div id="screen-chat" class="screen">
+  <div class="chat-header">
+    <div class="h-av">IS</div>
+    <div>
+      <div class="h-name">INNISFREE 肌膚顧問</div>
+      <div class="h-sub">● 線上中</div>
     </div>
   </div>
-  <div class="bottom">
-    <button class="btn-main" id="s2-next" onclick="goTo('screen-s3')" disabled>下一步</button>
-    <button class="btn-back" onclick="goTo('screen-s1')">返回</button>
-  </div>
-</div>
-
-<!-- ══ STEP 3 ══ -->
-<div class="screen" id="screen-s3">
-  <div class="progress">
-    <div class="prog-seg done"></div>
-    <div class="prog-seg done"></div>
-    <div class="prog-seg done"></div>
-  </div>
-  <div class="inner">
-    <div class="step-hd">
-      <div class="step-tag">Step 03</div>
-      <div class="step-q">今天最想改善哪種肌膚問題？</div>
-      <div class="step-hint" id="s3-hint">可複選，最多選 2 個</div>
-    </div>
-    <div class="opts" id="s3-opts">
-      <div class="opt" data-v="energetic" onclick="pickMulti(this,'s3',2)">
-        <div class="opt-body"><span class="opt-label">想讓肌膚看起來比較有精神</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="calm" onclick="pickMulti(this,'s3',2)">
-        <div class="opt-body"><span class="opt-label">想讓肌膚維持穩定不容易鬧脾氣</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="light" onclick="pickMulti(this,'s3',2)">
-        <div class="opt-body"><span class="opt-label">想讓肌膚維持油水平衡</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="bright" onclick="pickMulti(this,'s3',2)">
-        <div class="opt-body"><span class="opt-label">想讓肌膚看起來透亮一點</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="rescue" onclick="pickMulti(this,'s3',2)">
-        <div class="opt-body"><span class="opt-label">想讓肌膚感覺水潤有光澤</span></div>
-        <span class="opt-dot"></span>
-      </div>
-      <div class="opt" data-v="smooth" onclick="pickMulti(this,'s3',2)">
-        <div class="opt-body"><span class="opt-label">想讓肌膚摸起來更細緻</span></div>
-        <span class="opt-dot"></span>
-      </div>
-    </div>
-  </div>
-  <div class="bottom">
-    <button class="btn-main" id="s3-next" onclick="showResult()" disabled>查看今日肌膚狀態 →</button>
-    <button class="btn-back" onclick="goTo('screen-s2')">返回</button>
-  </div>
-</div>
-
-<!-- ══ RESULT ══ -->
-<div class="screen" id="screen-result">
-  <div class="inner">
-    <div id="result-body"></div>
-  </div>
-  <button class="btn-restart" onclick="restart()">重新測試</button>
+  <div class="chat-body" id="chat"></div>
 </div>
 
 <script>
-  // ── Google Sheets 串接網址（設定完成後替換這裡）──
+  const chat = document.getElementById('chat');
+  let step = 0, answers = {}, selectedOpts = [];
+  const guData = { store:'', name:'', date:'' };
+
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
-  // ── State ──
-  const sel = { store: '', ba: '', date: '', s1: null, s2: [], s3: [] };
-
-  // ── 初始化日期為今天 ──
-  window.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('ba-date').value = today;
-  });
-
-  // ── 選項文字對照（用於「你的選擇」顯示）──
-  const labelMap = {
-    // STEP 1
-    fatigue:   '最近皮膚看起來有點疲憊跟暗沉',
-    dryness:   '最近臉常常覺得乾乾緊緊的',
-    oiliness:  '下午開始容易出油，毛孔也變明顯',
-    sensitive: '最近皮膚容易敏感泛紅',
-    roughness: '臉摸起來粗粗的，不太平滑',
-    acne:      '痘痘粉刺總是反覆冒出來',
-    // STEP 2
-    late_night:  '最近熬夜比較多',
-    ac_room:     '長時間待冷氣房',
-    hot_weather: '最近臉容易覺得黏膩不舒服',
-    stress:      '最近壓力有點大',
-    irregular:   '最近生活作息比較亂',
-    outdoor:     '最近常待在戶外',
-    // STEP 3
-    energetic: '想讓肌膚看起來比較有精神',
-    calm:      '想讓肌膚維持穩定不容易鬧脾氣',
-    light:     '想讓肌膚維持油水平衡',
-    bright:    '想讓肌膚看起來透亮一點',
-    rescue:    '想讓肌膚感覺水潤有光澤',
-    smooth:    '想讓肌膚摸起來更細緻'
-  };
-
-  // ── STEP 1 content（肌膚狀態 + 保養建議 ✓ bullets）──
-  const step1Data = {
-    fatigue: {
-      status: '最近肌膚看起來比較容易疲憊、<br>缺乏光澤與精神感。<br><br>肌膚在疲勞狀態下，<br>也容易看起來比較暗沉、沒氣色。',
-      tips: [
-        '先幫肌膚恢復光澤與精神感',
-        '加強肌膚保濕修護',
-        '搭配「提亮光澤型精華」加強保養'
-      ]
-    },
-    dryness: {
-      status: '近期肌膚可能有缺水與乾燥感，<br>容易出現緊繃與不舒服的狀況。',
-      tips: [
-        '先舒緩乾燥與緊繃感',
-        '幫助肌膚鎖住水分與維持保濕感',
-        '搭配「補水保濕型精華」加強補充水分'
-      ]
-    },
-    oiliness: {
-      status: '近期肌膚可能因悶熱與出油，<br>讓毛孔與肌膚狀態看起來比較明顯。',
-      tips: [
-        '先補水並維持油水平衡',
-        '幫助肌膚維持清爽與細緻感',
-        '搭配「角質調理安瓶／精華」加強保養'
-      ]
-    },
-    sensitive: {
-      status: '近期肌膚狀態可能比較敏感，<br>容易出現乾癢、泛紅與不舒服的感覺。<br><br>當肌膚狀態不穩定時，<br>也可能更容易受到外在環境影響。',
-      tips: [
-        '先降低肌膚不適感',
-        '減少肌膚水分流失與乾燥感',
-        '搭配「舒緩修護型商品」加強舒緩'
-      ]
-    },
-    roughness: {
-      status: '近期肌膚摸起來可能比較粗糙，<br>整體膚觸也較不細緻平滑。',
-      tips: [
-        '先加強肌膚柔嫩與平滑感保養',
-        '搭配週期性角質與毛孔清潔保養',
-        '建議搭配「角質代謝型精華」加強保養'
-      ]
-    },
-    acne: {
-      status: '近期肌膚可能較容易出現粉刺與痘痘反覆狀況，<br>整體膚況也比較不穩定。',
-      tips: [
-        '先調理老廢角質',
-        '使用A醇修護霜終結痘痘循環',
-        '搭配「粉刺痘痘調理安瓶」加強保養'
-      ]
-    }
-  };
-
-  // ── STEP 2 content（加入今日肌膚狀態）──
-  const step2Text = {
-    late_night:  '可能和近期作息不穩與睡眠不足有關。',
-    ac_room:     '長時間待在乾燥環境，也可能讓肌膚更容易流失水分。',
-    hot_weather: '高溫與悶熱環境，可能讓肌膚更容易出油與不穩定。',
-    stress:      '壓力與疲勞狀態，也可能影響肌膚穩定度。',
-    irregular:   '不規律的生活習慣，也可能讓肌膚狀態看起來比較疲憊。',
-    outdoor:     '長時間接觸外在環境，也可能讓肌膚更容易乾燥與粗糙。'
-  };
-
-  // ── STEP 3 content（加入今日保養建議）──
-  const step3Text = {
-    energetic: '建議先加強肌膚水分感與氣色感，讓整體狀態看起來更有精神。',
-    calm:      '建議先降低肌膚負擔，讓肌膚回到比較舒服穩定的狀態。',
-    light:     '保養可偏向輕盈、清爽型的補水方式，避免增加肌膚悶黏感。',
-    bright:    '可加強肌膚透亮與光澤感保養，讓肌膚看起來更明亮細緻。',
-    rescue:    '可優先加強立即補水與舒緩，先改善當下的不適與疲憊感。',
-    smooth:    '建議加強保濕與柔嫩感保養，讓膚觸摸起來更細緻平滑。'
-  };
-
-  // ── 選門市 ──
-  function pickStore(btn) {
-    document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    sel.store = btn.dataset.store;
-    validateBA();
-  }
-
-  // ── 驗證 BA 資料是否填完 ──
-  function validateBA() {
-    const name = document.getElementById('ba-name').value.trim();
-    document.getElementById('ba-next').disabled = !(sel.store && name);
-  }
-
-  // ── 送資料到 Google Sheets ──
-  function logToSheet() {
-    sel.ba   = document.getElementById('ba-name').value.trim();
-    sel.date = document.getElementById('ba-date').value;
-    const params = new URLSearchParams({
-      store: sel.store,
-      ba:    sel.ba,
-      date:  sel.date,
-      step1: labelMap[sel.s1] || sel.s1 || '',
-      step2: sel.s2.map(v => labelMap[v]).join('、'),
-      step3: sel.s3.map(v => labelMap[v]).join('、')
+  function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
+    var allConcerns = mainConcern + (s1arr.length ? '、' + s1arr.join('、') : '');
+    var params = new URLSearchParams({
+      store:  guData.store,
+      ba:     guData.name,
+      date:   guData.date,
+      step1:  (answers.skin_type || '') + '｜' + allConcerns,
+      step2:  s2arr.join('、'),
+      step3:  s3arr.join('、'),
+      makeup: answers.makeup || '',
+      source: 'chat'
     });
-    fetch(SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' })
-      .catch(() => {}); // 靜默失敗，不影響前端體驗
+    fetch(SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' }).catch(function(){});
   }
 
-  // ── Navigation ──
-  function goTo(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  // 自動填今天日期
+  document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+
+  function pickStore(btn){
+    document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+    btn.classList.add('sel');
+    guData.store = btn.dataset.store;
+    checkGU();
+  }
+  function checkGU(){
+    guData.name = document.getElementById('gu-name').value.trim();
+    const ready = guData.store && guData.name;
+    document.getElementById('gu-next').classList.toggle('ready', !!ready);
+  }
+
+  const questions = [
+    { key:'name', type:'name',
+      q:'請問該怎麼稱呼你呢？' },
+    { key:'skin_type', multi:0,
+      q:'{name}，你平常比較接近哪種膚質呢？',
+      opts:['油性肌','混合肌','乾性肌','敏感肌'] },
+    { key:'main', multi:0,
+      q:'最近最困擾你的肌膚問題是？\n※ 請選一個最想優先改善的',
+      opts:['疲憊暗沉','乾燥缺水','出油毛孔','敏感泛紅','粗糙不平滑','痘痘粉刺'] },
+    { key:'s1', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'除了剛剛的問題之外，還有其他困擾嗎？',
+      opts:['疲憊暗沉','乾燥缺水','出油毛孔','敏感泛紅','粗糙不平滑','痘痘粉刺'] },
+    { key:'s2', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'最近的生活狀態，哪幾個跟你比較接近呢？',
+      opts:['最近熬夜比較多','長時間待在冷氣房','最近臉容易覺得黏膩不舒服','最近壓力有點大','最近生活作息比較亂','最近常待在戶外'] },
+    { key:'s3', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'今天最希望肌膚變成什麼狀態呢？',
+      opts:['想讓肌膚看起來比較有精神','想讓肌膚看起來透亮一點','想讓肌膚感覺水潤有光澤','想讓肌膚維持油水平衡','想讓肌膚維持穩定不容易鬧脾氣','想改善痘痘粉刺問題','想讓肌膚摸起來更細緻','想讓肌膚看起來更緊緻有彈力','想讓毛孔看起來更緊緻'] },
+    { key:'makeup', multi:0,
+      q:'平常出門有化妝習慣嗎？',
+      opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
+  ];
+
+  // ── STEP 01：敏感泛紅特殊規則，先穩定膚況 ──
+  const sensitiveFirst = {
+    action:'穩定膚況保養',
+    product:'綠茶神經醯胺牛奶水精華'
+  };
+
+  // ── STEP 02：依肌膚困擾決定核心精華 ──
+  const step02Data = {
+    '疲憊暗沉':  { action:'提亮氣色，對抗暗沉疲憊',       product:'維他命C淨亮精華' },
+    '乾燥缺水':  { action:'深層補水，持續維持保濕感',     product:'綠茶籽玻尿酸保濕精華' },
+    '出油毛孔':  { action:'調理膚況，優化毛孔與油脂',     product:'A醇淨膚超修護安瓶' },
+    '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感',     product:'綠茶神經醯胺牛奶水精華' },
+    '粗糙不平滑':{ action:'調理粗糙膚觸，改善細緻感',     product:'A醇淨膚超修護安瓶' },
+    '痘痘粉刺':  { action:'調理粉刺痘痘反覆狀況',         product:'A醇淨膚超修護安瓶' }
+  };
+
+  // ── Q5 目標 → 對應商品（用來判斷是否顯示 STEP 03）──
+  const q5ProductMap = {
+    '想讓肌膚看起來比較有精神':    '維他命C淨亮精華',
+    '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
+    '想讓肌膚感覺水潤有光澤':      '綠茶籽玻尿酸保濕精華',
+    '想讓肌膚維持油水平衡':        'A醇淨膚超修護安瓶',
+    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶神經醯胺牛奶水精華',
+    '想改善痘痘粉刺問題':          'A醇淨膚超修護安瓶',
+    '想讓肌膚摸起來更細緻':        'A醇淨膚超修護安瓶',
+    '想讓肌膚看起來更緊緻有彈力':  '1%A醇PDRN水光安瓶',
+    '想讓毛孔看起來更緊緻':        '1%A醇PDRN水光安瓶'
+  };
+
+  // ── STEP 03 商品的 action text ──
+  const step03Actions = {
+    '維他命C淨亮精華':      '加強提亮，改善氣色暗沉',
+    '綠茶籽玻尿酸保濕精華': '加強補水，維持水潤光澤',
+    'A醇淨膚超修護安瓶':    '加強調理，改善細緻感',
+    '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
+  };
+
+  // ── STEP 04：依生活狀態給保養加強建議，不直接推薦商品 ──
+  const lifestyleAdvisory = {
+    '最近熬夜比較多': '建議加強夜間修護保養',
+    '長時間待在冷氣房': '建議加強補水與保濕保養',
+    '最近臉容易覺得黏膩不舒服': '建議加強油水平衡保養',
+    '最近壓力有點大': '建議加強穩定膚況保養',
+    '最近生活作息比較亂': '建議加強穩定膚況保養',
+    '最近常待在戶外': '建議加強防曬與曬後保養'
+  };
+
+  function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+  function scrollDown(){ setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),60); }
+
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    window.scrollTo(0, 0);
+    window.scrollTo(0,0);
   }
 
-  // ── Single select ──
-  function pickOne(card, group) {
-    document.querySelectorAll('#' + group + '-opts .opt').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    sel[group] = card.dataset.v;
-    document.getElementById(group + '-next').disabled = false;
+  function startChat(){
+    goTo('screen-chat');
+    setTimeout(nextStep, 300);
   }
 
-  // ── Multi select ──
-  function pickMulti(card, group, max) {
-    const on = card.classList.contains('selected');
-    if (on) {
-      card.classList.remove('selected');
-      sel[group] = sel[group].filter(v => v !== card.dataset.v);
+  function addMsg(text, type){
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + type;
+    if(type==='brand'){
+      row.dataset.questionStep = step; // 標記這是第幾題的問題
+      row.innerHTML = '<div class="bav">IS</div><div class="bubble">' + text.replace(/\n/g,'<br>') + '</div>';
     } else {
-      if (sel[group].length >= max) return;
-      card.classList.add('selected');
-      sel[group].push(card.dataset.v);
+      row.innerHTML = '<div class="bubble">' + text + '</div>';
     }
-    const n = sel[group].length;
-    const hint = document.getElementById(group + '-hint');
-    if (n === 0)       hint.textContent = '可複選，最多選 ' + max + ' 個';
-    else if (n >= max) hint.textContent = '已選 ' + n + ' 個（已達上限）';
-    else               hint.textContent = '可複選，最多選 ' + max + ' 個（已選 ' + n + ' 個）';
-    document.getElementById(group + '-next').disabled = (n === 0);
+    chat.appendChild(row);
+    scrollDown();
   }
 
-  // ── Build result ──
-  function showResult() {
-    const d = step1Data[sel.s1];
+  function addBackButton(){
+    const targetStep = step; // 記住這個按鈕對應的步驟
+    const btn = document.createElement('button');
+    btn.className = 'btn-back-step';
+    btn.textContent = '↩ 重新選擇';
+    btn.onclick = function(){ handleGoBack(targetStep); };
+    chat.appendChild(btn);
+    scrollDown();
+  }
 
-    // ① 你的選擇
-    const allChoices = [sel.s1, ...sel.s2, ...sel.s3].filter(Boolean);
-    const choiceItems = allChoices.map(v =>
-      `<div class="choice-item">
-        <span class="choice-check">✓</span>
-        <span>${labelMap[v] || v}</span>
-      </div>`
-    ).join('');
+  function handleGoBack(targetStep){
+    // 找到這一題對應的品牌訊息泡泡
+    const brandMsg = chat.querySelector('[data-question-step="' + targetStep + '"]');
+    if(!brandMsg) return;
 
-    // ② 今日肌膚狀態：STEP 1 + STEP 2
-    const s2parts = sel.s2.map(v => step2Text[v]).filter(Boolean);
-    let statusHtml = d.status;
-    if (s2parts.length > 0) {
-      statusHtml += '<br><br>' + s2parts.join('<br>');
+    // 清除從這題開始所有後續的答案
+    for(var i = targetStep; i < questions.length; i++){
+      if(questions[i]) delete answers[questions[i].key];
     }
+    selectedOpts = [];
 
-    // ③ 今日保養建議：STEP 01 / 02(精華highlight) / 03 流程
-    const orderedTips = [
-      { text: d.tips[0], highlight: false },
-      { text: d.tips[2], highlight: true  },
-      { text: d.tips[1], highlight: false }
-    ];
-    const tipSteps = orderedTips.map((item, i) => {
-      const stepNum = `STEP 0${i + 1}`;
-      if (item.highlight) {
-        return `<div class="care-step is-product">
-          <div class="care-step-num">${stepNum}</div>
-          <div class="care-step-body">${item.text}</div>
-        </div>`;
+    // 移除這題訊息到最後所有 DOM 元素
+    while(brandMsg.nextSibling){ chat.removeChild(brandMsg.nextSibling); }
+    chat.removeChild(brandMsg);
+
+    // 退回這一步重問
+    step = targetStep;
+    setTimeout(nextStep, 200);
+  }
+
+  function addNameInput(){
+    const wrap = document.createElement('div');
+    wrap.className = 'name-wrap';
+    const inp = document.createElement('input');
+    inp.className = 'name-input'; inp.type = 'text';
+    inp.placeholder = '請輸入你的名字'; inp.maxLength = 10;
+    const btn = document.createElement('button');
+    btn.className = 'name-go'; btn.textContent = '送出';
+    const submit = function(){
+      const v = inp.value.trim() || '你';
+      wrap.remove(); answers.name = v;
+      addMsg(v, 'user'); step++;
+      setTimeout(nextStep, 500);
+    };
+    btn.onclick = submit;
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+    wrap.appendChild(inp); wrap.appendChild(btn);
+    chat.appendChild(wrap);
+    setTimeout(function(){ inp.focus(); }, 400);
+    scrollDown();
+  }
+
+  function addOptions(q){
+    if(q.hint){
+      const h = document.createElement('div');
+      h.className = 'q-hint'; h.textContent = q.hint;
+      chat.appendChild(h);
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'opts-wrap'; selectedOpts = [];
+    var sendBtn = null;
+    q.opts.forEach(function(opt){
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn'; btn.textContent = opt;
+      btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
+      wrap.appendChild(btn);
+    });
+    chat.appendChild(wrap);
+    if(q.multi > 1){
+      sendBtn = document.createElement('button');
+      sendBtn.className = 'send-btn'; sendBtn.textContent = '確認送出 →';
+      sendBtn.onclick = function(){ submitMulti(wrap, sendBtn); };
+      chat.appendChild(sendBtn);
+    }
+    scrollDown();
+  }
+
+  function handleSel(btn, opt, multi, wrap, sendBtn){
+    if(multi <= 1){
+      wrap.remove();
+      answers[questions[step].key] = opt;
+      addMsg(opt, 'user');
+      addBackButton();
+      step++;
+      setTimeout(nextStep, 600);
+    } else {
+      if(btn.classList.contains('sel')){
+        btn.classList.remove('sel');
+        selectedOpts = selectedOpts.filter(function(o){ return o !== opt; });
+      } else {
+        if(selectedOpts.length >= multi) return;
+        btn.classList.add('sel'); selectedOpts.push(opt);
       }
-      return `<div class="care-step">
-        <div class="care-step-num">${stepNum}</div>
-        <div class="care-step-body">${item.text}</div>
-      </div>`;
-    }).join('');
-
-    document.getElementById('result-body').innerHTML = `
-      <div class="your-choice-card">
-        <div class="your-choice-title">你的選擇</div>
-        <div class="choice-list">${choiceItems}</div>
-      </div>
-
-      <div class="res-divider"></div>
-
-      <div class="res-title">今日保養建議</div>
-      <div class="care-steps">
-        ${tipSteps}
-      </div>
-    `;
-
-    logToSheet(); // 送資料到 Google Sheets
-    goTo('screen-result');
+      if(selectedOpts.length === multi) setTimeout(function(){ submitMulti(wrap, sendBtn); }, 300);
+    }
   }
 
-  // ── Restart ──
-  function restart() {
-    sel.store = ''; sel.ba = ''; sel.date = '';
-    sel.s1 = null; sel.s2 = []; sel.s3 = [];
-    document.querySelectorAll('.opt').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('ba-name').value = '';
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('ba-date').value = today;
-    ['s1-next','s2-next','s3-next'].forEach(id => document.getElementById(id).disabled = true);
-    document.getElementById('ba-next').disabled = true;
-    document.getElementById('s2-hint').textContent = '可複選，最多選 2 個';
-    document.getElementById('s3-hint').textContent = '可複選，最多選 2 個';
-    goTo('screen-ba');
+  function submitMulti(wrap, sendBtn){
+    if(selectedOpts.length === 0) return;
+    wrap.remove(); if(sendBtn) sendBtn.remove();
+    answers[questions[step].key] = selectedOpts.slice();
+    addMsg(selectedOpts.join('、'), 'user');
+    addBackButton();
+    step++;
+    setTimeout(nextStep, 600);
+  }
+
+  async function nextStep(){
+    if(step < questions.length){
+      const q = questions[step];
+      const txt = q.q.replace('{name}', answers.name || '你');
+      addMsg(txt, 'brand');
+      await delay(360);
+      if(q.type === 'name') addNameInput();
+      else addOptions(q);
+    } else {
+      await delay(400);
+      showResult();
+    }
+  }
+
+  function makeStepRow(num, action, product, extraClass) {
+    return '<div class="step-row ' + (extraClass||'') + '">' +
+      '<div class="step-num">STEP 0' + num + '</div>' +
+      '<div class="step-content">' +
+        '<div class="step-action">' + action + '</div>' +
+        '<div class="step-product">→ ' + product + '</div>' +
+      '</div></div>';
+  }
+
+  function makeAdviceRow(num, adviceText) {
+    return '<div class="step-row s04">' +
+      '<div class="step-num">STEP 0' + num + '</div>' +
+      '<div class="step-content">' +
+        '<div class="step-action">保養加強建議</div>' +
+        '<div class="step-product">' + adviceText + '</div>' +
+      '</div></div>';
+  }
+
+  function showResult(){
+    const name        = answers.name || '你';
+    const mainConcern = answers.main || '';
+    const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
+    const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
+    const s3arr       = Array.isArray(answers.s3) ? answers.s3 : (answers.s3 ? [answers.s3] : []);
+    const makeup      = answers.makeup || '—';
+    const stype       = answers.skin_type || '—';
+
+    // ── 顧問邏輯：穩定膚況 → 核心精華 → 第二支精華 → 生活建議 ──
+    var stepNum = 1;
+    var stepsHtml = '';
+    var seenProducts = new Set();
+    var concernList = [mainConcern].concat(s1arr).filter(Boolean);
+
+    if (concernList.indexOf('敏感泛紅') >= 0) {
+      stepsHtml += makeStepRow(stepNum++, sensitiveFirst.action, sensitiveFirst.product, 'hero');
+      seenProducts.add(sensitiveFirst.product);
+    }
+
+    for (var ci = 0; ci < concernList.length; ci++) {
+      var data = step02Data[concernList[ci]];
+      if (data && !seenProducts.has(data.product)) {
+        stepsHtml += makeStepRow(stepNum++, data.action, data.product, 'hero');
+        seenProducts.add(data.product);
+        break;
+      }
+    }
+
+    for (var i = 0; i < s3arr.length; i++) {
+      var p = q5ProductMap[s3arr[i]];
+      if (p && !seenProducts.has(p)) {
+        stepsHtml += makeStepRow(stepNum++, step03Actions[p] || '加強今日保養目標', p, 'hero');
+        seenProducts.add(p);
+        break;
+      }
+    }
+
+    var adviceList = s2arr.map(function(v){ return lifestyleAdvisory[v]; }).filter(Boolean);
+    if (adviceList.length > 0) {
+      stepsHtml += makeAdviceRow(stepNum++, adviceList.join('<br>'));
+    }
+
+    addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
+    logToSheet(mainConcern, s1arr, s2arr, s3arr);
+
+    // 「你的選擇」顯示：主困擾 + 次要困擾
+    var concernVal = '✓ ' + mainConcern;
+    if (s1arr.length > 0) { concernVal += '<br>' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>'); }
+
+    setTimeout(function(){
+      const card = document.createElement('div');
+      card.className = 'res-card';
+      card.innerHTML =
+        '<div class="res-headline">今日肌膚關鍵字</div>' +
+        '<div class="choices-grid">' +
+          '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
+        '</div>' +
+        '<div class="steps-divider"></div>' +
+        '<div class="steps-title">今日保養建議</div>' +
+        stepsHtml;
+
+      chat.appendChild(card);
+      scrollDown();
+
+      setTimeout(function(){
+        const btn = document.createElement('button');
+        btn.className = 'restart-btn'; btn.textContent = '再測一次';
+        btn.onclick = function(){
+          chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
+          document.getElementById('gu-name').value = '';
+          document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+          guData.store = ''; guData.name = '';
+          document.getElementById('gu-next').classList.remove('ready');
+          document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+          goTo('screen-gu');
+        };
+        chat.appendChild(btn);
+        scrollDown();
+      }, 400);
+    }, 700);
   }
 </script>
 </body>
