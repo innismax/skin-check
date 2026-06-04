@@ -476,11 +476,6 @@
     </div>
 
     <div class="form-block">
-      <span class="form-label">顧客名字</span>
-      <input class="form-input" id="customer-name" type="text" placeholder="請輸入顧客名字" oninput="validateBA()">
-    </div>
-
-    <div class="form-block">
       <span class="form-label">日期</span>
       <input class="form-input" id="ba-date" type="date">
     </div>
@@ -641,7 +636,7 @@
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
   // ── State ──
-  const sel = { store: '', ba: '', customer: '', date: '', s1: null, s2: [], s3: [] };
+  const sel = { store: '', ba: '', date: '', s1: null, s2: [], s3: [] };
 
   // ── 初始化日期為今天 ──
   window.addEventListener('DOMContentLoaded', () => {
@@ -757,20 +752,17 @@
   // ── 驗證 BA 資料是否填完 ──
   function validateBA() {
     const name = document.getElementById('ba-name').value.trim();
-    const customer = document.getElementById('customer-name').value.trim();
-    document.getElementById('ba-next').disabled = !(sel.store && name && customer);
+    document.getElementById('ba-next').disabled = !(sel.store && name);
   }
 
   // ── 送資料到 Google Sheets ──
   function logToSheet() {
     sel.ba   = document.getElementById('ba-name').value.trim();
-    sel.customer = document.getElementById('customer-name').value.trim();
     sel.date = document.getElementById('ba-date').value;
     const params = new URLSearchParams({
       store: sel.store,
       ba:    sel.ba,
       gu:    sel.ba,
-      customer_name: sel.customer,
       date:  sel.date,
       step1: labelMap[sel.s1] || sel.s1 || '',
       step2: sel.s2.map(v => labelMap[v]).join('、'),
@@ -874,12 +866,11 @@
 
   // ── Restart ──
   function restart() {
-    sel.store = ''; sel.ba = ''; sel.customer = ''; sel.date = '';
+    sel.store = ''; sel.ba = ''; sel.date = '';
     sel.s1 = null; sel.s2 = []; sel.s3 = [];
     document.querySelectorAll('.opt').forEach(c => c.classList.remove('selected'));
     document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('ba-name').value = '';
-    document.getElementById('customer-name').value = '';
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('ba-date').value = today;
     ['s1-next','s2-next','s3-next'].forEach(id => document.getElementById(id).disabled = true);
