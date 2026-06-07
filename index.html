@@ -517,14 +517,12 @@
     '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
   };
 
-  // ── STEP 04：依生活狀態給保養加強建議，不直接推薦商品 ──
-  const lifestyleAdvisory = {
-    '最近熬夜比較多': '建議加強夜間修護保養',
-    '長時間待在冷氣房': '建議加強補水與保濕保養',
-    '最近臉容易覺得黏膩不舒服': '建議加強油水平衡保養',
-    '最近壓力有點大': '建議加強穩定膚況保養',
-    '最近生活作息比較亂': '建議加強穩定膚況保養',
-    '最近常待在戶外': '建議加強防曬與曬後保養'
+  // ── STEP 04：依 Q2 膚質顯示夜間保養建議 ──
+  const nightCareAdvice = {
+    '油性肌': '建議搭配乳液',
+    '混合肌': '可依膚況選擇乳液或面霜',
+    '乾性肌': '建議搭配潤澤面霜',
+    '敏感肌': '建議搭配舒緩面霜'
   };
 
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -685,12 +683,12 @@
       '</div></div>';
   }
 
-  function makeAdviceRow(num, adviceText) {
+  function makeAdviceRow(nightAdvice) {
     return '<div class="step-row s04">' +
-      '<div class="step-num">STEP 0' + num + '</div>' +
+      '<div class="step-num">STEP 04</div>' +
       '<div class="step-content">' +
-        '<div class="step-action">保養加強建議</div>' +
-        '<div class="step-product">' + adviceText + '</div>' +
+        '<div class="step-action">日夜保養建議</div>' +
+        '<div class="step-product">☀️ 白天保養<br>建議搭配防曬保護，幫助維持保養效果。<br>→ 維他命C亮白潤色防曬霜（潤色）<br>→ 綠茶玻尿酸保濕防曬精華（無潤色）<br><br>🌙 夜間保養<br>→ ' + nightAdvice + '</div>' +
       '</div></div>';
   }
 
@@ -723,10 +721,7 @@
       stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, 'hero');
     }
 
-    var adviceList = s2arr.map(function(v){ return lifestyleAdvisory[v]; }).filter(Boolean);
-    if (adviceList.length > 0) {
-      stepsHtml += makeAdviceRow(stepNum++, adviceList.join('<br>'));
-    }
+    stepsHtml += makeAdviceRow(nightCareAdvice[stype] || '可依膚況選擇乳液或面霜');
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
