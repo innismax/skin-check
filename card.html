@@ -492,7 +492,7 @@
     '疲憊暗沉':  { action:'提亮氣色，對抗暗沉疲憊',       product:'維他命C淨亮精華' },
     '乾燥缺水':  { action:'深層補水，持續維持保濕感',     product:'綠茶籽玻尿酸保濕精華' },
     '出油毛孔':  { action:'調理膚況，優化毛孔與油脂',     product:'A醇淨膚超修護安瓶' },
-    '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感',     product:'綠茶神經醯胺牛奶水精華' },
+    '敏感泛紅':  { action:'補水舒緩，強化肌膚穩定度',     product:'綠茶籽玻尿酸保濕精華' },
     '粗糙不平滑':{ action:'調理粗糙膚觸，改善細緻感',     product:'A醇淨膚超修護安瓶' },
     '痘痘粉刺':  { action:'調理粉刺痘痘反覆狀況',         product:'A醇淨膚超修護安瓶' }
   };
@@ -503,7 +503,7 @@
     '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
     '想讓肌膚感覺水潤有光澤':      '綠茶籽玻尿酸保濕精華',
     '想讓肌膚維持油水平衡':        'A醇淨膚超修護安瓶',
-    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶神經醯胺牛奶水精華',
+    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶籽玻尿酸保濕精華',
     '想改善痘痘粉刺問題':          'A醇淨膚超修護安瓶',
     '想讓肌膚摸起來更細緻':        'A醇淨膚超修護安瓶',
     '想讓肌膚看起來更緊緻有彈力':  '1%A醇PDRN水光安瓶',
@@ -721,13 +721,27 @@
       seenProducts.add(s02.product);
     }
 
+    // STEP03：依希望改善狀態優先，再參考其他困擾；只顯示與 STEP02 不同的精華／安瓶
+    var s03 = null;
     for (var i = 0; i < s3arr.length; i++) {
       var p = q5ProductMap[s3arr[i]];
       if (p && !seenProducts.has(p)) {
-        stepsHtml += makeStepRow(stepNum++, step03Actions[p] || '加強今日保養目標', p, 'hero');
-        seenProducts.add(p);
+        s03 = { action: step03Actions[p] || '加強今日保養目標', product: p };
         break;
       }
+    }
+    if (!s03) {
+      for (var j = 0; j < s1arr.length; j++) {
+        var concernData = step02Data[s1arr[j]];
+        if (concernData && !seenProducts.has(concernData.product)) {
+          s03 = concernData;
+          break;
+        }
+      }
+    }
+    if (s03) {
+      stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, 'hero');
+      seenProducts.add(s03.product);
     }
 
     var adviceList = s2arr.map(function(v){ return lifestyleAdvisory[v]; }).filter(Boolean);
