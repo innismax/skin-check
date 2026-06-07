@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>innisfree Skin Consultation</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    :root {
+      --green:#4A7C59; --green-mid:#6B9E7A; --green-pale:#EEF4EF;
+      --green-border:#D3E4D8; --bg:#F2F4F0; --white:#fff;
+      --text:#1C1C1E; --text-mid:#6B7280; --text-soft:#9CA3AF;
+      --red:#D94F4F;
+    }
+    html,body { min-height:100%; background:var(--bg);
+      font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;
+      color:var(--text); -webkit-font-smoothing:antialiased; }
+
+    /* ══ SCREENS ══ */
+    .screen { display:none; min-height:100vh; }
+    .screen.active { display:flex; flex-direction:column; }
+
+    /* ══ GU 頁 ══ */
+    #screen-gu {
+      align-items:center; justify-content:center;
+      background:var(--white); padding:48px 32px;
+    }
+    .gu-inner { max-width:440px; width:100%; }
+    .gu-title {
+      font-size:24px; font-weight:700; color:var(--text);
+      margin-bottom:6px;
+    }
+    .gu-sub {
+      font-size:14px; color:var(--red); font-weight:700;
+      margin-bottom:36px;
+    }
+    .gu-block { margin-bottom:24px; }
+    .gu-label {
+      font-size:12px; color:var(--text-soft); letter-spacing:1px;
+      margin-bottom:8px; display:block;
+    }
+    .store-row { display:flex; gap:10px; }
+    .store-btn {
+      flex:1; padding:12px; border:1.5px solid var(--green-border);
+      border-radius:12px; background:var(--white); color:var(--text-mid);
+      font-size:15px; font-weight:500; font-family:inherit; cursor:pointer;
+      transition:all .15s;
+    }
+    .store-btn.sel {
+      background:var(--green-pale); border-color:var(--green);
+      color:var(--green); font-weight:700;
+    }
+    .gu-input {
+      width:100%; padding:13px 16px; border:1.5px solid var(--green-border);
+      border-radius:12px; font-size:15px; font-family:inherit;
+      color:var(--text); background:var(--white); outline:none;
+    }
+    .gu-input:focus { border-color:var(--green); }
+    .gu-btn {
+      width:100%; padding:17px; background:var(--green); color:#fff;
+      border:none; border-radius:50px; font-size:15px; font-weight:600;
+      font-family:inherit; cursor:pointer; margin-top:12px;
+      opacity:.4; pointer-events:none; transition:opacity .2s;
+    }
+    .gu-btn.ready { opacity:1; pointer-events:auto; }
+
+    /* ══ WELCOME ══ */
+    #screen-welcome {
+      align-items:center; justify-content:center;
+      background:linear-gradient(160deg, #EDEDF4 0%, #E6E6EF 50%, #DCDCE8 100%);
+      padding:40px 32px 56px; gap:0;
+    }
+
+    /* 發光圓圈區塊 */
+    .glow-wrap {
+      display:flex; flex-direction:column; align-items:center;
+      position:relative; width:100%; margin:0;
+    }
+    .w-title {
+      font-size:27px; font-weight:300; letter-spacing:3px;
+      color:#3A3A4A; line-height:1.3; text-align:center;
+      margin-bottom:20px;
+    }
+    .glow-circle {
+      width:300px; height:300px; border-radius:50%;
+      border:1.5px solid rgba(180,180,220,0.55);
+      box-shadow:
+        0 0 24px rgba(160,160,220,0.25),
+        0 0 60px rgba(180,180,240,0.15),
+        inset 0 0 40px rgba(200,200,245,0.1);
+      position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    /* 橫向光線 */
+    .glow-circle::before {
+      content:'';
+      position:absolute;
+      width:340px; height:1.5px;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(180,180,240,0.4) 20%,
+        rgba(230,230,255,0.85) 50%,
+        rgba(180,180,240,0.4) 80%,
+        transparent 100%);
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+    }
+    /* 地面倒影 */
+    .glow-circle::after {
+      content:'';
+      position:absolute;
+      bottom:-36px; left:50%;
+      transform:translateX(-50%);
+      width:65%; height:32px;
+      background:radial-gradient(ellipse at center,
+        rgba(180,180,240,0.28) 0%, transparent 70%);
+    }
+
+    /* 副標（圓圈中間） */
+    .w-sub {
+      font-size:16px; color:#5A5A72; letter-spacing:0.5px;
+      line-height:2; text-align:center;
+      position:absolute; z-index:1;
+      top:50%; left:50%;
+      transform:translate(-50%, -50%);
+      width:88%; white-space:nowrap;
+    }
+
+    /* 按鈕外層 */
+    .w-btn-outer {
+      position:relative; width:100%; max-width:300px;
+      border-radius:50px; padding:2px;
+      background:rgba(190,190,220,0.2);
+      overflow:hidden;
+      margin-top:48px;
+    }
+    /* 旋轉光圈：從中心旋轉，只有邊框2px露出來 */
+    .btn-ring {
+      position:absolute;
+      top:50%; left:50%;
+      width:220%; height:700%;
+      transform:translate(-50%,-50%);
+      background:conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 310deg,
+        rgba(160,155,255,0.7) 330deg,
+        rgba(255,255,255,1)   348deg,
+        rgba(160,155,255,0.7) 360deg
+      );
+      animation:spinRing 1.4s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes spinRing {
+      to { transform:translate(-50%,-50%) rotate(360deg); }
+    }
+    /* 毛玻璃按鈕 */
+    .w-btn {
+      position:relative; z-index:1;
+      width:100%; padding:16px 32px;
+      background:rgba(240,240,248,0.85);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(200,200,230,0.4);
+      border-radius:50px;
+      font-size:15px; font-weight:400;
+      color:#4A4A62; font-family:inherit; cursor:pointer;
+      letter-spacing:2px;
+      display:flex; align-items:center; justify-content:center; gap:12px;
+    }
+
+    /* ══ CHAT HEADER ══ */
+    .chat-header {
+      background:var(--white); border-bottom:1px solid var(--green-border);
+      padding:13px 20px; display:flex; align-items:center; gap:12px;
+      position:sticky; top:0; z-index:10; flex-shrink:0;
+    }
+    .h-av {
+      width:36px; height:36px; background:var(--green); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:18px; font-weight:700; flex-shrink:0;
+    }
+    .h-name { font-size:14px; font-weight:600; }
+    .h-sub  { font-size:11px; color:var(--green); }
+
+    /* ══ CHAT 背景 ══ */
+    #screen-chat {
+      background:
+        linear-gradient(to top, rgba(190,185,240,0.28) 0%, transparent 18%),
+        linear-gradient(160deg, #EDEDF4 0%, #E8E8F0 55%, #DCDCE8 100%);
+      position:relative;
+      height:100vh;
+      height:100dvh;
+      min-height:0;
+      overflow:hidden;
+    }
+    /* 右側大弧線 */
+    #screen-chat::before {
+      content:'';
+      position:fixed; top:6vh; right:-155px;
+      width:360px; height:360px; border-radius:50%;
+      border:1.5px solid rgba(190,185,235,0.38);
+      pointer-events:none; z-index:0;
+    }
+    /* 右側小弧線 */
+    #screen-chat::after {
+      content:'';
+      position:fixed; top:18vh; right:-115px;
+      width:270px; height:270px; border-radius:50%;
+      border:1px solid rgba(190,185,235,0.22);
+      pointer-events:none; z-index:0;
+    }
+
+    /* ══ CHAT AREA ══ */
+    .chat-body {
+      flex:1; min-height:0; padding:20px 20px 40px;
+      max-width:600px; width:100%; margin:0 auto;
+      display:flex; flex-direction:column;
+      position:relative; z-index:1;
+      overflow-y:auto; overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    /* ══ BUBBLES ══ */
+    .msg-row {
+      display:flex; align-items:flex-end; gap:8px; margin-bottom:6px;
+      opacity:0; transform:translateY(8px);
+      animation:fadeUp .3s ease forwards;
+    }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .msg-row.brand { justify-content:flex-start; }
+    .msg-row.user  { justify-content:flex-end; }
+    .bav {
+      width:28px; height:28px; background:var(--green); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:9px; font-weight:700; flex-shrink:0; margin-bottom:2px;
+    }
+    .bubble {
+      max-width:75%; padding:11px 15px; font-size:15px; line-height:1.65;
+    }
+    .brand .bubble {
+      background:var(--white); color:var(--text);
+      border-radius:4px 18px 18px 18px;
+      box-shadow:0 1px 4px rgba(0,0,0,.07);
+    }
+    .user .bubble {
+      background:var(--green); color:#fff;
+      border-radius:18px 18px 4px 18px;
+    }
+
+    /* ══ HINT ══ */
+    .q-hint {
+      padding:2px 0 8px 36px; font-size:13px;
+      color:var(--red); font-weight:600;
+      opacity:0; animation:fadeUp .3s ease .1s forwards;
+    }
+
+    /* ══ OPTIONS ══ */
+    .opts-wrap {
+      padding:4px 0 12px 36px; display:flex; flex-wrap:wrap; gap:8px;
+      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    }
+    .opt-btn {
+      background:var(--white); border:1.5px solid var(--green-border);
+      color:var(--green); font-size:14px; font-weight:500;
+      padding:8px 16px; border-radius:50px; cursor:pointer;
+      font-family:inherit; transition:all .15s;
+    }
+    .opt-btn.sel { background:var(--green); color:#fff; border-color:var(--green); }
+    .opt-btn:active { transform:scale(.95); }
+
+    /* ══ NAME INPUT ══ */
+    .name-wrap {
+      padding:4px 0 12px 36px; display:flex; gap:8px;
+      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    }
+    .name-input {
+      flex:1; padding:10px 16px; border:1.5px solid var(--green-border);
+      border-radius:50px; font-size:15px; font-family:inherit;
+      color:var(--text); background:var(--white); outline:none;
+    }
+    .name-input:focus { border-color:var(--green); }
+    .name-go {
+      padding:10px 20px; background:var(--green); color:#fff;
+      border:none; border-radius:50px; font-size:14px; font-weight:600;
+      font-family:inherit; cursor:pointer;
+    }
+
+    /* ══ SEND BTN ══ */
+    .send-btn {
+      margin:2px 0 8px 36px; padding:10px 24px;
+      background:var(--green); color:#fff; border:none;
+      border-radius:50px; font-size:14px; font-weight:600;
+      font-family:inherit; cursor:pointer;
+      opacity:0; animation:fadeUp .25s ease .3s forwards;
+    }
+
+    /* ══ RESULT CARD ══ */
+    .res-card {
+      background:var(--white); border-radius:20px; padding:24px 20px;
+      margin:8px 0 8px 36px;
+      box-shadow:0 2px 16px rgba(74,124,89,.1);
+      border:1.5px solid var(--green-border);
+      opacity:0; animation:fadeUp .4s ease forwards;
+    }
+    .res-headline {
+      font-size:10px; letter-spacing:3px; color:var(--green);
+      text-transform:uppercase; font-weight:700; margin-bottom:18px;
+    }
+    .choices-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+    .cg-row { display:grid; grid-template-columns:72px 1fr; gap:8px; }
+    .cg-label { font-size:12px; color:var(--text-soft); padding-top:1px; }
+    .cg-val { font-size:14px; color:var(--text); font-weight:500; line-height:1.6; }
+    .steps-divider { height:1px; background:var(--green-border); margin-bottom:18px; }
+    .steps-title {
+      font-size:10px; letter-spacing:2px; color:var(--green);
+      font-weight:700; margin-bottom:14px;
+    }
+    .recommend-card {
+      padding:16px; margin-bottom:10px;
+      border:1px solid var(--green-border); border-radius:12px;
+      background:var(--green-pale);
+    }
+    .recommend-card:last-child { margin-bottom:0; }
+    .recommend-action { font-size:13px; color:var(--text-mid); margin-bottom:7px; line-height:1.55; }
+    .recommend-product { font-size:16px; color:var(--green); font-weight:700; line-height:1.55; }
+    .advice-block { padding:15px 0 2px; color:var(--text-mid); font-size:14px; line-height:1.7; }
+    .advice-part + .advice-part { margin-top:18px; }
+    .advice-label { color:var(--text); font-weight:700; margin-bottom:4px; }
+
+    /* ══ 回上一步 ══ */
+    .btn-back-step {
+      display:block; margin:2px 0 6px auto;
+      background:transparent; border:none;
+      color:var(--text-soft); font-size:12px;
+      cursor:pointer; padding:4px 10px;
+      font-family:inherit; letter-spacing:0.5px;
+      opacity:0; animation:fadeUp .2s ease .1s forwards;
+    }
+    .btn-back-step:active { color:var(--text-mid); }
+
+    /* ══ RESTART ══ */
+    .restart-btn {
+      display:block; margin:16px auto 0;
+      padding:12px 32px; background:transparent;
+      border:1.5px solid var(--green-border); border-radius:50px;
+      color:var(--green); font-size:14px; font-family:inherit; cursor:pointer;
+      opacity:0; animation:fadeUp .3s ease .2s forwards;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ GU 頁 ══ -->
+<div id="screen-gu" class="screen active">
+  <div class="gu-inner">
+    <div class="gu-title">開始測試前</div>
+    <div class="gu-sub">請 GU 先完成以下確認</div>
+
+    <div class="gu-block">
+      <span class="gu-label">門市</span>
+      <div class="store-row">
+        <button class="store-btn" data-store="台北西門" onclick="pickStore(this)">台北西門</button>
+      </div>
+    </div>
+
+    <div class="gu-block">
+      <span class="gu-label">GU 姓名</span>
+      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="checkGU()">
+    </div>
+
+    <div class="gu-block">
+      <span class="gu-label">日期</span>
+      <input class="gu-input" id="gu-date" type="date">
+    </div>
+
+    <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
+  </div>
+</div>
+
+<!-- ══ WELCOME ══ -->
+<div id="screen-welcome" class="screen">
+  <div class="glow-wrap">
+    <div class="w-title">TODAY'S SKIN CHECK</div>
+    <div class="glow-circle">
+      <div class="w-sub">Answer a few quick questions<br>to discover what your skin needs today.</div>
+    </div>
+  </div>
+
+  <div class="w-btn-outer">
+    <div class="btn-ring"></div>
+    <button class="w-btn" onclick="startChat()">START &nbsp;→</button>
+  </div>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div id="screen-chat" class="screen">
+  <div class="chat-header">
+    <div class="h-av">😊</div>
+    <div>
+      <div class="h-name">INNISFREE Skin Advisor</div>
+      <div class="h-sub">● Online</div>
+    </div>
+  </div>
+  <div class="chat-body" id="chat"></div>
+</div>
+
+<script>
+  const chat = document.getElementById('chat');
+  let step = 0, answers = {}, selectedOpts = [];
+  const guData = { store:'', name:'', date:'' };
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
+
+  function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
+    var params = new URLSearchParams({
+      timestamp: new Date().toLocaleString('zh-TW'),
+      date: guData.date,
+      store: guData.store,
+      gu: guData.name,
+      ba: guData.name,
+      customer_name: answers.name || '',
+      q1_skin_type: answers.skin_type || '',
+      q2_main_concern: mainConcern || '',
+      q3_other_concerns: s1arr.join(', '),
+      q4_lifestyle: s2arr.join(', '),
+      q5_goal: s3arr.join(', '),
+      q6_makeup: '',
+      step1: (answers.skin_type || '') + ' | ' + (mainConcern || '') + (s1arr.length ? ', ' + s1arr.join(', ') : ''),
+      step2: s2arr.join(', '),
+      step3: s3arr.join(', '),
+      makeup: '',
+      source: 'chat'
+    });
+    fetch(SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' }).catch(function(){});
+  }
+
+  // 自動填今天日期
+  document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+
+  function pickStore(btn){
+    document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+    btn.classList.add('sel');
+    guData.store = btn.dataset.store;
+    checkGU();
+  }
+  function checkGU(){
+    guData.name = document.getElementById('gu-name').value.trim();
+    const ready = guData.store && guData.name;
+    document.getElementById('gu-next').classList.toggle('ready', !!ready);
+  }
+
+  const questions = [
+    { key:'name', type:'name',
+      q:'What should I call you?' },
+    { key:'skin_type', multi:0,
+      q:'{name}, which skin type best describes your skin most of the time?',
+      opts:['Oily','Combination','Dry','Sensitive'] },
+    { key:'main', multi:0,
+      q:'What is your biggest skin concern right now?\nPlease choose the one you would most like to address first.',
+      opts:['Sensitivity & redness','Dehydration & dryness','Dullness & lack of radiance','Excess oil & enlarged pores','Breakouts & clogged pores','Dullness from lack of sleep'] },
+    { key:'s1', multi:2, hint:'Select up to 2',
+      q:'Aside from that, do you have any other skin concerns?',
+      opts:['Sensitivity & redness','Dehydration & dryness','Dullness & lack of radiance','Excess oil & enlarged pores','Breakouts & clogged pores','Dullness from lack of sleep'] },
+    { key:'s2', multi:2, hint:'Select up to 2',
+      q:'Which of these best describes your recent lifestyle?',
+      opts:['I have been staying up late','I spend long hours in air conditioning','My face often feels oily or sticky','I have been under a lot of stress','My daily routine has been irregular','I spend a lot of time outdoors'] },
+    { key:'s3', multi:2, hint:'Select up to 2',
+      q:'How would you most like your skin to look or feel?',
+      opts:['Brighter and more radiant','Hydrated with a healthy glow','Balanced and less oily','Calm and comfortable','Clearer with fewer breakouts','Smoother and more refined','Firmer and more elastic','Pores that look more refined'] }
+  ];
+
+  // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
+  const step01Data = {
+    'Sensitivity & redness':       { action:'Calm discomfort and support a more balanced complexion', product:'Green Tea Ceramide Milk Essence' },
+    'Dehydration & dryness':       { action:'Replenish moisture and relieve dry, tight-feeling skin', product:'Green Tea Ceramide Milk Essence' },
+    'Dullness & lack of radiance': { action:'Improve dullness and bring back a healthy-looking glow', product:'Vitamin C Brightening Pad' },
+    'Excess oil & enlarged pores': { action:'Help balance excess oil and refine the look of pores', product:'Volcanic PHA Pore Toner' },
+    'Breakouts & clogged pores':   { action:'Gently refine skin texture and help keep pores clear', product:'Retinol Cica Repair Pad' },
+    'Dullness from lack of sleep': { action:'Revitalize tired-looking skin and restore a fresh glow', product:'Black Tea Youth Enhancing Treatment Essence' }
+  };
+
+  // ── STEP 02：依肌膚困擾決定核心精華 ──
+  const step02Data = {
+    'Sensitivity & redness':       { action:'Hydrate and soothe to support a calm, balanced complexion', product:'Green Tea Seed Hyaluronic Serum' },
+    'Dehydration & dryness':       { action:'Deliver lasting hydration for soft, comfortable skin', product:'Green Tea Seed Hyaluronic Serum' },
+    'Dullness & lack of radiance': { action:'Brighten dull-looking skin and enhance radiance', product:'Vitamin C Green Tea Enzyme Brightening Serum' },
+    'Excess oil & enlarged pores': { action:'Refine skin texture and improve the look of pores', product:'Retinol Cica Repair Ampoule' },
+    'Breakouts & clogged pores':   { action:'Care for recurring breakouts and uneven texture', product:'Retinol Cica Repair Ampoule' },
+    'Dullness from lack of sleep': { action:'Brighten tired-looking skin and restore radiance', product:'Vitamin C Green Tea Enzyme Brightening Serum' }
+  };
+
+  // ── STEP 04：依 Q2 膚質顯示夜間保養建議 ──
+  const nightCareAdvice = {
+    'Oily': 'Oily skin: Follow with a lightweight lotion',
+    'Combination': 'Combination skin: Choose a lotion or cream based on how your skin feels',
+    'Dry': 'Dry skin: Follow with a rich moisturizing cream',
+    'Sensitive': 'Sensitive skin: Follow with a soothing cream'
+  };
+
+  function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+  function scrollDown(){ setTimeout(()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}),60); }
+
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    if(id === 'screen-chat') chat.scrollTop = 0;
+  }
+
+  function startChat(){
+    goTo('screen-chat');
+    setTimeout(nextStep, 300);
+  }
+
+  function addMsg(text, type){
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + type;
+    if(type==='brand'){
+      row.dataset.questionStep = step; // 標記這是第幾題的問題
+      row.innerHTML = '<div class="bav">IS</div><div class="bubble">' + text.replace(/\n/g,'<br>') + '</div>';
+    } else {
+      row.innerHTML = '<div class="bubble">' + text + '</div>';
+    }
+    chat.appendChild(row);
+    scrollDown();
+  }
+
+  function addBackButton(){
+    const targetStep = step; // 記住這個按鈕對應的步驟
+    const btn = document.createElement('button');
+    btn.className = 'btn-back-step';
+    btn.textContent = '↩ Change answer';
+    btn.onclick = function(){ handleGoBack(targetStep); };
+    chat.appendChild(btn);
+    scrollDown();
+  }
+
+  function handleGoBack(targetStep){
+    // 找到這一題對應的品牌訊息泡泡
+    const brandMsg = chat.querySelector('[data-question-step="' + targetStep + '"]');
+    if(!brandMsg) return;
+
+    // 清除從這題開始所有後續的答案
+    for(var i = targetStep; i < questions.length; i++){
+      if(questions[i]) delete answers[questions[i].key];
+    }
+    selectedOpts = [];
+
+    // 移除這題訊息到最後所有 DOM 元素
+    while(brandMsg.nextSibling){ chat.removeChild(brandMsg.nextSibling); }
+    chat.removeChild(brandMsg);
+
+    // 退回這一步重問
+    step = targetStep;
+    setTimeout(nextStep, 200);
+  }
+
+  function addNameInput(){
+    const wrap = document.createElement('div');
+    wrap.className = 'name-wrap';
+    const inp = document.createElement('input');
+    inp.className = 'name-input'; inp.type = 'text';
+    inp.placeholder = 'Enter your name'; inp.maxLength = 20;
+    const btn = document.createElement('button');
+    btn.className = 'name-go'; btn.textContent = 'Send';
+    const submit = function(){
+      const v = inp.value.trim() || 'You';
+      wrap.remove(); answers.name = v;
+      addMsg(v, 'user'); step++;
+      setTimeout(nextStep, 500);
+    };
+    btn.onclick = submit;
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+    wrap.appendChild(inp); wrap.appendChild(btn);
+    chat.appendChild(wrap);
+    setTimeout(function(){ inp.focus(); }, 400);
+    scrollDown();
+  }
+
+  function addOptions(q){
+    if(q.hint){
+      const h = document.createElement('div');
+      h.className = 'q-hint'; h.textContent = q.hint;
+      chat.appendChild(h);
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'opts-wrap'; selectedOpts = [];
+    var sendBtn = null;
+    const optionList = q.key === 's1'
+      ? q.opts.filter(function(opt){ return opt !== answers.main; })
+      : q.opts;
+    optionList.forEach(function(opt){
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn'; btn.textContent = opt;
+      btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
+      wrap.appendChild(btn);
+    });
+    chat.appendChild(wrap);
+    if(q.multi > 1){
+      sendBtn = document.createElement('button');
+      sendBtn.className = 'send-btn'; sendBtn.textContent = 'Confirm →';
+      sendBtn.onclick = function(){ submitMulti(wrap, sendBtn); };
+      chat.appendChild(sendBtn);
+    }
+    scrollDown();
+  }
+
+  function handleSel(btn, opt, multi, wrap, sendBtn){
+    if(multi <= 1){
+      wrap.remove();
+      answers[questions[step].key] = opt;
+      addMsg(opt, 'user');
+      addBackButton();
+      step++;
+      setTimeout(nextStep, 600);
+    } else {
+      if(btn.classList.contains('sel')){
+        btn.classList.remove('sel');
+        selectedOpts = selectedOpts.filter(function(o){ return o !== opt; });
+      } else {
+        if(selectedOpts.length >= multi) return;
+        btn.classList.add('sel'); selectedOpts.push(opt);
+      }
+      if(selectedOpts.length === multi) setTimeout(function(){ submitMulti(wrap, sendBtn); }, 300);
+    }
+  }
+
+  function submitMulti(wrap, sendBtn){
+    if(selectedOpts.length === 0) return;
+    wrap.remove(); if(sendBtn) sendBtn.remove();
+    answers[questions[step].key] = selectedOpts.slice();
+    addMsg(selectedOpts.join(', '), 'user');
+    addBackButton();
+    step++;
+    setTimeout(nextStep, 600);
+  }
+
+  async function nextStep(){
+    if(step < questions.length){
+      const q = questions[step];
+      const txt = q.q.replace('{name}', answers.name || 'You');
+      addMsg(txt, 'brand');
+      await delay(360);
+      if(q.type === 'name') addNameInput();
+      else addOptions(q);
+    } else {
+      await delay(400);
+      showResult();
+    }
+  }
+
+  function makeRecommendationCard(action, product) {
+    return '<div class="recommend-card">' +
+      '<div class="recommend-action">' + action + '</div>' +
+      '<div class="recommend-product">→ ' + product + '</div>' +
+    '</div>';
+  }
+
+  function makeAdviceRow(nightAdvice) {
+    return '<div class="advice-block">' +
+      '<div class="advice-part"><div class="advice-label">☀️ Daytime Care</div>' +
+        'Finish with sunscreen to protect your skin and maintain your skincare results.<br>→ Vitamin C Tone-up Sunscreen (tinted)<br>→ Green Tea Hyaluronic Moist Sun Serum (untinted)</div>' +
+      '<div class="advice-part"><div class="advice-label">🌙 Nighttime Care</div>→ ' + nightAdvice + '</div>' +
+    '</div>';
+  }
+
+  function showResult(){
+    const name        = answers.name || 'You';
+    const mainConcern = answers.main || '';
+    const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
+    const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
+    const s3arr       = Array.isArray(answers.s3) ? answers.s3 : (answers.s3 ? [answers.s3] : []);
+    const stype       = answers.skin_type || '—';
+
+    // ── 顧問邏輯：調理保養 → 核心精華 → 第二支精華 → 生活建議 ──
+    var recommendationsHtml = '';
+    var s01 = step01Data[mainConcern];
+    if (s01) {
+      recommendationsHtml += makeRecommendationCard(s01.action, s01.product);
+    }
+
+    s1arr.forEach(function(concern){
+      var recommendation = step02Data[concern];
+      if (recommendation) {
+        recommendationsHtml += makeRecommendationCard(recommendation.action, recommendation.product);
+      }
+    });
+
+    addMsg('Thank you, ' + name + '!\nHere is your personalized skincare guide ✨', 'brand');
+    logToSheet(mainConcern, s1arr, s2arr, s3arr);
+
+    // 「你的選擇」顯示：主困擾 + 次要困擾
+    var concernVal = '✓ ' + mainConcern;
+    if (s1arr.length > 0) { concernVal += '<br>' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>'); }
+
+    setTimeout(function(){
+      const card = document.createElement('div');
+      card.className = 'res-card';
+      card.innerHTML =
+        '<div class="res-headline">YOUR SKIN AT A GLANCE</div>' +
+        '<div class="choices-grid">' +
+          '<div class="cg-row"><div class="cg-label">Skin type</div><div class="cg-val">' + stype + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">Concerns</div><div class="cg-val">' + concernVal + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">Lifestyle</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">Skin goals</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+        '</div>' +
+        '<div class="steps-divider"></div>' +
+        '<div class="steps-title">TODAY’S SKINCARE RECOMMENDATIONS</div>' +
+        recommendationsHtml +
+        '<div class="steps-divider" style="margin-top:20px"></div>' +
+        '<div class="steps-title">COMPLETE YOUR ROUTINE</div>' +
+        makeAdviceRow(nightCareAdvice[stype]);
+
+      chat.appendChild(card);
+      scrollDown();
+
+      setTimeout(function(){
+        const btn = document.createElement('button');
+        btn.className = 'restart-btn'; btn.textContent = 'Start over';
+        btn.onclick = function(){
+          chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
+          document.getElementById('gu-name').value = '';
+          document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+          guData.store = ''; guData.name = '';
+          document.getElementById('gu-next').classList.remove('ready');
+          document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+          goTo('screen-gu');
+        };
+        chat.appendChild(btn);
+        scrollDown();
+      }, 400);
+    }, 700);
+  }
+</script>
+</body>
+</html>
