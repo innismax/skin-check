@@ -189,6 +189,10 @@
         linear-gradient(to top, rgba(190,185,240,0.28) 0%, transparent 18%),
         linear-gradient(160deg, #EDEDF4 0%, #E8E8F0 55%, #DCDCE8 100%);
       position:relative;
+      height:100vh;
+      height:100dvh;
+      min-height:0;
+      overflow:hidden;
     }
     /* 右側大弧線 */
     #screen-chat::before {
@@ -209,10 +213,12 @@
 
     /* ══ CHAT AREA ══ */
     .chat-body {
-      flex:1; padding:20px 20px 120px;
+      flex:1; min-height:0; padding:20px 20px 40px;
       max-width:600px; width:100%; margin:0 auto;
       display:flex; flex-direction:column;
       position:relative; z-index:1;
+      overflow-y:auto; overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
     }
 
     /* ══ BUBBLES ══ */
@@ -519,12 +525,13 @@
   };
 
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
-  function scrollDown(){ setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),60); }
+  function scrollDown(){ setTimeout(()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}),60); }
 
   function goTo(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     window.scrollTo(0,0);
+    if(id === 'screen-chat') chat.scrollTop = 0;
   }
 
   function startChat(){
