@@ -614,7 +614,10 @@
     const wrap = document.createElement('div');
     wrap.className = 'opts-wrap'; selectedOpts = [];
     var sendBtn = null;
-    q.opts.forEach(function(opt){
+    const optionList = q.key === 's1'
+      ? q.opts.filter(function(opt){ return opt !== answers.main; })
+      : q.opts;
+    optionList.forEach(function(opt){
       const btn = document.createElement('button');
       btn.className = 'opt-btn'; btn.textContent = opt;
       btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
