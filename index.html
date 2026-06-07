@@ -316,21 +316,17 @@
       font-size:10px; letter-spacing:2px; color:var(--green);
       font-weight:700; margin-bottom:14px;
     }
-    .step-row {
-      display:flex; gap:14px; padding:14px 0;
-      border-bottom:1px solid var(--green-border);
+    .recommend-card {
+      padding:16px; margin-bottom:10px;
+      border:1px solid var(--green-border); border-radius:12px;
+      background:var(--green-pale);
     }
-    .step-row:last-child { border-bottom:none; padding-bottom:0; }
-    .step-num {
-      font-size:10px; letter-spacing:1px; color:var(--green-mid);
-      font-weight:600; width:52px; flex-shrink:0; padding-top:3px;
-    }
-    .step-content { flex:1; }
-    .step-action { font-size:12px; color:var(--text-soft); margin-bottom:5px; line-height:1.5; }
-    .step-product { font-size:15px; color:var(--text); font-weight:600; line-height:1.5; }
-    .step-row.hero .step-num { color:var(--green); font-weight:700; }
-    .step-row.hero .step-product { color:var(--green); font-size:16px; }
-    .step-row.s04 .step-product { font-size:14px; font-weight:400; color:var(--text-mid); }
+    .recommend-card:last-child { margin-bottom:0; }
+    .recommend-action { font-size:13px; color:var(--text-mid); margin-bottom:7px; line-height:1.55; }
+    .recommend-product { font-size:16px; color:var(--green); font-weight:700; line-height:1.55; }
+    .advice-block { padding:15px 0 2px; color:var(--text-mid); font-size:14px; line-height:1.7; }
+    .advice-part + .advice-part { margin-top:18px; }
+    .advice-label { color:var(--text); font-weight:700; margin-bottom:4px; }
 
     /* ══ 回上一步 ══ */
     .btn-back-step {
@@ -677,22 +673,19 @@
     }
   }
 
-  function makeStepRow(num, action, product, extraClass) {
-    return '<div class="step-row ' + (extraClass||'') + '">' +
-      '<div class="step-num">STEP 0' + num + '</div>' +
-      '<div class="step-content">' +
-        '<div class="step-action">' + action + '</div>' +
-        '<div class="step-product">→ ' + product + '</div>' +
-      '</div></div>';
+  function makeRecommendationCard(action, product) {
+    return '<div class="recommend-card">' +
+      '<div class="recommend-action">' + action + '</div>' +
+      '<div class="recommend-product">→ ' + product + '</div>' +
+    '</div>';
   }
 
   function makeAdviceRow(nightAdvice) {
-    return '<div class="step-row s04">' +
-      '<div class="step-num">STEP 04</div>' +
-      '<div class="step-content">' +
-        '<div class="step-action">日夜保養建議</div>' +
-        '<div class="step-product">☀️ 白天保養<br>建議搭配防曬保護，幫助維持保養效果。<br>→ 維他命C亮白潤色防曬霜（潤色）<br>→ 綠茶玻尿酸保濕防曬精華（無潤色）<br><br>🌙 夜間保養<br>→ ' + nightAdvice + '</div>' +
-      '</div></div>';
+    return '<div class="advice-block">' +
+      '<div class="advice-part"><div class="advice-label">☀️ 白天保養</div>' +
+        '建議搭配防曬保護，幫助維持保養效果。<br>→ 維他命C亮白潤色防曬霜（潤色）<br>→ 綠茶玻尿酸保濕防曬精華（無潤色）</div>' +
+      '<div class="advice-part"><div class="advice-label">🌙 夜間保養</div>→ ' + nightAdvice + '</div>' +
+    '</div>';
   }
 
   function showResult(){
@@ -705,26 +698,18 @@
     const stype       = answers.skin_type || '—';
 
     // ── 顧問邏輯：調理保養 → 核心精華 → 第二支精華 → 生活建議 ──
-    var stepNum = 1;
-    var stepsHtml = '';
+    var recommendationsHtml = '';
     var s01 = step01Data[mainConcern];
     if (s01) {
-      stepsHtml += makeStepRow(stepNum++, s01.action, s01.product, '');
+      recommendationsHtml += makeRecommendationCard(s01.action, s01.product);
     }
 
-    // 第二個困擾（Q4 第一個選項）決定核心精華
-    var s02 = step02Data[s1arr[0]];
-    if (s02) {
-      stepsHtml += makeStepRow(stepNum++, s02.action, s02.product, 'hero');
-    }
-
-    // 第三個困擾（Q4 第二個選項）決定第二支精華；與 STEP02 相同則不顯示
-    var s03 = step02Data[s1arr[1]];
-    if (s03 && (!s02 || s03.product !== s02.product)) {
-      stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, 'hero');
-    }
-
-    stepsHtml += makeAdviceRow(nightCareAdvice[stype]);
+    s1arr.forEach(function(concern){
+      var recommendation = step02Data[concern];
+      if (recommendation) {
+        recommendationsHtml += makeRecommendationCard(recommendation.action, recommendation.product);
+      }
+    });
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
@@ -746,8 +731,11 @@
           '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
         '</div>' +
         '<div class="steps-divider"></div>' +
-        '<div class="steps-title">今日保養建議</div>' +
-        stepsHtml;
+        '<div class="steps-title">今日推薦保養</div>' +
+        recommendationsHtml +
+        '<div class="steps-divider" style="margin-top:20px"></div>' +
+        '<div class="steps-title">保養加強建議</div>' +
+        makeAdviceRow(nightCareAdvice[stype]);
 
       chat.appendChild(card);
       scrollDown();
