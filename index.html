@@ -519,10 +519,10 @@
 
   // ── STEP 04：依 Q2 膚質顯示夜間保養建議 ──
   const nightCareAdvice = {
-    '油性肌': '建議搭配乳液',
-    '混合肌': '可依膚況選擇乳液或面霜',
-    '乾性肌': '建議搭配潤澤面霜',
-    '敏感肌': '建議搭配舒緩面霜'
+    '油性肌': '油性肌：建議搭配乳液',
+    '混合肌': '混合肌：可依膚況選擇乳液或面霜',
+    '乾性肌': '乾性肌：建議搭配潤澤面霜',
+    '敏感肌': '敏感肌：建議搭配舒緩面霜'
   };
 
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -721,7 +721,7 @@
       stepsHtml += makeStepRow(stepNum++, s03.action, s03.product, 'hero');
     }
 
-    stepsHtml += makeAdviceRow(nightCareAdvice[stype] || '可依膚況選擇乳液或面霜');
+    stepsHtml += makeAdviceRow(nightCareAdvice[stype]);
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
