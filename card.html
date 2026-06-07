@@ -477,10 +477,14 @@
       opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
   ];
 
-  // ── STEP 01：敏感泛紅特殊規則，先穩定膚況 ──
-  const sensitiveFirst = {
-    action:'穩定膚況保養',
-    product:'綠茶神經醯胺牛奶水精華'
+  // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
+  const step01Data = {
+    '疲憊暗沉':  { action:'調理疲憊暗沉，提升肌膚光澤感', product:'維他命C淨亮棉片' },
+    '乾燥缺水':  { action:'加強補水保濕，舒緩乾燥緊繃感', product:'綠茶神經醯胺牛奶水精華' },
+    '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感', product:'綠茶神經醯胺牛奶水精華' },
+    '出油毛孔':  { action:'調理油脂與毛孔問題', product:'火山泥PHA毛孔緊緻露' },
+    '痘痘粉刺':  { action:'調理老廢角質與毛孔阻塞', product:'A醇淨膚毛孔修護棉片' },
+    '粗糙不平滑':{ action:'改善粗糙膚觸與角質堆積', product:'A醇淨膚毛孔修護棉片' }
   };
 
   // ── STEP 02：依肌膚困擾決定核心精華 ──
@@ -700,24 +704,21 @@
     const makeup      = answers.makeup || '—';
     const stype       = answers.skin_type || '—';
 
-    // ── 顧問邏輯：穩定膚況 → 核心精華 → 第二支精華 → 生活建議 ──
+    // ── 顧問邏輯：調理保養 → 核心精華 → 第二支精華 → 生活建議 ──
     var stepNum = 1;
     var stepsHtml = '';
     var seenProducts = new Set();
-    var concernList = [mainConcern].concat(s1arr).filter(Boolean);
 
-    if (concernList.indexOf('敏感泛紅') >= 0) {
-      stepsHtml += makeStepRow(stepNum++, sensitiveFirst.action, sensitiveFirst.product, 'hero');
-      seenProducts.add(sensitiveFirst.product);
+    var s01 = step01Data[mainConcern];
+    if (s01) {
+      stepsHtml += makeStepRow(stepNum++, s01.action, s01.product, '');
+      seenProducts.add(s01.product);
     }
 
-    for (var ci = 0; ci < concernList.length; ci++) {
-      var data = step02Data[concernList[ci]];
-      if (data && !seenProducts.has(data.product)) {
-        stepsHtml += makeStepRow(stepNum++, data.action, data.product, 'hero');
-        seenProducts.add(data.product);
-        break;
-      }
+    var s02 = step02Data[mainConcern];
+    if (s02) {
+      stepsHtml += makeStepRow(stepNum++, s02.action, s02.product, 'hero');
+      seenProducts.add(s02.product);
     }
 
     for (var i = 0; i < s3arr.length; i++) {
