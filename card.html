@@ -495,6 +495,12 @@
     '熬夜暗沉':  { action:'提亮疲憊暗沉，恢復肌膚光澤',   product:'維他命C淨亮精華' }
   };
 
+  const mergedStep02Actions = {
+    '綠茶籽玻尿酸保濕精華': '補水舒緩，強化肌膚穩定度並持續維持保濕感',
+    '維他命C淨亮精華': '提亮氣色與疲憊暗沉，恢復肌膚光澤',
+    'A醇淨膚超修護安瓶': '調理粉刺痘痘反覆狀況，優化毛孔與油脂'
+  };
+
   // ── Q5 目標 → 對應商品（用來判斷是否顯示 STEP 03）──
   const q5ProductMap = {
     '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
@@ -682,6 +688,24 @@
     '</div>';
   }
 
+  function makeSecondaryRecommendationCards(concerns) {
+    var grouped = {};
+    concerns.forEach(function(concern){
+      var recommendation = step02Data[concern];
+      if (!recommendation) return;
+      if (!grouped[recommendation.product]) {
+        grouped[recommendation.product] = { product:recommendation.product, actions:[recommendation.action] };
+      } else if (grouped[recommendation.product].actions.indexOf(recommendation.action) === -1) {
+        grouped[recommendation.product].actions.push(recommendation.action);
+      }
+    });
+    return Object.keys(grouped).map(function(product){
+      var item = grouped[product];
+      var action = item.actions.length > 1 ? (mergedStep02Actions[product] || item.actions.join('；')) : item.actions[0];
+      return makeRecommendationCard(action, product);
+    }).join('');
+  }
+
   function makeAdviceRow(nightAdvice) {
     return '<div class="advice-block">' +
       '<div class="advice-part"><div class="advice-label">☀️ 白天保養</div>' +
@@ -706,12 +730,7 @@
       recommendationsHtml += makeRecommendationCard(s01.action, s01.product);
     }
 
-    s1arr.forEach(function(concern){
-      var recommendation = step02Data[concern];
-      if (recommendation) {
-        recommendationsHtml += makeRecommendationCard(recommendation.action, recommendation.product);
-      }
-    });
+    recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
 
     addMsg('謝謝 ' + name + '！\n根據你的回答，幫你整理了肌膚分析 ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);

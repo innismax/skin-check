@@ -492,6 +492,12 @@
     'Dullness from lack of sleep': { action:'Brighten tired-looking skin and restore radiance', product:'Vitamin C Green Tea Enzyme Brightening Serum' }
   };
 
+  const mergedStep02Actions = {
+    'Green Tea Seed Hyaluronic Serum': 'Hydrate and soothe while supporting lasting moisture and a calm, balanced complexion',
+    'Vitamin C Green Tea Enzyme Brightening Serum': 'Brighten dull, tired-looking skin and restore a healthy-looking glow',
+    'Retinol Cica Repair Ampoule': 'Care for recurring breakouts while refining the look of pores and balancing excess oil'
+  };
+
   // ── STEP 04：依 Q2 膚質顯示夜間保養建議 ──
   const nightCareAdvice = {
     'Oily': 'Oily skin: Follow with a lightweight lotion',
@@ -674,6 +680,24 @@
     '</div>';
   }
 
+  function makeSecondaryRecommendationCards(concerns) {
+    var grouped = {};
+    concerns.forEach(function(concern){
+      var recommendation = step02Data[concern];
+      if (!recommendation) return;
+      if (!grouped[recommendation.product]) {
+        grouped[recommendation.product] = { product:recommendation.product, actions:[recommendation.action] };
+      } else if (grouped[recommendation.product].actions.indexOf(recommendation.action) === -1) {
+        grouped[recommendation.product].actions.push(recommendation.action);
+      }
+    });
+    return Object.keys(grouped).map(function(product){
+      var item = grouped[product];
+      var action = item.actions.length > 1 ? (mergedStep02Actions[product] || item.actions.join('; ')) : item.actions[0];
+      return makeRecommendationCard(action, product);
+    }).join('');
+  }
+
   function makeAdviceRow(nightAdvice) {
     return '<div class="advice-block">' +
       '<div class="advice-part"><div class="advice-label">☀️ Daytime Care</div>' +
@@ -699,12 +723,7 @@
       recommendationsHtml += makeRecommendationCard(s01.action, s01.product);
     }
 
-    s1arr.forEach(function(concern){
-      var recommendation = step02Data[concern];
-      if (recommendation) {
-        recommendationsHtml += makeRecommendationCard(recommendation.action, recommendation.product);
-      }
-    });
+    recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
 
     addMsg('Thank you, ' + name + '!\nHere is your personalized skincare guide ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
