@@ -324,6 +324,8 @@
     .recommend-card:last-child { margin-bottom:0; }
     .recommend-action { font-size:13px; color:var(--text-mid); margin-bottom:7px; line-height:1.55; }
     .recommend-product { font-size:16px; color:var(--green); font-weight:700; line-height:1.55; }
+    .product-zh { font-size:11px; color:var(--text-soft); font-weight:500; line-height:1.5; margin:3px 0 0 18px; }
+    .advice-product-zh { font-size:11px; color:var(--text-soft); line-height:1.5; margin-left:18px; }
     .advice-block { padding:15px 0 2px; color:var(--text-mid); font-size:14px; line-height:1.7; }
     .advice-part + .advice-part { margin-top:18px; }
     .advice-label { color:var(--text); font-weight:700; margin-bottom:4px; }
@@ -498,6 +500,20 @@
     'Sensitive': 'Sensitive skin: Follow with a soothing cream'
   };
 
+  const productChineseNames = {
+    'Green Tea Ceramide Milk Essence': '綠茶神經醯胺牛奶水精華',
+    'Green Tea Seed Hyaluronic Serum': '綠茶籽玻尿酸保濕精華',
+    'Vitamin C Brightening Pad': '維他命C淨亮棉片',
+    'Vitamin C Green Tea Enzyme Brightening Serum': '維他命C淨亮精華',
+    'Volcanic PHA Pore Toner': '火山泥PHA毛孔緊緻露',
+    'Retinol Cica Repair Pad': 'A醇淨膚毛孔修護棉片',
+    'Retinol Cica Repair Ampoule': 'A醇淨膚超修護安瓶',
+    'Black Tea Youth Enhancing Treatment Essence': '紅茶極效修護晶露',
+    '1% Retinol PDRN Skin Booster Ampoule': '1%A醇PDRN水光安瓶',
+    'Vitamin C Tone-up Sunscreen': '維他命C亮白潤色防曬霜',
+    'Green Tea Hyaluronic Moist Sun Serum': '綠茶玻尿酸保濕防曬精華'
+  };
+
   function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
   function scrollDown(){ setTimeout(()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}),60); }
 
@@ -654,13 +670,16 @@
     return '<div class="recommend-card">' +
       '<div class="recommend-action">' + action + '</div>' +
       '<div class="recommend-product">→ ' + product + '</div>' +
+      '<div class="product-zh">' + (productChineseNames[product] || '') + '</div>' +
     '</div>';
   }
 
   function makeAdviceRow(nightAdvice) {
     return '<div class="advice-block">' +
       '<div class="advice-part"><div class="advice-label">☀️ Daytime Care</div>' +
-        'Finish with sunscreen to protect your skin and maintain your skincare results.<br>→ Vitamin C Tone-up Sunscreen (tinted)<br>→ Green Tea Hyaluronic Moist Sun Serum (untinted)</div>' +
+        'Finish with sunscreen to protect your skin and maintain your skincare results.<br>' +
+        '→ Vitamin C Tone-up Sunscreen (tinted)<div class="advice-product-zh">維他命C亮白潤色防曬霜</div>' +
+        '→ Green Tea Hyaluronic Moist Sun Serum (untinted)<div class="advice-product-zh">綠茶玻尿酸保濕防曬精華</div></div>' +
       '<div class="advice-part"><div class="advice-label">🌙 Nighttime Care</div>→ ' + nightAdvice + '</div>' +
     '</div>';
   }
