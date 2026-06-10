@@ -130,30 +130,32 @@
     .w-btn-outer {
       position:relative; width:100%; max-width:300px;
       border-radius:50px; padding:2px;
-  background:rgba(155,140,255,0.3);
-  box-shadow:0 0 22px rgba(155,140,255,0.2);
+      background:rgba(199,191,255,0.34);
+      box-shadow:0 8px 28px rgba(155,140,255,0.16);
       overflow:hidden;
       margin-top:48px;
     }
-    /* 旋轉光圈：從中心旋轉，只有邊框2px露出來 */
+    /* 液態光澤：沿著按鈕邊緣緩慢滑過 */
     .btn-ring {
       position:absolute;
-      top:50%; left:50%;
-      width:220%; height:700%;
-      transform:translate(-50%,-50%);
-      background:conic-gradient(
-        from 0deg,
-        transparent 0deg,
-    transparent 300deg,
-    rgba(155,140,255,0.95) 322deg,
-    rgba(231,242,255,1) 344deg,
-    rgba(199,191,255,0.95) 360deg
-      );
-      animation:spinRing 1.4s linear infinite;
+      top:-90%; left:-48%;
+      width:38%; height:280%;
+      transform:skewX(-18deg);
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(199,191,255,0.55) 28%,
+        rgba(231,242,255,1) 50%,
+        rgba(155,140,255,0.72) 72%,
+        transparent 100%);
+      filter:blur(1px);
+      animation:liquidTrace 3.2s ease-in-out infinite;
       pointer-events:none;
     }
-    @keyframes spinRing {
-      to { transform:translate(-50%,-50%) rotate(360deg); }
+    @keyframes liquidTrace {
+      0%, 14% { left:-48%; opacity:0; }
+      24% { opacity:1; }
+      72% { opacity:1; }
+      86%, 100% { left:112%; opacity:0; }
     }
     /* 毛玻璃按鈕 */
     .w-btn {
@@ -168,6 +170,28 @@
       color:#4A4A62; font-family:inherit; cursor:pointer;
       letter-spacing:2px;
       display:flex; align-items:center; justify-content:center; gap:12px;
+      overflow:hidden;
+    }
+    .w-btn::after {
+      content:'';
+      position:absolute;
+      top:-80%; left:-60%;
+      width:34%; height:260%;
+      transform:skewX(-18deg);
+      background:linear-gradient(90deg,
+        transparent,
+        rgba(255,255,255,0.62),
+        rgba(231,242,255,0.88),
+        transparent);
+      filter:blur(2px);
+      animation:liquidGloss 3.2s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes liquidGloss {
+      0%, 18% { left:-60%; opacity:0; }
+      28% { opacity:0.85; }
+      70% { opacity:0.85; }
+      84%, 100% { left:126%; opacity:0; }
     }
 
     /* ══ CHAT HEADER ══ */
