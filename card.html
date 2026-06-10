@@ -130,86 +130,44 @@
     .w-btn-outer {
       position:relative; width:100%; max-width:300px;
       border-radius:50px; padding:2px;
-      background:rgba(255,255,255,0.56);
-      box-shadow:
-        0 8px 30px rgba(155,140,255,0.12),
-        inset 0 1px 0 rgba(255,255,255,0.9);
-      overflow:visible;
+  background:rgba(155,140,255,0.3);
+  box-shadow:0 0 22px rgba(155,140,255,0.2);
+      overflow:hidden;
       margin-top:48px;
-      isolation:isolate;
     }
-    /* 呼吸式珍珠光圈：緩慢變亮、擴散、消失 */
+    /* 旋轉光圈：從中心旋轉，只有邊框2px露出來 */
     .btn-ring {
       position:absolute;
-      inset:-2px;
-      border-radius:inherit;
-      border:1.5px solid rgba(255,244,214,0.96);
-      box-shadow:
-        0 0 10px rgba(255,255,255,0.94),
-        0 0 24px rgba(233,213,166,0.72),
-        0 0 48px rgba(207,176,110,0.34);
-      animation:pearlBreathe 3.8s ease-out infinite;
+      top:50%; left:50%;
+      width:220%; height:700%;
+      transform:translate(-50%,-50%);
+      background:conic-gradient(
+        from 0deg,
+        transparent 0deg,
+    transparent 300deg,
+    rgba(155,140,255,0.95) 322deg,
+    rgba(231,242,255,1) 344deg,
+    rgba(199,191,255,0.95) 360deg
+      );
+      animation:spinRing 1.4s linear infinite;
       pointer-events:none;
-      z-index:-1;
     }
-    .btn-ring::after {
-      content:'';
-      position:absolute;
-      inset:-1px;
-      border-radius:inherit;
-      border:1px solid rgba(255,250,232,0.82);
-      box-shadow:
-        0 0 16px rgba(255,255,255,0.58),
-        0 0 30px rgba(233,213,166,0.48);
-      animation:pearlBreathe 3.8s ease-out 1.15s infinite;
+    @keyframes spinRing {
+      to { transform:translate(-50%,-50%) rotate(360deg); }
     }
-    @keyframes pearlBreathe {
-      0% { transform:scale(0.99); opacity:0; }
-      20% { opacity:0.92; }
-      68% { opacity:0.3; }
-      100% { transform:scale(1.12,1.42); opacity:0; }
-    }
-    /* 乾淨的珍珠白按鈕 */
+    /* 毛玻璃按鈕 */
     .w-btn {
       position:relative; z-index:1;
       width:100%; padding:16px 32px;
-      background:linear-gradient(145deg,
-        rgba(255,255,255,0.94),
-        rgba(250,247,238,0.86));
+      background:rgba(240,240,248,0.85);
       backdrop-filter:blur(12px);
       -webkit-backdrop-filter:blur(12px);
-      border:1px solid rgba(255,255,255,0.82);
+      border:1px solid rgba(200,200,230,0.4);
       border-radius:50px;
       font-size:15px; font-weight:400;
       color:#4A4A62; font-family:inherit; cursor:pointer;
       letter-spacing:2px;
       display:flex; align-items:center; justify-content:center; gap:12px;
-      overflow:hidden;
-      box-shadow:
-        inset 0 1px 1px rgba(255,255,255,1),
-        0 5px 18px rgba(79,76,128,0.08);
-      transition:transform .22s ease, box-shadow .22s ease;
-    }
-    .w-btn:active {
-      transform:scale(.975);
-      box-shadow:
-        inset 0 2px 5px rgba(155,140,255,0.18),
-        inset 0 1px 1px rgba(255,255,255,0.72);
-    }
-    .w-btn::after {
-      content:'';
-      position:absolute;
-      inset:0;
-      border-radius:inherit;
-      background:radial-gradient(ellipse at 50% 0%,
-        rgba(255,248,224,0.9),
-        transparent 62%);
-      animation:pearlSurface 3.8s ease-in-out infinite;
-      pointer-events:none;
-    }
-    @keyframes pearlSurface {
-      0%, 100% { opacity:0.28; }
-      45% { opacity:0.76; }
     }
 
     /* ══ CHAT HEADER ══ */
