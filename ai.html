@@ -148,92 +148,163 @@
 
     /* ══ CHAT AREA ══ */
     .chat-body {
-      flex:1; min-height:0; padding:20px 20px 40px;
-      max-width:600px; width:100%; margin:0 auto;
-      display:flex; flex-direction:column;
+      flex:1; min-height:0; padding:22px 18px 28px;
+      max-width:680px; width:100%; margin:0 auto;
       position:relative; z-index:1;
       overflow-y:auto; overscroll-behavior:contain;
       -webkit-overflow-scrolling:touch;
     }
-
-    /* ══ BUBBLES ══ */
-    .msg-row {
-      display:flex; align-items:flex-end; gap:8px; margin-bottom:6px;
-      opacity:0; transform:translateY(8px);
-      animation:fadeUp .3s ease forwards;
+    .ai-panel {
+      width:min(100%, 560px);
+      margin:0 auto;
+      background:rgba(255,253,249,.76);
+      border:1px solid rgba(255,255,255,.72);
+      border-radius:34px;
+      box-shadow:var(--card-shadow);
+      padding:28px 18px 22px;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      opacity:0;
+      transform:translateY(8px);
+      animation:fadeUp .28s ease forwards;
     }
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
-    .msg-row.brand { justify-content:flex-start; }
-    .msg-row.user  { justify-content:flex-end; }
-    .bav {
-      width:28px; height:28px; background:var(--green); border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:9px; font-weight:700; flex-shrink:0; margin-bottom:2px;
+    .ai-head {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom:18px;
     }
-    .bubble {
-      max-width:78%; padding:13px 16px; font-size:15px; line-height:1.72;
+    .ai-avatar-large {
+      width:94px;
+      height:94px;
+      border-radius:50%;
+      background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(241,245,240,.96) 100%);
+      border:1px solid rgba(255,255,255,.88);
+      box-shadow:0 16px 28px rgba(89,105,92,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:42px;
     }
-    .brand .bubble {
-      background:rgba(255,253,249,.96); color:var(--text);
-      border-radius:18px 18px 18px 6px;
-      box-shadow:0 10px 24px rgba(81,98,85,.08);
+    .ai-chip {
+      padding:10px 18px;
+      border-radius:999px;
+      background:rgba(235,241,234,.82);
+      color:#50685A;
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:1px;
     }
-    .user .bubble {
-      background:linear-gradient(135deg, #6E8573 0%, #5E7564 100%); color:#fff;
-      border-radius:18px 18px 6px 18px;
+    .question-card {
+      background:rgba(255,253,249,.98);
+      border-radius:28px;
+      box-shadow:0 14px 26px rgba(89,105,92,.08);
+      padding:26px 22px;
+      margin-bottom:14px;
     }
-
-    /* ══ HINT ══ */
+    .q-main {
+      font-size:19px;
+      line-height:1.65;
+      color:var(--text);
+      font-weight:600;
+    }
+    .q-main .q-note {
+      display:block;
+      margin-top:8px;
+      font-size:15px;
+      color:var(--text-mid);
+      font-weight:500;
+    }
     .q-hint {
-      padding:2px 0 8px 36px; font-size:13px;
-      color:var(--red); font-weight:600;
-      opacity:0; animation:fadeUp .3s ease .1s forwards;
+      margin:2px 6px 14px;
+      font-size:14px;
+      color:var(--red);
+      font-weight:700;
     }
-
-    /* ══ OPTIONS ══ */
     .opts-wrap {
-      padding:4px 0 12px 36px; display:flex; flex-wrap:wrap; gap:8px;
-      opacity:0; animation:fadeUp .3s ease .15s forwards;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:6px;
     }
     .opt-btn {
-      background:rgba(255,253,249,.95); border:1.5px solid var(--green-border);
-      color:var(--green); font-size:14px; font-weight:600;
-      padding:11px 18px; border-radius:999px; cursor:pointer;
-      font-family:inherit; transition:all .15s; box-shadow:0 8px 16px rgba(81,98,85,.05);
+      width:100%;
+      min-height:74px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:rgba(255,253,249,.95);
+      border:1.5px solid var(--green-border);
+      color:var(--green);
+      font-size:18px;
+      font-weight:600;
+      padding:0 22px;
+      border-radius:999px;
+      cursor:pointer;
+      font-family:inherit;
+      transition:all .15s;
+      box-shadow:0 8px 16px rgba(81,98,85,.05);
+      text-align:left;
     }
-    .opt-btn.sel { background:linear-gradient(135deg, #6E8573 0%, #53695A 100%); color:#fff; border-color:#53695A; }
-    .opt-btn:active { transform:scale(.95); }
-
-    /* ══ NAME INPUT ══ */
-    .name-wrap {
-      padding:4px 0 12px 36px; display:flex; gap:8px;
-      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    .opt-btn::after {
+      content:'';
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:2px solid rgba(110,133,115,.28);
+      flex-shrink:0;
     }
-    .name-input {
-      flex:1; padding:10px 16px; border:1.5px solid var(--green-border);
-      border-radius:50px; font-size:15px; font-family:inherit;
-      color:var(--text); background:var(--white); outline:none;
+    .opt-btn.sel {
+      background:linear-gradient(135deg, #6E8573 0%, #53695A 100%);
+      color:#fff;
+      border-color:#53695A;
+      box-shadow:0 12px 22px rgba(70,88,76,.18);
     }
-    .name-input:focus { border-color:var(--green); }
-    .name-go {
-      padding:10px 20px; background:var(--green); color:#fff;
-      border:none; border-radius:50px; font-size:14px; font-weight:600;
-      font-family:inherit; cursor:pointer;
+    .opt-btn.sel::after {
+      border-color:rgba(255,255,255,.92);
+      background:radial-gradient(circle at center, rgba(255,255,255,.92) 0 38%, transparent 41%);
     }
-
-    /* ══ SEND BTN ══ */
-    .send-btn {
-      margin:2px 0 8px 36px; padding:11px 24px;
-      background:linear-gradient(135deg, #6E8573 0%, #31453B 100%); color:#fff; border:none;
-      border-radius:50px; font-size:14px; font-weight:600;
-      font-family:inherit; cursor:pointer;
-      opacity:0; animation:fadeUp .25s ease .3s forwards;
+    .opt-btn:active { transform:scale(.985); }
+    .progress-card {
+      margin-top:18px;
+      background:rgba(255,253,249,.98);
+      border-radius:24px;
+      box-shadow:0 12px 22px rgba(89,105,92,.06);
+      padding:16px 18px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .progress-track {
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      align-items:center;
+      gap:8px;
+    }
+    .progress-dot {
+      height:16px;
+      border-radius:999px;
+      background:rgba(209,219,209,.9);
+      position:relative;
+      overflow:hidden;
+    }
+    .progress-dot.active { background:linear-gradient(135deg, #6E8573 0%, #53695A 100%); }
+    .progress-dot.done { background:rgba(164,182,168,.8); }
+    .progress-text {
+      text-align:center;
+      color:var(--text-mid);
+      font-size:14px;
+      letter-spacing:1px;
     }
 
     /* ══ RESULT CARD ══ */
     .res-card {
       background:rgba(255,253,249,.96); border-radius:28px; padding:24px 20px;
-      margin:8px 0 8px 36px;
+      margin:0 auto;
+      width:min(100%, 560px);
       box-shadow:0 22px 44px rgba(87,103,90,.12);
       border:1.5px solid var(--green-border);
       opacity:0; animation:fadeUp .4s ease forwards;
@@ -263,17 +334,6 @@
     .advice-part + .advice-part { margin-top:18px; }
     .advice-label { color:var(--text); font-weight:700; margin-bottom:4px; }
 
-    /* ══ 回上一步 ══ */
-    .btn-back-step {
-      display:block; margin:2px 0 6px auto;
-      background:transparent; border:none;
-      color:var(--text-soft); font-size:12px;
-      cursor:pointer; padding:4px 10px;
-      font-family:inherit; letter-spacing:0.5px;
-      opacity:0; animation:fadeUp .2s ease .1s forwards;
-    }
-    .btn-back-step:active { color:var(--text-mid); }
-
     /* ══ RESTART ══ */
     .restart-btn {
       display:block; margin:16px auto 0;
@@ -281,6 +341,14 @@
       border:1.5px solid var(--green-border); border-radius:50px;
       color:var(--green); font-size:14px; font-family:inherit; cursor:pointer;
       opacity:0; animation:fadeUp .3s ease .2s forwards;
+    }
+    @media (max-width: 480px) {
+      .chat-body { padding:18px 12px 22px; }
+      .ai-panel { border-radius:28px; padding:22px 14px 18px; }
+      .ai-avatar-large { width:84px; height:84px; font-size:38px; }
+      .question-card { padding:22px 18px; border-radius:24px; }
+      .q-main { font-size:18px; }
+      .opt-btn { min-height:66px; font-size:17px; padding:0 18px; }
     }
   </style>
 </head>
@@ -457,9 +525,6 @@
     '敏感肌': '敏感肌：建議搭配舒緩面霜'
   };
 
-  function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
-  function scrollDown(){ setTimeout(()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}),60); }
-
   function goTo(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -469,120 +534,91 @@
 
   function startChat(){
     goTo('screen-chat');
-    setTimeout(nextStep, 300);
+    renderCurrentStep();
   }
 
-  function addMsg(text, type){
-    const row = document.createElement('div');
-    row.className = 'msg-row ' + type;
-    if(type==='brand'){
-      row.dataset.questionStep = step; // 標記這是第幾題的問題
-      row.innerHTML = '<div class="bav">AI</div><div class="bubble">' + text.replace(/\n/g,'<br>') + '</div>';
-    } else {
-      row.innerHTML = '<div class="bubble">' + text + '</div>';
-    }
-    chat.appendChild(row);
-    scrollDown();
-  }
-
-  function addBackButton(){
-    const targetStep = step; // 記住這個按鈕對應的步驟
-    const btn = document.createElement('button');
-    btn.className = 'btn-back-step';
-    btn.textContent = '↩ 重新選擇';
-    btn.onclick = function(){ handleGoBack(targetStep); };
-    chat.appendChild(btn);
-    scrollDown();
-  }
-
-  function handleGoBack(targetStep){
-    // 找到這一題對應的品牌訊息泡泡
-    const brandMsg = chat.querySelector('[data-question-step="' + targetStep + '"]');
-    if(!brandMsg) return;
-
-    // 清除從這題開始所有後續的答案
-    for(var i = targetStep; i < questions.length; i++){
-      if(questions[i]) delete answers[questions[i].key];
-    }
-    selectedOpts = [];
-
-    // 移除這題訊息到最後所有 DOM 元素
-    while(brandMsg.nextSibling){ chat.removeChild(brandMsg.nextSibling); }
-    chat.removeChild(brandMsg);
-
-    // 退回這一步重問
-    step = targetStep;
-    setTimeout(nextStep, 200);
-  }
-
-  function addOptions(q){
-    if(q.hint){
-      const h = document.createElement('div');
-      h.className = 'q-hint'; h.textContent = q.hint;
-      chat.appendChild(h);
-    }
-    const wrap = document.createElement('div');
-    wrap.className = 'opts-wrap'; selectedOpts = [];
-    var sendBtn = null;
-    const optionList = q.key === 's1'
+  function getStepOptions(q) {
+    return q.key === 's1'
       ? q.opts.filter(function(opt){ return opt !== answers.main; })
       : q.opts;
-    optionList.forEach(function(opt){
-      const btn = document.createElement('button');
-      btn.className = 'opt-btn'; btn.textContent = opt;
-      btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
-      wrap.appendChild(btn);
-    });
-    chat.appendChild(wrap);
-    if(q.multi > 1){
-      sendBtn = document.createElement('button');
-      sendBtn.className = 'send-btn'; sendBtn.textContent = '確認送出 →';
-      sendBtn.onclick = function(){ submitMulti(wrap, sendBtn); };
-      chat.appendChild(sendBtn);
+  }
+
+  function formatQuestionText(raw) {
+    const parts = raw.split('\n');
+    if (parts.length === 1) return '<div class="q-main">' + parts[0] + '</div>';
+    return '<div class="q-main">' + parts[0] + '<span class="q-note">' + parts.slice(1).join('<br>') + '</span></div>';
+  }
+
+  function renderProgress(current) {
+    var dots = '';
+    for (var i = 0; i < 5; i++) {
+      var cls = 'progress-dot';
+      if (i < current) cls += ' done';
+      if (i === current) cls += ' active';
+      dots += '<div class="' + cls + '"></div>';
     }
-    scrollDown();
+    return '<div class="progress-card">' +
+      '<div class="progress-track">' + dots + '</div>' +
+      '<div class="progress-text">第 ' + (current + 1) + ' 題，共 5 題</div>' +
+    '</div>';
   }
 
-  function handleSel(btn, opt, multi, wrap, sendBtn){
-    if(multi <= 1){
-      wrap.remove();
-      answers[questions[step].key] = opt;
-      addMsg(opt, 'user');
-      addBackButton();
-      step++;
-      setTimeout(nextStep, 600);
-    } else {
-      if(btn.classList.contains('sel')){
-        btn.classList.remove('sel');
-        selectedOpts = selectedOpts.filter(function(o){ return o !== opt; });
-      } else {
-        if(selectedOpts.length >= multi) return;
-        btn.classList.add('sel'); selectedOpts.push(opt);
-      }
-      if(selectedOpts.length === multi) setTimeout(function(){ submitMulti(wrap, sendBtn); }, 300);
-    }
-  }
-
-  function submitMulti(wrap, sendBtn){
-    if(selectedOpts.length === 0) return;
-    wrap.remove(); if(sendBtn) sendBtn.remove();
-    answers[questions[step].key] = selectedOpts.slice();
-    addMsg(selectedOpts.join('、'), 'user');
-    addBackButton();
-    step++;
-    setTimeout(nextStep, 600);
-  }
-
-  async function nextStep(){
-    if(step < questions.length){
-      const q = questions[step];
-      addMsg(q.q, 'brand');
-      await delay(360);
-      addOptions(q);
-    } else {
-      await delay(400);
+  function renderCurrentStep() {
+    if (step >= questions.length) {
       showResult();
+      return;
     }
+    const q = questions[step];
+    const optionList = getStepOptions(q);
+    const selected = Array.isArray(answers[q.key]) ? answers[q.key] : (answers[q.key] ? [answers[q.key]] : []);
+
+    var html = '<div class="ai-panel">' +
+      '<div class="ai-head">' +
+        '<div class="ai-avatar-large">😊</div>' +
+        '<div class="ai-chip">AI 肌膚顧問</div>' +
+      '</div>' +
+      '<div class="question-card">' + formatQuestionText(q.q) + '</div>';
+
+    if (q.hint) html += '<div class="q-hint">' + q.hint + '</div>';
+
+    html += '<div class="opts-wrap">';
+    optionList.forEach(function(opt){
+      const isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
+      html += '<button class="opt-btn' + isSelected + '" data-value="' + opt + '">' + opt + '</button>';
+    });
+    html += '</div>' + renderProgress(step) + '</div>';
+
+    chat.innerHTML = html;
+    bindOptionEvents(q);
+    chat.scrollTop = 0;
+  }
+
+  function bindOptionEvents(q) {
+    const btns = chat.querySelectorAll('.opt-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        const value = btn.getAttribute('data-value');
+        if (q.multi <= 1) {
+          answers[q.key] = value;
+          step++;
+          renderCurrentStep();
+          return;
+        }
+
+        var current = Array.isArray(answers[q.key]) ? answers[q.key].slice() : [];
+        if (current.indexOf(value) > -1) {
+          current = current.filter(function(item){ return item !== value; });
+        } else {
+          if (current.length >= q.multi) return;
+          current.push(value);
+        }
+        answers[q.key] = current;
+        if (current.length >= q.multi) {
+          step++;
+        }
+        renderCurrentStep();
+      });
+    });
   }
 
   function makeRecommendationCard(action, product) {
@@ -619,6 +655,7 @@
   }
 
   function showResult(){
+    chat.innerHTML = '';
     const mainConcern = answers.main || '';
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
     const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
@@ -634,52 +671,45 @@
     }
 
     recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
-
-    addMsg('已根據你的回答整理出今日保養方向 ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
     var concernVal = '✓ ' + mainConcern;
     if (s1arr.length > 0) { concernVal += '<br>' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>'); }
 
-    setTimeout(function(){
-      const card = document.createElement('div');
-      card.className = 'res-card';
-      card.innerHTML =
-        '<div class="res-headline">今日肌膚關鍵字</div>' +
-        '<div class="choices-grid">' +
-          '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
-          '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
-        '</div>' +
-        '<div class="steps-divider"></div>' +
-        '<div class="steps-title">今日推薦保養</div>' +
-        recommendationsHtml +
-        '<div class="steps-divider" style="margin-top:20px"></div>' +
-        '<div class="steps-title">保養加強建議</div>' +
-        makeAdviceRow(nightCareAdvice[stype]);
+    const card = document.createElement('div');
+    card.className = 'res-card';
+    card.innerHTML =
+      '<div class="res-headline">今日肌膚關鍵字</div>' +
+      '<div class="choices-grid">' +
+        '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
+      '</div>' +
+      '<div class="steps-divider"></div>' +
+      '<div class="steps-title">今日推薦保養</div>' +
+      recommendationsHtml +
+      '<div class="steps-divider" style="margin-top:20px"></div>' +
+      '<div class="steps-title">保養加強建議</div>' +
+      makeAdviceRow(nightCareAdvice[stype]);
 
-      chat.appendChild(card);
-      scrollDown();
+    chat.appendChild(card);
 
-      setTimeout(function(){
-        const btn = document.createElement('button');
-        btn.className = 'restart-btn'; btn.textContent = '再測一次';
-        btn.onclick = function(){
-          chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
-          document.getElementById('gu-name').value = '';
-          document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
-          guData.store = ''; guData.name = '';
-          document.getElementById('gu-next').classList.remove('ready');
-          document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
-          goTo('screen-gu');
-        };
-        chat.appendChild(btn);
-        scrollDown();
-      }, 400);
-    }, 700);
+    const btn = document.createElement('button');
+    btn.className = 'restart-btn'; btn.textContent = '再測一次';
+    btn.onclick = function(){
+      chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
+      document.getElementById('gu-name').value = '';
+      document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+      guData.store = ''; guData.name = '';
+      document.getElementById('gu-next').classList.remove('ready');
+      document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+      goTo('screen-gu');
+    };
+    chat.appendChild(btn);
+    chat.scrollTop = 0;
   }
 </script>
 </body>
