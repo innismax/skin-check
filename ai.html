@@ -86,57 +86,20 @@
     }
     .hero-wrap {
       display:flex; flex-direction:column; align-items:center;
-      gap:18px;
+      gap:0;
+    }
+    .hero-btn {
+      display:block;
+      width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      border-radius:28px;
     }
     .hero-image {
       width:min(100%, 360px); display:block; border-radius:28px;
       margin:0 auto; box-shadow:0 16px 40px rgba(92,108,95,.16);
-    }
-    .w-title {
-      font-size:34px; font-weight:300; letter-spacing:8px;
-      color:#31453B; line-height:1.2; text-align:center;
-      margin-top:4px;
-    }
-    .w-sub {
-      font-size:17px; color:#718077; letter-spacing:0.3px;
-      line-height:1.8; text-align:center;
-      width:100%;
-    }
-    .w-btn-outer {
-      position:relative; width:100%; max-width:320px;
-      border-radius:999px; padding:2px;
-      background:linear-gradient(90deg, rgba(222,230,219,.8), rgba(255,255,255,.95), rgba(222,230,219,.8));
-      box-shadow:0 18px 26px rgba(60,74,65,.14);
-      overflow:hidden;
-      margin:28px auto 0;
-    }
-    .btn-ring {
-      position:absolute; inset:-2px;
-      border-radius:999px;
-      background:conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        transparent 300deg,
-        rgba(205,220,208,.95) 326deg,
-        rgba(255,255,255,1) 344deg,
-        rgba(162,182,168,.92) 360deg
-      );
-      animation:spinRing 2.2s linear infinite;
-      pointer-events:none;
-    }
-    @keyframes spinRing {
-      to { transform:rotate(360deg); }
-    }
-    .w-btn {
-      position:relative; z-index:1;
-      width:100%; padding:16px 32px;
-      background:linear-gradient(180deg, rgba(33,49,42,.98) 0%, rgba(46,64,55,.98) 100%);
-      border:1px solid rgba(255,255,255,0.16);
-      border-radius:50px;
-      font-size:18px; font-weight:500;
-      color:#fff; font-family:inherit; cursor:pointer;
-      letter-spacing:2px;
-      display:flex; align-items:center; justify-content:center; gap:12px;
     }
 
     /* ══ CHAT HEADER ══ */
@@ -356,13 +319,9 @@
 <div id="screen-welcome" class="screen">
   <div class="welcome-card">
     <div class="hero-wrap">
-      <img class="hero-image" src="./ai-cover.jpg" alt="AI 肌膚顧問封面">
-      <div class="w-title">今日肌膚檢測</div>
-      <div class="w-sub">透過幾個簡單問題，<br>看看最近的肌膚需要什麼保養</div>
-    </div>
-    <div class="w-btn-outer">
-      <div class="btn-ring"></div>
-      <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
+      <button class="hero-btn" onclick="startChat()" aria-label="開始體驗">
+        <img class="hero-image" src="./ai-cover.jpg" alt="AI 肌膚顧問封面">
+      </button>
     </div>
   </div>
 </div>
