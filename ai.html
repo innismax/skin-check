@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>innisfree AI 肌膚諮詢</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    :root {
+      --green:#6E8573; --green-mid:#8FA394; --green-pale:#F3F6F1;
+      --green-border:#D8E2D7; --bg:#E3E9E1; --white:#FFFEFC;
+      --text:#2E4037; --text-mid:#6F7E75; --text-soft:#97A39B;
+      --red:#D94F4F;
+      --card-shadow:0 24px 60px rgba(88,106,91,.14);
+    }
+    html,body { min-height:100%; background:var(--bg);
+      font-family:-apple-system,'PingFang TC','Helvetica Neue',sans-serif;
+      color:var(--text); -webkit-font-smoothing:antialiased; }
+
+    /* ══ SCREENS ══ */
+    .screen { display:none; min-height:100vh; }
+    .screen.active { display:flex; flex-direction:column; }
+
+    /* ══ GU 頁 ══ */
+    #screen-gu {
+      align-items:center; justify-content:center;
+      background:linear-gradient(180deg, #F9FBF8 0%, #F1F5F0 100%); padding:48px 32px;
+    }
+    .gu-inner { max-width:440px; width:100%; }
+    .gu-title {
+      font-size:24px; font-weight:700; color:var(--text);
+      margin-bottom:6px;
+    }
+    .gu-sub {
+      font-size:14px; color:var(--red); font-weight:700;
+      margin-bottom:36px;
+    }
+    .gu-block { margin-bottom:24px; }
+    .gu-label {
+      font-size:12px; color:var(--text-soft); letter-spacing:1px;
+      margin-bottom:8px; display:block;
+    }
+    .store-row { display:flex; gap:10px; }
+    .store-btn {
+      flex:1; padding:12px; border:1.5px solid var(--green-border);
+      border-radius:16px; background:rgba(255,255,252,.94); color:var(--text-mid);
+      font-size:15px; font-weight:500; font-family:inherit; cursor:pointer;
+      transition:all .15s;
+    }
+    .store-btn.sel {
+      background:var(--green-pale); border-color:var(--green);
+      color:var(--green); font-weight:700;
+    }
+    .gu-input {
+      width:100%; padding:14px 16px; border:1.5px solid var(--green-border);
+      border-radius:16px; font-size:15px; font-family:inherit;
+      color:var(--text); background:rgba(255,255,252,.94); outline:none;
+    }
+    .gu-input:focus { border-color:var(--green); }
+    .gu-btn {
+      width:100%; padding:17px; background:linear-gradient(135deg, #617769 0%, #2E4037 100%); color:#fff;
+      border:none; border-radius:50px; font-size:15px; font-weight:600;
+      font-family:inherit; cursor:pointer; margin-top:12px;
+      opacity:.4; pointer-events:none; transition:opacity .2s; box-shadow:0 16px 28px rgba(46,64,55,.18);
+    }
+    .gu-btn.ready { opacity:1; pointer-events:auto; }
+
+    /* ══ WELCOME ══ */
+    #screen-welcome {
+      align-items:center; justify-content:center;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.55) 0%, transparent 28%),
+        linear-gradient(180deg, #DCE3D9 0%, #E8EEE7 45%, #D6DED4 100%);
+      padding:32px 24px 44px; gap:0;
+    }
+
+    .welcome-card {
+      width:min(100%, 430px);
+      background:rgba(255,253,249,.78);
+      border:1px solid rgba(255,255,255,.68);
+      border-radius:40px;
+      box-shadow:var(--card-shadow);
+      padding:28px 22px 28px;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+    .hero-wrap {
+      display:flex; flex-direction:column; align-items:center;
+      gap:18px;
+    }
+    .hero-image {
+      width:min(100%, 360px); display:block; border-radius:28px;
+      margin:0 auto; box-shadow:0 16px 40px rgba(92,108,95,.16);
+    }
+    .w-title {
+      font-size:34px; font-weight:300; letter-spacing:8px;
+      color:#31453B; line-height:1.2; text-align:center;
+      margin-top:4px;
+    }
+    .w-sub {
+      font-size:17px; color:#718077; letter-spacing:0.3px;
+      line-height:1.8; text-align:center;
+      width:100%;
+    }
+    .w-btn-outer {
+      position:relative; width:100%; max-width:320px;
+      border-radius:999px; padding:2px;
+      background:linear-gradient(90deg, rgba(222,230,219,.8), rgba(255,255,255,.95), rgba(222,230,219,.8));
+      box-shadow:0 18px 26px rgba(60,74,65,.14);
+      overflow:hidden;
+      margin:28px auto 0;
+    }
+    .btn-ring {
+      position:absolute; inset:-2px;
+      border-radius:999px;
+      background:conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 300deg,
+        rgba(205,220,208,.95) 326deg,
+        rgba(255,255,255,1) 344deg,
+        rgba(162,182,168,.92) 360deg
+      );
+      animation:spinRing 2.2s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes spinRing {
+      to { transform:rotate(360deg); }
+    }
+    .w-btn {
+      position:relative; z-index:1;
+      width:100%; padding:16px 32px;
+      background:linear-gradient(180deg, rgba(33,49,42,.98) 0%, rgba(46,64,55,.98) 100%);
+      border:1px solid rgba(255,255,255,0.16);
+      border-radius:50px;
+      font-size:18px; font-weight:500;
+      color:#fff; font-family:inherit; cursor:pointer;
+      letter-spacing:2px;
+      display:flex; align-items:center; justify-content:center; gap:12px;
+    }
+
+    /* ══ CHAT HEADER ══ */
+    .chat-header {
+      background:rgba(255,253,249,.84); border-bottom:1px solid rgba(216,226,215,.86);
+      padding:15px 20px; display:flex; align-items:center; gap:12px;
+      position:sticky; top:0; z-index:10; flex-shrink:0;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+    .h-av {
+      width:40px; height:40px; background:linear-gradient(135deg, #68806E 0%, #31453B 100%); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:19px; font-weight:700; flex-shrink:0;
+    }
+    .h-name { font-size:15px; font-weight:700; color:#2E4037; }
+    .h-sub  { font-size:11px; color:var(--green); }
+
+    /* ══ CHAT 背景 ══ */
+    #screen-chat {
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,.45) 0%, transparent 26%),
+        linear-gradient(180deg, #DCE4DA 0%, #E8EEE7 48%, #D5DED4 100%);
+      position:relative;
+      height:100vh;
+      height:100dvh;
+      min-height:0;
+      overflow:hidden;
+    }
+    /* 右側大弧線 */
+    #screen-chat::before {
+      content:'';
+      position:fixed; top:6vh; right:-155px;
+      width:360px; height:360px; border-radius:50%;
+      border:1.5px solid rgba(191,205,190,0.38);
+      pointer-events:none; z-index:0;
+    }
+    /* 右側小弧線 */
+    #screen-chat::after {
+      content:'';
+      position:fixed; top:18vh; right:-115px;
+      width:270px; height:270px; border-radius:50%;
+      border:1px solid rgba(191,205,190,0.22);
+      pointer-events:none; z-index:0;
+    }
+
+    /* ══ CHAT AREA ══ */
+    .chat-body {
+      flex:1; min-height:0; padding:20px 20px 40px;
+      max-width:600px; width:100%; margin:0 auto;
+      display:flex; flex-direction:column;
+      position:relative; z-index:1;
+      overflow-y:auto; overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    /* ══ BUBBLES ══ */
+    .msg-row {
+      display:flex; align-items:flex-end; gap:8px; margin-bottom:6px;
+      opacity:0; transform:translateY(8px);
+      animation:fadeUp .3s ease forwards;
+    }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .msg-row.brand { justify-content:flex-start; }
+    .msg-row.user  { justify-content:flex-end; }
+    .bav {
+      width:28px; height:28px; background:var(--green); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:9px; font-weight:700; flex-shrink:0; margin-bottom:2px;
+    }
+    .bubble {
+      max-width:78%; padding:13px 16px; font-size:15px; line-height:1.72;
+    }
+    .brand .bubble {
+      background:rgba(255,253,249,.96); color:var(--text);
+      border-radius:18px 18px 18px 6px;
+      box-shadow:0 10px 24px rgba(81,98,85,.08);
+    }
+    .user .bubble {
+      background:linear-gradient(135deg, #6E8573 0%, #5E7564 100%); color:#fff;
+      border-radius:18px 18px 6px 18px;
+    }
+
+    /* ══ HINT ══ */
+    .q-hint {
+      padding:2px 0 8px 36px; font-size:13px;
+      color:var(--red); font-weight:600;
+      opacity:0; animation:fadeUp .3s ease .1s forwards;
+    }
+
+    /* ══ OPTIONS ══ */
+    .opts-wrap {
+      padding:4px 0 12px 36px; display:flex; flex-wrap:wrap; gap:8px;
+      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    }
+    .opt-btn {
+      background:rgba(255,253,249,.95); border:1.5px solid var(--green-border);
+      color:var(--green); font-size:14px; font-weight:600;
+      padding:11px 18px; border-radius:999px; cursor:pointer;
+      font-family:inherit; transition:all .15s; box-shadow:0 8px 16px rgba(81,98,85,.05);
+    }
+    .opt-btn.sel { background:linear-gradient(135deg, #6E8573 0%, #53695A 100%); color:#fff; border-color:#53695A; }
+    .opt-btn:active { transform:scale(.95); }
+
+    /* ══ NAME INPUT ══ */
+    .name-wrap {
+      padding:4px 0 12px 36px; display:flex; gap:8px;
+      opacity:0; animation:fadeUp .3s ease .15s forwards;
+    }
+    .name-input {
+      flex:1; padding:10px 16px; border:1.5px solid var(--green-border);
+      border-radius:50px; font-size:15px; font-family:inherit;
+      color:var(--text); background:var(--white); outline:none;
+    }
+    .name-input:focus { border-color:var(--green); }
+    .name-go {
+      padding:10px 20px; background:var(--green); color:#fff;
+      border:none; border-radius:50px; font-size:14px; font-weight:600;
+      font-family:inherit; cursor:pointer;
+    }
+
+    /* ══ SEND BTN ══ */
+    .send-btn {
+      margin:2px 0 8px 36px; padding:11px 24px;
+      background:linear-gradient(135deg, #6E8573 0%, #31453B 100%); color:#fff; border:none;
+      border-radius:50px; font-size:14px; font-weight:600;
+      font-family:inherit; cursor:pointer;
+      opacity:0; animation:fadeUp .25s ease .3s forwards;
+    }
+
+    /* ══ RESULT CARD ══ */
+    .res-card {
+      background:rgba(255,253,249,.96); border-radius:28px; padding:24px 20px;
+      margin:8px 0 8px 36px;
+      box-shadow:0 22px 44px rgba(87,103,90,.12);
+      border:1.5px solid var(--green-border);
+      opacity:0; animation:fadeUp .4s ease forwards;
+    }
+    .res-headline {
+      font-size:10px; letter-spacing:3px; color:var(--green);
+      text-transform:uppercase; font-weight:700; margin-bottom:18px;
+    }
+    .choices-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+    .cg-row { display:grid; grid-template-columns:72px 1fr; gap:8px; }
+    .cg-label { font-size:12px; color:var(--text-soft); padding-top:1px; }
+    .cg-val { font-size:14px; color:var(--text); font-weight:500; line-height:1.6; }
+    .steps-divider { height:1px; background:var(--green-border); margin-bottom:18px; }
+    .steps-title {
+      font-size:10px; letter-spacing:2px; color:var(--green);
+      font-weight:700; margin-bottom:14px;
+    }
+    .recommend-card {
+      padding:16px; margin-bottom:10px;
+      border:1px solid var(--green-border); border-radius:18px;
+      background:linear-gradient(180deg, #F6F9F4 0%, #EEF4EF 100%);
+    }
+    .recommend-card:last-child { margin-bottom:0; }
+    .recommend-action { font-size:13px; color:var(--text-mid); margin-bottom:7px; line-height:1.55; }
+    .recommend-product { font-size:16px; color:var(--green); font-weight:700; line-height:1.55; }
+    .advice-block { padding:15px 0 2px; color:var(--text-mid); font-size:14px; line-height:1.7; }
+    .advice-part + .advice-part { margin-top:18px; }
+    .advice-label { color:var(--text); font-weight:700; margin-bottom:4px; }
+
+    /* ══ 回上一步 ══ */
+    .btn-back-step {
+      display:block; margin:2px 0 6px auto;
+      background:transparent; border:none;
+      color:var(--text-soft); font-size:12px;
+      cursor:pointer; padding:4px 10px;
+      font-family:inherit; letter-spacing:0.5px;
+      opacity:0; animation:fadeUp .2s ease .1s forwards;
+    }
+    .btn-back-step:active { color:var(--text-mid); }
+
+    /* ══ RESTART ══ */
+    .restart-btn {
+      display:block; margin:16px auto 0;
+      padding:12px 32px; background:transparent;
+      border:1.5px solid var(--green-border); border-radius:50px;
+      color:var(--green); font-size:14px; font-family:inherit; cursor:pointer;
+      opacity:0; animation:fadeUp .3s ease .2s forwards;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ GU 頁 ══ -->
+<div id="screen-gu" class="screen active">
+  <div class="gu-inner">
+    <div class="gu-title">開始測試前</div>
+    <div class="gu-sub">請 GU 先完成以下確認</div>
+
+    <div class="gu-block">
+      <span class="gu-label">門市</span>
+      <div class="store-row">
+        <button class="store-btn" data-store="台北西門" onclick="pickStore(this)">台北西門</button>
+        <button class="store-btn" data-store="A11" onclick="pickStore(this)">A11</button>
+        <button class="store-btn" data-store="台北SOGO" onclick="pickStore(this)">台北SOGO</button>
+      </div>
+    </div>
+
+    <div class="gu-block">
+      <span class="gu-label">GU 姓名</span>
+      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="checkGU()">
+    </div>
+
+    <div class="gu-block">
+      <span class="gu-label">日期</span>
+      <input class="gu-input" id="gu-date" type="date">
+    </div>
+
+    <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
+  </div>
+</div>
+
+<!-- ══ WELCOME ══ -->
+<div id="screen-welcome" class="screen">
+  <div class="welcome-card">
+    <div class="hero-wrap">
+      <img class="hero-image" src="./ai-cover.jpg" alt="AI 肌膚顧問封面">
+      <div class="w-title">今日肌膚檢測</div>
+      <div class="w-sub">透過幾個簡單問題，<br>看看最近的肌膚需要什麼保養</div>
+    </div>
+    <div class="w-btn-outer">
+      <div class="btn-ring"></div>
+      <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div id="screen-chat" class="screen">
+  <div class="chat-header">
+    <div class="h-av">😊</div>
+    <div>
+      <div class="h-name">AI 肌膚顧問</div>
+      <div class="h-sub">● 線上中</div>
+    </div>
+  </div>
+  <div class="chat-body" id="chat"></div>
+</div>
+
+<script>
+  const chat = document.getElementById('chat');
+  let step = 0, answers = {}, selectedOpts = [];
+  const guData = { store:'', name:'', date:'' };
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
+
+  function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
+    var params = new URLSearchParams({
+      timestamp: new Date().toLocaleString('zh-TW'),
+      date: guData.date,
+      store: guData.store,
+      gu: guData.name,
+      ba: guData.name,
+      q1_skin_type: answers.skin_type || '',
+      q2_main_concern: mainConcern || '',
+      q3_other_concerns: s1arr.join('、'),
+      q4_lifestyle: s2arr.join('、'),
+      q5_goal: s3arr.join('、'),
+      q6_makeup: answers.makeup || '',
+      step1: (answers.skin_type || '') + '｜' + (mainConcern || '') + (s1arr.length ? '、' + s1arr.join('、') : ''),
+      step2: s2arr.join('、'),
+      step3: s3arr.join('、'),
+      makeup: answers.makeup || '',
+      source: 'chat_ai'
+    });
+    fetch(SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' }).catch(function(){});
+  }
+
+  // 自動填今天日期
+  document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+
+  function pickStore(btn){
+    document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+    btn.classList.add('sel');
+    guData.store = btn.dataset.store;
+    checkGU();
+  }
+  function checkGU(){
+    guData.name = document.getElementById('gu-name').value.trim();
+    const ready = guData.store && guData.name;
+    document.getElementById('gu-next').classList.toggle('ready', !!ready);
+  }
+
+  const questions = [
+    { key:'skin_type', multi:0,
+      q:'你平常比較接近哪種膚質呢？',
+      opts:['油性肌','混合肌','乾性肌','敏感肌'] },
+    { key:'main', multi:0,
+      q:'最近最困擾你的肌膚問題是？\n※ 請選一個最想優先改善的',
+      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉'] },
+    { key:'s1', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'除了剛剛的問題之外，還有其他困擾嗎？',
+      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉'] },
+    { key:'s2', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'最近的生活狀態，哪幾個跟你比較接近呢？',
+      opts:['最近熬夜比較多','長時間待在冷氣房','最近臉容易覺得黏膩不舒服','最近壓力有點大','最近生活作息比較亂','最近常待在戶外'] },
+    { key:'s3', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'今天最希望肌膚變成什麼狀態呢？',
+      opts:['想讓肌膚看起來透亮一點','想讓肌膚感覺水潤有光澤','想讓肌膚維持油水平衡','想讓肌膚維持穩定不容易鬧脾氣','想改善痘痘粉刺問題','想讓肌膚摸起來更細緻','想讓肌膚看起來更緊緻有彈力','想讓毛孔看起來更緊緻'] },
+    { key:'makeup', multi:0,
+      q:'平常出門有化妝習慣嗎？',
+      opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
+  ];
+
+  // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
+  const step01Data = {
+    '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感', product:'綠茶神經醯胺牛奶水精華' },
+    '乾燥缺水':  { action:'補充水分，舒緩乾燥緊繃感', product:'綠茶神經醯胺牛奶水精華' },
+    '皮膚缺乏光澤':{ action:'改善暗沉，提升肌膚光澤感', product:'維他命C淨亮棉片' },
+    '出油與毛孔粗大':{ action:'調理油脂與毛孔問題', product:'火山泥PHA毛孔緊緻露' },
+    '痘痘粉刺':  { action:'調理角質與毛孔阻塞問題', product:'A醇淨膚毛孔修護棉片' },
+    '熬夜暗沉':  { action:'修護疲憊膚況，恢復肌膚活力', product:'紅茶極效修護晶露' }
+  };
+
+  // ── STEP 02：依肌膚困擾決定核心精華 ──
+  const step02Data = {
+    '敏感泛紅':  { action:'補水舒緩，強化肌膚穩定度',     product:'綠茶籽玻尿酸保濕精華' },
+    '乾燥缺水':  { action:'深層補水，持續維持保濕感',     product:'綠茶籽玻尿酸保濕精華' },
+    '皮膚缺乏光澤':{ action:'提亮氣色，提升肌膚光澤感',   product:'維他命C淨亮精華' },
+    '出油與毛孔粗大':{ action:'調理膚況，優化毛孔與油脂', product:'A醇淨膚超修護安瓶' },
+    '痘痘粉刺':  { action:'調理粉刺痘痘反覆狀況',         product:'A醇淨膚超修護安瓶' },
+    '熬夜暗沉':  { action:'提亮疲憊暗沉，恢復肌膚光澤',   product:'維他命C淨亮精華' }
+  };
+
+  const mergedStep02Actions = {
+    '綠茶籽玻尿酸保濕精華': '補水舒緩，強化肌膚穩定度並持續維持保濕感',
+    '維他命C淨亮精華': '提亮氣色與疲憊暗沉，恢復肌膚光澤',
+    'A醇淨膚超修護安瓶': '調理粉刺痘痘反覆狀況，優化毛孔與油脂'
+  };
+
+  // ── Q5 目標 → 對應商品（用來判斷是否顯示 STEP 03）──
+  const q5ProductMap = {
+    '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
+    '想讓肌膚感覺水潤有光澤':      '綠茶籽玻尿酸保濕精華',
+    '想讓肌膚維持油水平衡':        'A醇淨膚超修護安瓶',
+    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶籽玻尿酸保濕精華',
+    '想改善痘痘粉刺問題':          'A醇淨膚超修護安瓶',
+    '想讓肌膚摸起來更細緻':        'A醇淨膚超修護安瓶',
+    '想讓肌膚看起來更緊緻有彈力':  '1%A醇PDRN水光安瓶',
+    '想讓毛孔看起來更緊緻':        '1%A醇PDRN水光安瓶'
+  };
+
+  // ── STEP 03 商品的 action text ──
+  const step03Actions = {
+    '維他命C淨亮精華':      '加強提亮，改善氣色暗沉',
+    '綠茶籽玻尿酸保濕精華': '加強補水，維持水潤光澤',
+    'A醇淨膚超修護安瓶':    '加強調理，改善細緻感',
+    '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
+  };
+
+  // ── STEP 04：依 Q2 膚質顯示夜間保養建議 ──
+  const nightCareAdvice = {
+    '油性肌': '油性肌：建議搭配乳液',
+    '混合肌': '混合肌：可依膚況選擇乳液或面霜',
+    '乾性肌': '乾性肌：建議搭配潤澤面霜',
+    '敏感肌': '敏感肌：建議搭配舒緩面霜'
+  };
+
+  function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+  function scrollDown(){ setTimeout(()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}),60); }
+
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    if(id === 'screen-chat') chat.scrollTop = 0;
+  }
+
+  function startChat(){
+    goTo('screen-chat');
+    setTimeout(nextStep, 300);
+  }
+
+  function addMsg(text, type){
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + type;
+    if(type==='brand'){
+      row.dataset.questionStep = step; // 標記這是第幾題的問題
+      row.innerHTML = '<div class="bav">AI</div><div class="bubble">' + text.replace(/\n/g,'<br>') + '</div>';
+    } else {
+      row.innerHTML = '<div class="bubble">' + text + '</div>';
+    }
+    chat.appendChild(row);
+    scrollDown();
+  }
+
+  function addBackButton(){
+    const targetStep = step; // 記住這個按鈕對應的步驟
+    const btn = document.createElement('button');
+    btn.className = 'btn-back-step';
+    btn.textContent = '↩ 重新選擇';
+    btn.onclick = function(){ handleGoBack(targetStep); };
+    chat.appendChild(btn);
+    scrollDown();
+  }
+
+  function handleGoBack(targetStep){
+    // 找到這一題對應的品牌訊息泡泡
+    const brandMsg = chat.querySelector('[data-question-step="' + targetStep + '"]');
+    if(!brandMsg) return;
+
+    // 清除從這題開始所有後續的答案
+    for(var i = targetStep; i < questions.length; i++){
+      if(questions[i]) delete answers[questions[i].key];
+    }
+    selectedOpts = [];
+
+    // 移除這題訊息到最後所有 DOM 元素
+    while(brandMsg.nextSibling){ chat.removeChild(brandMsg.nextSibling); }
+    chat.removeChild(brandMsg);
+
+    // 退回這一步重問
+    step = targetStep;
+    setTimeout(nextStep, 200);
+  }
+
+  function addOptions(q){
+    if(q.hint){
+      const h = document.createElement('div');
+      h.className = 'q-hint'; h.textContent = q.hint;
+      chat.appendChild(h);
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'opts-wrap'; selectedOpts = [];
+    var sendBtn = null;
+    const optionList = q.key === 's1'
+      ? q.opts.filter(function(opt){ return opt !== answers.main; })
+      : q.opts;
+    optionList.forEach(function(opt){
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn'; btn.textContent = opt;
+      btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
+      wrap.appendChild(btn);
+    });
+    chat.appendChild(wrap);
+    if(q.multi > 1){
+      sendBtn = document.createElement('button');
+      sendBtn.className = 'send-btn'; sendBtn.textContent = '確認送出 →';
+      sendBtn.onclick = function(){ submitMulti(wrap, sendBtn); };
+      chat.appendChild(sendBtn);
+    }
+    scrollDown();
+  }
+
+  function handleSel(btn, opt, multi, wrap, sendBtn){
+    if(multi <= 1){
+      wrap.remove();
+      answers[questions[step].key] = opt;
+      addMsg(opt, 'user');
+      addBackButton();
+      step++;
+      setTimeout(nextStep, 600);
+    } else {
+      if(btn.classList.contains('sel')){
+        btn.classList.remove('sel');
+        selectedOpts = selectedOpts.filter(function(o){ return o !== opt; });
+      } else {
+        if(selectedOpts.length >= multi) return;
+        btn.classList.add('sel'); selectedOpts.push(opt);
+      }
+      if(selectedOpts.length === multi) setTimeout(function(){ submitMulti(wrap, sendBtn); }, 300);
+    }
+  }
+
+  function submitMulti(wrap, sendBtn){
+    if(selectedOpts.length === 0) return;
+    wrap.remove(); if(sendBtn) sendBtn.remove();
+    answers[questions[step].key] = selectedOpts.slice();
+    addMsg(selectedOpts.join('、'), 'user');
+    addBackButton();
+    step++;
+    setTimeout(nextStep, 600);
+  }
+
+  async function nextStep(){
+    if(step < questions.length){
+      const q = questions[step];
+      addMsg(q.q, 'brand');
+      await delay(360);
+      addOptions(q);
+    } else {
+      await delay(400);
+      showResult();
+    }
+  }
+
+  function makeRecommendationCard(action, product) {
+    return '<div class="recommend-card">' +
+      '<div class="recommend-action">' + action + '</div>' +
+      '<div class="recommend-product">→ ' + product + '</div>' +
+    '</div>';
+  }
+
+  function makeSecondaryRecommendationCards(concerns) {
+    var grouped = {};
+    concerns.forEach(function(concern){
+      var recommendation = step02Data[concern];
+      if (!recommendation) return;
+      if (!grouped[recommendation.product]) {
+        grouped[recommendation.product] = { product:recommendation.product, actions:[recommendation.action] };
+      } else if (grouped[recommendation.product].actions.indexOf(recommendation.action) === -1) {
+        grouped[recommendation.product].actions.push(recommendation.action);
+      }
+    });
+    return Object.keys(grouped).map(function(product){
+      var item = grouped[product];
+      var action = item.actions.length > 1 ? (mergedStep02Actions[product] || item.actions.join('；')) : item.actions[0];
+      return makeRecommendationCard(action, product);
+    }).join('');
+  }
+
+  function makeAdviceRow(nightAdvice) {
+    return '<div class="advice-block">' +
+      '<div class="advice-part"><div class="advice-label">☀️ 白天保養</div>' +
+        '建議搭配防曬保護，幫助維持保養效果。<br>→ 維他命C亮白潤色防曬霜（潤色）<br>→ 綠茶玻尿酸保濕防曬精華（無潤色）</div>' +
+      '<div class="advice-part"><div class="advice-label">🌙 夜間保養</div>→ ' + nightAdvice + '</div>' +
+    '</div>';
+  }
+
+  function showResult(){
+    const mainConcern = answers.main || '';
+    const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
+    const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
+    const s3arr       = Array.isArray(answers.s3) ? answers.s3 : (answers.s3 ? [answers.s3] : []);
+    const makeup      = answers.makeup || '—';
+    const stype       = answers.skin_type || '—';
+
+    // ── 顧問邏輯：調理保養 → 核心精華 → 第二支精華 → 生活建議 ──
+    var recommendationsHtml = '';
+    var s01 = step01Data[mainConcern];
+    if (s01) {
+      recommendationsHtml += makeRecommendationCard(s01.action, s01.product);
+    }
+
+    recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
+
+    addMsg('已根據你的回答整理出今日保養方向 ✨', 'brand');
+    logToSheet(mainConcern, s1arr, s2arr, s3arr);
+
+    // 「你的選擇」顯示：主困擾 + 次要困擾
+    var concernVal = '✓ ' + mainConcern;
+    if (s1arr.length > 0) { concernVal += '<br>' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>'); }
+
+    setTimeout(function(){
+      const card = document.createElement('div');
+      card.className = 'res-card';
+      card.innerHTML =
+        '<div class="res-headline">今日肌膚關鍵字</div>' +
+        '<div class="choices-grid">' +
+          '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+          '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
+        '</div>' +
+        '<div class="steps-divider"></div>' +
+        '<div class="steps-title">今日推薦保養</div>' +
+        recommendationsHtml +
+        '<div class="steps-divider" style="margin-top:20px"></div>' +
+        '<div class="steps-title">保養加強建議</div>' +
+        makeAdviceRow(nightCareAdvice[stype]);
+
+      chat.appendChild(card);
+      scrollDown();
+
+      setTimeout(function(){
+        const btn = document.createElement('button');
+        btn.className = 'restart-btn'; btn.textContent = '再測一次';
+        btn.onclick = function(){
+          chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
+          document.getElementById('gu-name').value = '';
+          document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
+          guData.store = ''; guData.name = '';
+          document.getElementById('gu-next').classList.remove('ready');
+          document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+          goTo('screen-gu');
+        };
+        chat.appendChild(btn);
+        scrollDown();
+      }, 400);
+    }, 700);
+  }
+</script>
+</body>
+</html>
