@@ -422,7 +422,6 @@
       store: guData.store,
       gu: guData.name,
       ba: guData.name,
-      customer_name: answers.name || '',
       q1_skin_type: answers.skin_type || '',
       q2_main_concern: mainConcern || '',
       q3_other_concerns: s1arr.join(', '),
@@ -454,10 +453,8 @@
   }
 
   const questions = [
-    { key:'name', type:'name',
-      q:'What should I call you?' },
     { key:'skin_type', multi:0,
-      q:'{name}, which skin type best describes your skin most of the time?',
+      q:'Which skin type best describes your skin most of the time?',
       opts:['Oily','Combination','Dry','Sensitive'] },
     { key:'main', multi:0,
       q:'What is your biggest skin concern right now?\nPlease choose the one you would most like to address first.',
@@ -579,28 +576,6 @@
     setTimeout(nextStep, 200);
   }
 
-  function addNameInput(){
-    const wrap = document.createElement('div');
-    wrap.className = 'name-wrap';
-    const inp = document.createElement('input');
-    inp.className = 'name-input'; inp.type = 'text';
-    inp.placeholder = 'Enter your name'; inp.maxLength = 20;
-    const btn = document.createElement('button');
-    btn.className = 'name-go'; btn.textContent = 'Send';
-    const submit = function(){
-      const v = inp.value.trim() || 'You';
-      wrap.remove(); answers.name = v;
-      addMsg(v, 'user'); step++;
-      setTimeout(nextStep, 500);
-    };
-    btn.onclick = submit;
-    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
-    wrap.appendChild(inp); wrap.appendChild(btn);
-    chat.appendChild(wrap);
-    setTimeout(function(){ inp.focus(); }, 400);
-    scrollDown();
-  }
-
   function addOptions(q){
     if(q.hint){
       const h = document.createElement('div');
@@ -662,11 +637,9 @@
   async function nextStep(){
     if(step < questions.length){
       const q = questions[step];
-      const txt = q.q.replace('{name}', answers.name || 'You');
-      addMsg(txt, 'brand');
+      addMsg(q.q, 'brand');
       await delay(360);
-      if(q.type === 'name') addNameInput();
-      else addOptions(q);
+      addOptions(q);
     } else {
       await delay(400);
       showResult();
@@ -710,7 +683,6 @@
   }
 
   function showResult(){
-    const name        = answers.name || 'You';
     const mainConcern = answers.main || '';
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
     const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
@@ -726,7 +698,7 @@
 
     recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
 
-    addMsg('Thank you, ' + name + '!\nHere is your personalized skincare guide ✨', 'brand');
+    addMsg('Here is your personalized skincare guide ✨', 'brand');
     logToSheet(mainConcern, s1arr, s2arr, s3arr);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
