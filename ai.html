@@ -189,6 +189,22 @@
       padding:26px 22px;
       margin-bottom:14px;
     }
+    .step-back {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      margin-bottom:14px;
+      border:none;
+      border-radius:999px;
+      background:rgba(235,241,234,.82);
+      color:#50685A;
+      font-size:14px;
+      font-weight:700;
+      font-family:inherit;
+      cursor:pointer;
+    }
+    .step-back:active { transform:scale(.98); }
     .q-main {
       font-size:19px;
       line-height:1.65;
@@ -554,8 +570,13 @@
       '<div class="ai-head">' +
         '<div class="ai-avatar-large">🤖</div>' +
         '<div class="ai-chip">AI 肌膚顧問</div>' +
-      '</div>' +
-      '<div class="question-card">' + formatQuestionText(q.q) + '</div>';
+      '</div>';
+
+    if (step > 0) {
+      html += '<button class="step-back" type="button" data-back-step="1">← 上一題</button>';
+    }
+
+    html += '<div class="question-card">' + formatQuestionText(q.q) + '</div>';
 
     if (q.hint) html += '<div class="q-hint">' + q.hint + '</div>';
 
@@ -567,8 +588,26 @@
     html += '</div>' + renderProgress(step) + '</div>';
 
     chat.innerHTML = html;
+    bindBackEvent();
     bindOptionEvents(q);
     chat.scrollTop = 0;
+  }
+
+  function clearAnswersAfter(stepIndex) {
+    for (var i = stepIndex + 1; i < questions.length; i++) {
+      delete answers[questions[i].key];
+    }
+  }
+
+  function bindBackEvent() {
+    const backBtn = chat.querySelector('.step-back');
+    if (!backBtn) return;
+    backBtn.addEventListener('click', function(){
+      if (step <= 0) return;
+      step -= 1;
+      clearAnswersAfter(step);
+      renderCurrentStep();
+    });
   }
 
   function bindOptionEvents(q) {
@@ -578,6 +617,7 @@
         const value = btn.getAttribute('data-value');
         if (q.multi <= 1) {
           answers[q.key] = value;
+          clearAnswersAfter(step);
           step++;
           renderCurrentStep();
           return;
@@ -592,6 +632,7 @@
         }
         answers[q.key] = current;
         if (current.length >= q.multi) {
+          clearAnswersAfter(step);
           step++;
         }
         renderCurrentStep();
