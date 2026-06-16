@@ -105,27 +105,46 @@
     .hero-mouth {
       position:absolute;
       left:50%;
-      top:29%;
-      width:44px;
-      height:16px;
+      top:24.9%;
+      width:70px;
+      height:34px;
       transform:translate(-50%, -50%);
       pointer-events:none;
     }
     .hero-mouth::before {
       content:'';
       position:absolute;
-      inset:0;
-      border-bottom:4px solid rgba(244,255,246,.96);
+      left:50%;
+      top:50%;
+      width:52px;
+      height:22px;
+      transform:translate(-50%, -50%);
+      border-radius:999px;
+      background:radial-gradient(ellipse at center,
+        rgba(41,52,49,.98) 0%,
+        rgba(37,47,45,.98) 64%,
+        rgba(37,47,45,0) 100%);
+      filter:blur(0.6px);
+    }
+    .hero-mouth::after {
+      content:'';
+      position:absolute;
+      left:50%;
+      top:54%;
+      width:36px;
+      height:14px;
+      transform:translate(-50%, -50%);
+      border-bottom:3px solid rgba(243,255,245,.98);
       border-radius:0 0 999px 999px;
-      animation:smileMotion 2.6s ease-in-out infinite;
       transform-origin:center top;
+      animation:smileMotion 2.6s ease-in-out infinite;
     }
     @keyframes smileMotion {
       0%, 100% {
-        transform:scaleX(1) scaleY(1) translateY(0);
+        transform:translate(-50%, -50%) scaleX(1) scaleY(1) translateY(0);
       }
       50% {
-        transform:scaleX(1.14) scaleY(1.24) translateY(1px);
+        transform:translate(-50%, -50%) scaleX(1.18) scaleY(1.36) translateY(1px);
       }
     }
 
