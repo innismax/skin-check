@@ -96,50 +96,10 @@
       padding:0;
       cursor:pointer;
       border-radius:28px;
-      position:relative;
     }
     .hero-image {
       width:min(100%, 360px); display:block; border-radius:28px;
       margin:0 auto; box-shadow:0 16px 40px rgba(92,108,95,.16);
-    }
-    .hero-ring {
-      position:absolute;
-      left:50%;
-      top:77.2%;
-      width:58%;
-      height:10.8%;
-      transform:translate(-50%, -50%);
-      pointer-events:none;
-      border-radius:999px;
-      padding:2px;
-      background:linear-gradient(90deg, rgba(222,230,219,.14), rgba(255,255,255,.7), rgba(222,230,219,.14));
-      box-shadow:0 0 18px rgba(188,203,191,.26);
-      overflow:hidden;
-    }
-    .hero-ring::before {
-      content:'';
-      position:absolute;
-      inset:-24%;
-      border-radius:999px;
-      background:conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        transparent 302deg,
-        rgba(226,239,229,.92) 326deg,
-        rgba(255,255,255,1) 344deg,
-        rgba(168,188,173,.92) 360deg
-      );
-      animation:heroRingSpin 1.6s linear infinite;
-    }
-    .hero-ring::after {
-      content:'';
-      position:absolute;
-      inset:2px;
-      border-radius:999px;
-      background:transparent;
-    }
-    @keyframes heroRingSpin {
-      to { transform:rotate(360deg); }
     }
 
     /* ══ CHAT 背景 ══ */
@@ -414,7 +374,6 @@
     <div class="hero-wrap">
       <button class="hero-btn" onclick="startChat()" aria-label="開始體驗">
         <img class="hero-image" src="./ai-cover.jpg" alt="AI 肌膚顧問封面">
-        <span class="hero-ring" aria-hidden="true"></span>
       </button>
     </div>
   </div>
