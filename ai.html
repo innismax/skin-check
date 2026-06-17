@@ -421,6 +421,8 @@
 <script>
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
+  let stepAdvanceTimer = null;
+  let isAdvancing = false;
   const guData = { store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
@@ -538,6 +540,11 @@
   };
 
   function goTo(id){
+    if (stepAdvanceTimer) {
+      clearTimeout(stepAdvanceTimer);
+      stepAdvanceTimer = null;
+    }
+    isAdvancing = false;
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     window.scrollTo(0,0);
@@ -620,6 +627,11 @@
     const backBtn = chat.querySelector('.step-back');
     if (!backBtn) return;
     backBtn.addEventListener('click', function(){
+      if (stepAdvanceTimer) {
+        clearTimeout(stepAdvanceTimer);
+        stepAdvanceTimer = null;
+      }
+      isAdvancing = false;
       if (step <= 0) return;
       step -= 1;
       clearAnswersAfter(step);
@@ -627,16 +639,28 @@
     });
   }
 
+  function scheduleNextStep() {
+    if (stepAdvanceTimer) clearTimeout(stepAdvanceTimer);
+    isAdvancing = true;
+    stepAdvanceTimer = setTimeout(function(){
+      stepAdvanceTimer = null;
+      isAdvancing = false;
+      step++;
+      renderCurrentStep();
+    }, 1000);
+  }
+
   function bindOptionEvents(q) {
     const btns = chat.querySelectorAll('.opt-btn');
     btns.forEach(function(btn){
       btn.addEventListener('click', function(){
+        if (isAdvancing) return;
         const value = btn.getAttribute('data-value');
         if (q.multi <= 1) {
           answers[q.key] = value;
           clearAnswersAfter(step);
-          step++;
           renderCurrentStep();
+          scheduleNextStep();
           return;
         }
 
@@ -650,7 +674,9 @@
         answers[q.key] = current;
         if (current.length >= q.multi) {
           clearAnswersAfter(step);
-          step++;
+          renderCurrentStep();
+          scheduleNextStep();
+          return;
         }
         renderCurrentStep();
       });
