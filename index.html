@@ -125,35 +125,38 @@
 
     /* ══ CHAT HEADER ══ */
     .chat-header {
-      background:var(--white); border-bottom:1px solid var(--green-border);
-      padding:13px 20px; display:flex; align-items:center; gap:12px;
-      position:sticky; top:0; z-index:10; flex-shrink:0;
+      background:#F3F8F4; border:1px solid rgba(255,255,255,.78);
+      border-bottom:none;
+      padding:16px 22px; display:flex; align-items:center; gap:12px;
+      position:relative; top:auto; z-index:10; flex-shrink:0;
+      width:min(100%, 620px); margin:18px auto 0;
+      border-radius:34px 34px 0 0;
     }
     .h-av {
-      width:36px; height:36px; background:var(--green); border-radius:50%;
+      width:42px; height:42px; background:var(--brand-green); border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:18px; font-weight:700; flex-shrink:0;
+      color:#fff; font-size:18px; font-weight:800; flex-shrink:0;
+      box-shadow:0 10px 18px rgba(47,165,104,.18);
     }
-    .h-name { font-size:14px; font-weight:600; }
-    .h-sub  { font-size:11px; color:var(--green); }
+    .h-name { font-size:15px; font-weight:800; color:#263B31; }
+    .h-sub  { font-size:12px; color:var(--brand-green-deep); font-weight:700; }
 
     /* ══ CHAT 背景 ══ */
     #screen-chat {
-      background:
-        linear-gradient(to top, rgba(190,185,240,0.28) 0%, transparent 18%),
-        linear-gradient(160deg, #EDEDF4 0%, #E8E8F0 55%, #DCDCE8 100%);
+      background:linear-gradient(180deg, var(--brand-green) 0%, #2FA568 100%);
       position:relative;
       height:100vh;
       height:100dvh;
       min-height:0;
       overflow:hidden;
+      padding:0 18px 22px;
     }
     /* 右側大弧線 */
     #screen-chat::before {
       content:'';
       position:fixed; top:6vh; right:-155px;
       width:360px; height:360px; border-radius:50%;
-      border:1.5px solid rgba(190,185,235,0.38);
+      border:1.5px solid rgba(255,255,255,0.16);
       pointer-events:none; z-index:0;
     }
     /* 右側小弧線 */
@@ -161,18 +164,23 @@
       content:'';
       position:fixed; top:18vh; right:-115px;
       width:270px; height:270px; border-radius:50%;
-      border:1px solid rgba(190,185,235,0.22);
+      border:1px solid rgba(255,255,255,0.11);
       pointer-events:none; z-index:0;
     }
 
     /* ══ CHAT AREA ══ */
     .chat-body {
-      flex:1; min-height:0; padding:20px 20px 40px;
+      flex:1; min-height:0; padding:24px 24px 38px;
       max-width:600px; width:100%; margin:0 auto;
       display:flex; flex-direction:column;
       position:relative; z-index:1;
       overflow-y:auto; overscroll-behavior:contain;
       -webkit-overflow-scrolling:touch;
+      background:rgba(255,254,252,.96);
+      border:1px solid rgba(255,255,255,.78);
+      border-top:none;
+      border-radius:0 0 34px 34px;
+      box-shadow:0 28px 60px rgba(31,110,72,.22);
     }
 
     /* ══ BUBBLES ══ */
@@ -185,42 +193,54 @@
     .msg-row.brand { justify-content:flex-start; }
     .msg-row.user  { justify-content:flex-end; }
     .bav {
-      width:28px; height:28px; background:var(--green); border-radius:50%;
+      width:30px; height:30px; background:var(--brand-green); border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:9px; font-weight:700; flex-shrink:0; margin-bottom:2px;
+      color:#fff; font-size:9px; font-weight:800; flex-shrink:0; margin-bottom:2px;
     }
     .bubble {
-      max-width:75%; padding:11px 15px; font-size:15px; line-height:1.65;
+      max-width:78%; padding:14px 17px; font-size:16px; line-height:1.65;
     }
     .brand .bubble {
-      background:var(--white); color:var(--text);
-      border-radius:4px 18px 18px 18px;
-      box-shadow:0 1px 4px rgba(0,0,0,.07);
+      background:#F7FBF8; color:#263B31;
+      border-radius:8px 22px 22px 22px;
+      box-shadow:0 10px 20px rgba(47,90,61,.08);
+      font-weight:650;
     }
     .user .bubble {
-      background:var(--green); color:#fff;
-      border-radius:18px 18px 4px 18px;
+      background:var(--brand-green); color:#fff;
+      border-radius:22px 22px 8px 22px;
+      box-shadow:0 12px 22px rgba(47,165,104,.18);
+      font-weight:700;
     }
 
     /* ══ HINT ══ */
     .q-hint {
-      padding:2px 0 8px 36px; font-size:13px;
+      padding:5px 0 10px 42px; font-size:14px;
       color:var(--red); font-weight:600;
       opacity:0; animation:fadeUp .3s ease .1s forwards;
     }
 
     /* ══ OPTIONS ══ */
     .opts-wrap {
-      padding:4px 0 12px 36px; display:flex; flex-wrap:wrap; gap:8px;
+      padding:8px 0 16px 42px; display:grid; grid-template-columns:1fr; gap:10px;
       opacity:0; animation:fadeUp .3s ease .15s forwards;
     }
     .opt-btn {
-      background:var(--white); border:1.5px solid var(--green-border);
-      color:var(--green); font-size:14px; font-weight:500;
-      padding:8px 16px; border-radius:50px; cursor:pointer;
+      background:#fff; border:1.5px solid var(--green-border);
+      color:var(--brand-green-deep); font-size:16px; font-weight:750;
+      padding:14px 18px; border-radius:50px; cursor:pointer;
       font-family:inherit; transition:all .15s;
+      display:flex; align-items:center; gap:11px; text-align:left;
+      box-shadow:0 8px 16px rgba(47,90,61,.05);
     }
-    .opt-btn.sel { background:var(--green); color:#fff; border-color:var(--green); }
+    .opt-btn::before {
+      content:attr(data-icon);
+      width:30px; height:30px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; background:#F3F8F4; font-size:15px;
+    }
+    .opt-btn.sel { background:var(--brand-green); color:#fff; border-color:var(--brand-green); }
+    .opt-btn.sel::before { background:rgba(255,255,255,.22); }
     .opt-btn:active { transform:scale(.95); }
 
     /* ══ NAME INPUT ══ */
@@ -242,17 +262,18 @@
 
     /* ══ SEND BTN ══ */
     .send-btn {
-      margin:2px 0 8px 36px; padding:10px 24px;
-      background:var(--green); color:#fff; border:none;
-      border-radius:50px; font-size:14px; font-weight:600;
+      margin:2px 0 10px 42px; padding:13px 26px;
+      background:var(--brand-green); color:#fff; border:none;
+      border-radius:50px; font-size:15px; font-weight:700;
       font-family:inherit; cursor:pointer;
+      box-shadow:0 12px 22px rgba(47,165,104,.18);
       opacity:0; animation:fadeUp .25s ease .3s forwards;
     }
 
     /* ══ RESULT CARD ══ */
     .res-card {
       background:var(--white); border-radius:20px; padding:24px 20px;
-      margin:8px 0 8px 36px;
+      margin:8px 0 8px 42px;
       box-shadow:0 2px 16px rgba(74,124,89,.1);
       border:1.5px solid var(--green-border);
       opacity:0; animation:fadeUp .4s ease forwards;
@@ -539,6 +560,18 @@
     setTimeout(nextStep, 200);
   }
 
+  function iconForOption(opt){
+    if(opt.indexOf('油') > -1 || opt.indexOf('黏膩') > -1 || opt.indexOf('毛孔') > -1) return '💧';
+    if(opt.indexOf('乾') > -1 || opt.indexOf('水潤') > -1 || opt.indexOf('保濕') > -1) return '○';
+    if(opt.indexOf('敏感') > -1 || opt.indexOf('穩定') > -1 || opt.indexOf('壓力') > -1) return '＋';
+    if(opt.indexOf('光澤') > -1 || opt.indexOf('透亮') > -1 || opt.indexOf('暗沉') > -1 || opt.indexOf('熬夜') > -1) return '✦';
+    if(opt.indexOf('痘') > -1 || opt.indexOf('粉刺') > -1) return '•';
+    if(opt.indexOf('緊緻') > -1 || opt.indexOf('彈力') > -1) return '⌁';
+    if(opt.indexOf('戶外') > -1 || opt.indexOf('防曬') > -1) return '☼';
+    if(opt.indexOf('冷氣') > -1) return '◌';
+    return '✓';
+  }
+
   function addOptions(q){
     if(q.hint){
       const h = document.createElement('div');
@@ -554,6 +587,7 @@
     optionList.forEach(function(opt){
       const btn = document.createElement('button');
       btn.className = 'opt-btn'; btn.textContent = opt;
+      btn.dataset.icon = iconForOption(opt);
       btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
       wrap.appendChild(btn);
     });
