@@ -283,6 +283,27 @@
       background:radial-gradient(circle at center, rgba(255,255,255,.92) 0 38%, transparent 41%);
     }
     .opt-btn:active { transform:scale(.985); }
+    .step-next {
+      width:100%;
+      min-height:58px;
+      margin-top:16px;
+      border:none;
+      border-radius:999px;
+      background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
+      color:#fff;
+      font-size:18px;
+      font-weight:700;
+      font-family:inherit;
+      cursor:pointer;
+      box-shadow:0 14px 24px rgba(47,165,104,.18);
+      transition:opacity .15s ease, transform .15s ease;
+    }
+    .step-next:active { transform:scale(.985); }
+    .step-next:disabled {
+      opacity:.38;
+      cursor:default;
+      box-shadow:none;
+    }
     .progress-card {
       margin-top:18px;
       background:rgba(255,253,249,.98);
@@ -421,8 +442,6 @@
 <script>
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
-  let stepAdvanceTimer = null;
-  let isAdvancing = false;
   const guData = { store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
@@ -540,11 +559,6 @@
   };
 
   function goTo(id){
-    if (stepAdvanceTimer) {
-      clearTimeout(stepAdvanceTimer);
-      stepAdvanceTimer = null;
-    }
-    isAdvancing = false;
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     window.scrollTo(0,0);
@@ -609,11 +623,15 @@
       const isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
       html += '<button class="opt-btn' + isSelected + '" data-value="' + opt + '">' + opt + '</button>';
     });
-    html += '</div>' + renderProgress(step) + '</div>';
+    var hasSelection = selected.length > 0;
+    html += '</div>';
+    html += '<button class="step-next" type="button"' + (hasSelection ? '' : ' disabled') + '>下一題 →</button>';
+    html += renderProgress(step) + '</div>';
 
     chat.innerHTML = html;
     bindBackEvent();
     bindOptionEvents(q);
+    bindNextEvent(q);
     chat.scrollTop = 0;
   }
 
@@ -627,11 +645,6 @@
     const backBtn = chat.querySelector('.step-back');
     if (!backBtn) return;
     backBtn.addEventListener('click', function(){
-      if (stepAdvanceTimer) {
-        clearTimeout(stepAdvanceTimer);
-        stepAdvanceTimer = null;
-      }
-      isAdvancing = false;
       if (step <= 0) return;
       step -= 1;
       clearAnswersAfter(step);
@@ -639,28 +652,15 @@
     });
   }
 
-  function scheduleNextStep() {
-    if (stepAdvanceTimer) clearTimeout(stepAdvanceTimer);
-    isAdvancing = true;
-    stepAdvanceTimer = setTimeout(function(){
-      stepAdvanceTimer = null;
-      isAdvancing = false;
-      step++;
-      renderCurrentStep();
-    }, 1000);
-  }
-
   function bindOptionEvents(q) {
     const btns = chat.querySelectorAll('.opt-btn');
     btns.forEach(function(btn){
       btn.addEventListener('click', function(){
-        if (isAdvancing) return;
         const value = btn.getAttribute('data-value');
         if (q.multi <= 1) {
           answers[q.key] = value;
           clearAnswersAfter(step);
           renderCurrentStep();
-          scheduleNextStep();
           return;
         }
 
@@ -672,14 +672,21 @@
           current.push(value);
         }
         answers[q.key] = current;
-        if (current.length >= q.multi) {
-          clearAnswersAfter(step);
-          renderCurrentStep();
-          scheduleNextStep();
-          return;
-        }
         renderCurrentStep();
       });
+    });
+  }
+
+  function bindNextEvent(q) {
+    const nextBtn = chat.querySelector('.step-next');
+    if (!nextBtn) return;
+    nextBtn.addEventListener('click', function(){
+      const currentValue = answers[q.key];
+      const selected = Array.isArray(currentValue) ? currentValue : (currentValue ? [currentValue] : []);
+      if (!selected.length) return;
+      clearAnswersAfter(step);
+      step++;
+      renderCurrentStep();
     });
   }
 
