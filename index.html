@@ -240,6 +240,7 @@
       display:flex; align-items:center; justify-content:center;
       flex-shrink:0; background:#F3F8F4; font-size:15px;
     }
+    .opt-btn.no-icon::before { display:none; }
     .opt-btn.sel { background:var(--brand-green); color:#fff; border-color:var(--brand-green); }
     .opt-btn.sel::before { background:rgba(255,255,255,.22); }
     .opt-btn:active { transform:scale(.95); }
@@ -568,16 +569,7 @@
       '乾性肌': '☁',
       '敏感肌': '♡'
     };
-    if(skinTypeIcons[opt]) return skinTypeIcons[opt];
-    if(opt.indexOf('油') > -1 || opt.indexOf('黏膩') > -1 || opt.indexOf('毛孔') > -1) return '💧';
-    if(opt.indexOf('乾') > -1 || opt.indexOf('水潤') > -1 || opt.indexOf('保濕') > -1) return '○';
-    if(opt.indexOf('敏感') > -1 || opt.indexOf('穩定') > -1 || opt.indexOf('壓力') > -1) return '＋';
-    if(opt.indexOf('光澤') > -1 || opt.indexOf('透亮') > -1 || opt.indexOf('暗沉') > -1 || opt.indexOf('熬夜') > -1) return '✦';
-    if(opt.indexOf('痘') > -1 || opt.indexOf('粉刺') > -1) return '•';
-    if(opt.indexOf('緊緻') > -1 || opt.indexOf('彈力') > -1) return '⌁';
-    if(opt.indexOf('戶外') > -1 || opt.indexOf('防曬') > -1) return '☼';
-    if(opt.indexOf('冷氣') > -1) return '◌';
-    return '✓';
+    return skinTypeIcons[opt] || '';
   }
 
   function addOptions(q){
@@ -596,6 +588,7 @@
       const btn = document.createElement('button');
       btn.className = 'opt-btn'; btn.textContent = opt;
       btn.dataset.icon = iconForOption(opt);
+      if(!btn.dataset.icon) btn.classList.add('no-icon');
       btn.onclick = function(){ handleSel(btn, opt, q.multi, wrap, sendBtn); };
       wrap.appendChild(btn);
     });
