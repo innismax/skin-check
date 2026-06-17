@@ -125,10 +125,19 @@
       font-weight:700;
       font-family:inherit;
       box-shadow:0 18px 34px rgba(32,92,60,.18);
+      position:relative;
+      overflow:hidden;
     }
     .hero-arrow {
       margin-left:14px;
       font-size:26px;
+      display:inline-block;
+      animation:arrowCue 1.15s ease-in-out infinite;
+    }
+    @keyframes arrowCue {
+      0%, 100% { transform:translateX(0); opacity:.58; }
+      45% { transform:translateX(8px); opacity:1; }
+      70% { transform:translateX(3px); opacity:.82; }
     }
 
     /* ══ CHAT 背景 ══ */
