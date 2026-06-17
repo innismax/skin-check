@@ -625,8 +625,9 @@
     });
     var hasSelection = selected.length > 0;
     html += '</div>';
+    html += renderProgress(step);
     html += '<button class="step-next" type="button"' + (hasSelection ? '' : ' disabled') + '>下一題 →</button>';
-    html += renderProgress(step) + '</div>';
+    html += '</div>';
 
     chat.innerHTML = html;
     bindBackEvent();
