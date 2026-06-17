@@ -8,6 +8,7 @@
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     :root {
       --green:#4A7C59; --green-mid:#6B9E7A; --green-pale:#EEF4EF;
+      --brand-green:#39C77C; --brand-green-deep:#2FA568;
       --green-border:#D3E4D8; --bg:#F2F4F0; --white:#fff;
       --text:#1C1C1E; --text-mid:#6B7280; --text-soft:#9CA3AF;
       --red:#D94F4F;
@@ -67,107 +68,59 @@
     /* ══ WELCOME ══ */
     #screen-welcome {
       align-items:center; justify-content:center;
-      background:linear-gradient(160deg, #EDEDF4 0%, #E6E6EF 50%, #DCDCE8 100%);
+      background:linear-gradient(180deg, var(--brand-green) 0%, #34BC74 100%);
       padding:40px 32px 56px; gap:0;
     }
 
-    /* 發光圓圈區塊 */
     .glow-wrap {
       display:flex; flex-direction:column; align-items:center;
-      position:relative; width:100%; margin:0;
+      position:relative; width:100%; max-width:430px; margin:0;
+      text-align:center; color:#fff;
+    }
+    .brand-title {
+      font-size:54px; line-height:1; font-weight:800;
+      letter-spacing:.5px; color:#fff; margin-bottom:32px;
     }
     .w-title {
-      font-size:32px; font-weight:300; letter-spacing:8px;
-      color:#3A3A4A; line-height:1.3; text-align:center;
-      margin-bottom:20px;
-    }
-    .glow-circle {
-      width:300px; height:300px; border-radius:50%;
-  border:1.5px solid rgba(155,140,255,0.68);
-  box-shadow:
-    0 0 26px rgba(155,140,255,0.34),
-    0 0 68px rgba(199,191,255,0.24),
-    inset 0 0 44px rgba(231,242,255,0.18);
-      position:relative;
-      display:flex; align-items:center; justify-content:center;
-    }
-    /* 橫向光線 */
-    .glow-circle::before {
-      content:'';
-      position:absolute;
-      width:340px; height:1.5px;
-      background:linear-gradient(90deg,
-        transparent 0%,
-    rgba(199,191,255,0.52) 20%,
-    rgba(231,242,255,0.98) 50%,
-    rgba(199,191,255,0.52) 80%,
-        transparent 100%);
-      top:50%; left:50%;
-      transform:translate(-50%,-50%);
-    }
-    /* 地面倒影 */
-    .glow-circle::after {
-      content:'';
-      position:absolute;
-      bottom:-36px; left:50%;
-      transform:translateX(-50%);
-      width:65%; height:32px;
-      background:radial-gradient(ellipse at center,
-    rgba(155,140,255,0.38) 0%, transparent 70%);
+      font-size:42px; font-weight:700; letter-spacing:3px;
+      color:#fff; line-height:1.18; text-align:center;
+      margin-bottom:22px;
     }
 
-    /* 副標（圓圈中間） */
+    .glow-circle { display:contents; }
+
     .w-sub {
-      font-size:16px; color:#5A5A72; letter-spacing:0.5px;
-      line-height:2; text-align:center;
-      position:absolute; z-index:1;
-      top:50%; left:50%;
-      transform:translate(-50%, -50%);
-      width:88%; white-space:nowrap;
+      font-size:18px; color:rgba(255,255,255,.9); letter-spacing:0;
+      line-height:1.9; text-align:center;
+      position:static; transform:none; width:auto; white-space:normal;
+      font-weight:500; margin-bottom:44px;
     }
 
-    /* 按鈕外層 */
     .w-btn-outer {
-      position:relative; width:100%; max-width:300px;
-      border-radius:50px; padding:2px;
-  background:rgba(155,140,255,0.3);
-  box-shadow:0 0 22px rgba(155,140,255,0.2);
-      overflow:hidden;
-      margin-top:48px;
+      position:relative; width:100%; max-width:320px;
+      border-radius:50px; padding:0;
+      background:transparent; box-shadow:none;
+      overflow:visible; margin-top:0;
     }
-    /* 旋轉光圈：從中心旋轉，只有邊框2px露出來 */
-    .btn-ring {
-      position:absolute;
-      top:50%; left:50%;
-      width:220%; height:700%;
-      transform:translate(-50%,-50%);
-      background:conic-gradient(
-        from 0deg,
-        transparent 0deg,
-    transparent 300deg,
-    rgba(155,140,255,0.95) 322deg,
-    rgba(231,242,255,1) 344deg,
-    rgba(199,191,255,0.95) 360deg
-      );
-      animation:spinRing 1.4s linear infinite;
-      pointer-events:none;
-    }
-    @keyframes spinRing {
-      to { transform:translate(-50%,-50%) rotate(360deg); }
-    }
-    /* 毛玻璃按鈕 */
+    .btn-ring { display:none; }
     .w-btn {
-      position:relative; z-index:1;
-      width:100%; padding:16px 32px;
-      background:rgba(240,240,248,0.85);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      border:1px solid rgba(200,200,230,0.4);
-      border-radius:50px;
-      font-size:15px; font-weight:400;
-      color:#4A4A62; font-family:inherit; cursor:pointer;
-      letter-spacing:2px;
+      position:relative; z-index:1; overflow:hidden;
+      width:100%; min-height:68px; padding:0 28px;
+      background:#fff; border:none; border-radius:50px;
+      font-size:24px; font-weight:700;
+      color:var(--brand-green-deep); font-family:inherit; cursor:pointer;
+      letter-spacing:0;
       display:flex; align-items:center; justify-content:center; gap:12px;
+      box-shadow:0 18px 34px rgba(32,92,60,.18);
+    }
+    .w-btn .arrow {
+      display:inline-block; font-size:26px;
+      animation:arrowCue 1.15s ease-in-out infinite;
+    }
+    @keyframes arrowCue {
+      0%, 100% { transform:translateX(0); opacity:.58; }
+      45% { transform:translateX(8px); opacity:1; }
+      70% { transform:translateX(3px); opacity:.82; }
     }
 
     /* ══ CHAT HEADER ══ */
@@ -384,6 +337,7 @@
 <!-- ══ WELCOME ══ -->
 <div id="screen-welcome" class="screen">
   <div class="glow-wrap">
+    <div class="brand-title">INNISFREE</div>
     <div class="w-title">今日肌膚檢測</div>
     <div class="glow-circle">
       <div class="w-sub">透過幾個簡單問題，<br>看看最近的肌膚需要什麼保養</div>
@@ -392,7 +346,7 @@
 
   <div class="w-btn-outer">
     <div class="btn-ring"></div>
-    <button class="w-btn" onclick="startChat()">開始體驗 &nbsp;→</button>
+    <button class="w-btn" onclick="startChat()">開始體驗 <span class="arrow">→</span></button>
   </div>
 </div>
 
