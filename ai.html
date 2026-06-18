@@ -368,21 +368,64 @@
       font-weight:700; margin-bottom:14px;
     }
     .recommend-card {
-      padding:16px; margin-bottom:10px;
-      border:1px solid var(--green-border); border-radius:18px;
-      background:linear-gradient(180deg, #F6F9F4 0%, #EEF4EF 100%);
+      display:grid;
+      grid-template-columns:112px 1fr;
+      gap:16px;
+      align-items:center;
+      padding:16px 18px; margin-bottom:12px;
+      border:1px solid var(--green-border); border-radius:22px;
+      background:linear-gradient(180deg, #FBFDF9 0%, #F0F6F0 100%);
+      box-shadow:0 10px 24px rgba(103,126,108,.08);
     }
     .recommend-card:last-child { margin-bottom:0; }
-    .recommend-tag {
-      font-size:10px;
-      letter-spacing:1.4px;
+    .recommend-media {
+      height:112px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(242,248,241,.95) 0%, rgba(232,240,232,.95) 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border:1px solid rgba(122,163,132,.14);
+    }
+    .recommend-media img {
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+    .recommend-placeholder {
+      padding:12px;
+      text-align:center;
+      color:rgba(73,111,84,.72);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:700;
+      letter-spacing:.6px;
+    }
+    .recommend-copy {
+      min-width:0;
+    }
+    .recommend-action {
+      font-size:21px;
+      color:var(--text);
+      font-weight:700;
+      line-height:1.42;
+      margin-bottom:10px;
+    }
+    .recommend-product {
+      font-size:15px;
       color:var(--green);
       font-weight:700;
-      margin-bottom:6px;
-      text-transform:uppercase;
+      line-height:1.5;
     }
-    .recommend-action { font-size:13px; color:var(--text-mid); margin-bottom:7px; line-height:1.55; }
-    .recommend-product { font-size:16px; color:var(--green); font-weight:700; line-height:1.55; }
+    .recommend-product-label {
+      display:block;
+      color:var(--text-soft);
+      font-size:11px;
+      letter-spacing:1.2px;
+      margin-bottom:4px;
+    }
     .advice-block { padding:15px 0 2px; color:var(--text-mid); font-size:14px; line-height:1.7; }
     .advice-part + .advice-part { margin-top:18px; }
     .advice-label { color:var(--text); font-weight:700; margin-bottom:4px; }
@@ -405,6 +448,14 @@
       .hero-title { font-size:34px; margin-bottom:18px; }
       .hero-sub { font-size:16px; margin-bottom:34px; }
       .hero-btn { min-height:62px; font-size:22px; }
+      .recommend-card {
+        grid-template-columns:90px 1fr;
+        gap:12px;
+        padding:14px;
+      }
+      .recommend-media { height:90px; border-radius:16px; }
+      .recommend-action { font-size:18px; }
+      .recommend-product { font-size:14px; }
     }
   </style>
 </head>
@@ -563,25 +614,12 @@
     '最近開始在意彈力下降，或紋路感越來越明顯':       { action:'針對彈力與紋路需求，加強滋養與抗老修護', product:'九重完美青春再生活膚霜' }
   };
 
-  const productTags = {
-    '綠茶神經醯胺牛奶水精華':'調理保養 × 穩定膚況',
-    '維他命C淨亮棉片':'調理保養 × 提亮光澤',
-    '火山泥PHA毛孔緊緻露':'調理保養 × 毛孔淨化',
-    'A醇淨膚毛孔修護棉片':'調理保養 × 角質毛孔',
-    '紅茶極效修護晶露':'調理保養 × 修護疲憊',
-    '綠茶籽玻尿酸保濕精華':'核心精華 × 補水保濕',
-    '維他命C淨亮精華':'核心精華 × 提亮淨亮',
-    'A醇淨膚超修護安瓶':'核心精華 × 淨膚修護',
-    '維他命C亮白眼部精華':'眼周加強 × 提亮暗沉',
-    '綠茶玻尿酸保濕滾珠眼部精華':'眼周加強 × 舒緩浮腫',
-    '九重完美青春再生眼霜':'眼周加強 × 滋養抗紋',
-    'A醇PDRN眼唇撫紋精華':'眼周加強 × 撫紋彈力',
-    '維他命C淨亮淡斑凝霜':'面霜收尾 × 亮白淡斑',
-    '綠茶籽玻尿酸保濕霜':'面霜收尾 × 補水鎖水',
-    '綠茶神經醯胺保濕霜':'面霜收尾 × 舒緩穩定',
-    'A醇淨膚超修護霜':'面霜收尾 × 淨膚毛孔',
-    '紅茶極效修護霜':'面霜收尾 × 修護疲憊',
-    '九重完美青春再生活膚霜':'面霜收尾 × 抗老彈力'
+  const productAssets = {
+    '綠茶神經醯胺牛奶水精華':'assets/products/green-tea-ceramide-milk-essence.png',
+    '維他命C淨亮棉片':'assets/products/vitamin-c-brightening-pad.png',
+    '火山泥PHA毛孔緊緻露':'assets/products/volcanic-pha-pore-toner.png',
+    'A醇淨膚毛孔修護棉片':'assets/products/retinol-cica-repair-pad.png',
+    '紅茶極效修護晶露':'assets/products/black-tea-treatment-essence.png'
   };
 
   function goTo(id){
@@ -717,11 +755,21 @@
     });
   }
 
+  function makeProductMedia(product) {
+    var asset = productAssets[product];
+    if (asset) {
+      return '<div class="recommend-media"><img src="' + asset + '" alt="' + product + '"></div>';
+    }
+    return '<div class="recommend-media"><div class="recommend-placeholder">PRODUCT IMAGE<br>COMING SOON</div></div>';
+  }
+
   function makeRecommendationCard(action, product) {
     return '<div class="recommend-card">' +
-      '<div class="recommend-tag">' + (productTags[product] || '今日推薦') + '</div>' +
-      '<div class="recommend-action">' + action + '</div>' +
-      '<div class="recommend-product">→ ' + product + '</div>' +
+      makeProductMedia(product) +
+      '<div class="recommend-copy">' +
+        '<div class="recommend-action">' + action + '</div>' +
+        '<div class="recommend-product"><span class="recommend-product-label">推薦商品</span>' + product + '</div>' +
+      '</div>' +
     '</div>';
   }
 
