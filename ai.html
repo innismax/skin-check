@@ -558,10 +558,10 @@
     { key:'main', multi:0,
       q:'最近最困擾你的肌膚問題是？',
       hint:'※ 請選一個最想優先改善的',
-      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉'] },
+      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉','彈力下降'] },
     { key:'s1', multi:2, hint:'（可複選，最多選 2 個）',
       q:'除了剛剛的問題之外，還有其他困擾嗎？',
-      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉'] },
+      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉','彈力下降'] },
     { key:'s2', multi:0,
       q:'最近眼周最讓你在意的是哪一種狀況？',
       hint:'※ 請選一個最在意的',
@@ -569,7 +569,7 @@
     { key:'s3', multi:0,
       q:'最近肌膚還有哪一種需求想加強？',
       hint:'※ 請選一個最在意的',
-      opts:['最近膚色看起來比較暗沉，也開始在意斑點或膚色不均','最近保濕常常覺得不太夠，想加強補水鎖水','最近肌膚容易乾燥不舒服，也想加強穩定感','最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯','最近熬夜或壓力比較大，肌膚看起來疲憊沒精神','最近開始在意彈力下降，或紋路感越來越明顯'] }
+      opts:['最近膚色看起來比較暗沉，也開始在意斑點或膚色不均','最近保濕常常覺得不太夠，想加強補水鎖水','最近肌膚容易乾燥不舒服，也想加強穩定感','最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯','最近熬夜或壓力比較大，肌膚看起來疲憊沒精神','想讓肌膚緊緻有彈力'] }
   ];
 
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
@@ -579,7 +579,8 @@
     '皮膚缺乏光澤':{ action:'改善暗沉，提升肌膚光澤感', product:'維他命C淨亮棉片' },
     '出油與毛孔粗大':{ action:'調理油脂與毛孔問題', product:'火山泥PHA毛孔緊緻露' },
     '痘痘粉刺':  { action:'調理角質與毛孔阻塞問題', product:'A醇淨膚毛孔修護棉片' },
-    '熬夜暗沉':  { action:'修護疲憊膚況，恢復肌膚活力', product:'紅茶極效修護晶露' }
+    '熬夜暗沉':  { action:'修護疲憊膚況，恢復肌膚活力', product:'紅茶極效修護晶露' },
+    '彈力下降':  { action:'加強彈潤打底，讓肌膚看起來更飽滿有彈性', product:'A醇PDRN水光奇蹟水' }
   };
 
   // ── STEP 02：依肌膚困擾決定核心精華 ──
@@ -589,13 +590,15 @@
     '皮膚缺乏光澤':{ action:'提亮氣色，提升肌膚光澤感',   product:'維他命C淨亮精華' },
     '出油與毛孔粗大':{ action:'調理膚況，優化毛孔與油脂', product:'A醇淨膚超修護安瓶' },
     '痘痘粉刺':  { action:'調理粉刺痘痘反覆狀況',         product:'A醇淨膚超修護安瓶' },
-    '熬夜暗沉':  { action:'提亮疲憊暗沉，恢復肌膚光澤',   product:'維他命C淨亮精華' }
+    '熬夜暗沉':  { action:'提亮疲憊暗沉，恢復肌膚光澤',   product:'維他命C淨亮精華' },
+    '彈力下降':  { action:'加強緊緻彈力與澎潤感，讓膚況更飽滿細緻', product:'1%A醇PDRN水光安瓶' }
   };
 
   const mergedStep02Actions = {
     '綠茶籽玻尿酸保濕精華': '補水舒緩，強化肌膚穩定度並持續維持保濕感',
     '維他命C淨亮精華': '提亮氣色與疲憊暗沉，恢復肌膚光澤',
-    'A醇淨膚超修護安瓶': '調理粉刺痘痘反覆狀況，優化毛孔與油脂'
+    'A醇淨膚超修護安瓶': '調理粉刺痘痘反覆狀況，優化毛孔與油脂',
+    '1%A醇PDRN水光安瓶': '加強緊緻彈力與澎潤感，讓膚況更飽滿細緻'
   };
 
   const eyeCareMap = {
@@ -611,7 +614,7 @@
     '最近肌膚容易乾燥不舒服，也想加強穩定感':         { action:'舒緩乾燥不適，同時穩定肌膚保濕屏障', product:'綠茶神經醯胺保濕霜' },
     '最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯':       { action:'改善粉刺痘痘反覆狀況，修護毛孔與粗糙感', product:'A醇淨膚超修護霜' },
     '最近熬夜或壓力比較大，肌膚看起來疲憊沒精神':     { action:'修護熬夜與壓力造成的疲憊膚況，恢復彈潤光澤', product:'紅茶極效修護霜' },
-    '最近開始在意彈力下降，或紋路感越來越明顯':       { action:'針對彈力與紋路需求，加強滋養與抗老修護', product:'九重完美青春再生活膚霜' }
+    '想讓肌膚緊緻有彈力':                           { action:'加強緊緻與彈潤保養，讓肌膚看起來更飽滿有精神', product:'1%A醇PDRN水光安瓶' }
   };
 
   const productAssets = {
@@ -786,7 +789,7 @@
     '</div>';
   }
 
-  function makeSecondaryRecommendationCards(concerns) {
+  function getSecondaryRecommendations(concerns) {
     var grouped = {};
     concerns.forEach(function(concern){
       var recommendation = step02Data[concern];
@@ -800,8 +803,28 @@
     return Object.keys(grouped).map(function(product){
       var item = grouped[product];
       var action = item.actions.length > 1 ? (mergedStep02Actions[product] || item.actions.join('；')) : item.actions[0];
-      return makeRecommendationCard(action, product);
-    }).join('');
+      return { action:action, product:product };
+    });
+  }
+
+  function mergeRecommendations(list) {
+    var grouped = {};
+    list.forEach(function(item){
+      if (!item || !item.product) return;
+      if (!grouped[item.product]) {
+        grouped[item.product] = { product:item.product, actions:[] };
+      }
+      if (item.action && grouped[item.product].actions.indexOf(item.action) === -1) {
+        grouped[item.product].actions.push(item.action);
+      }
+    });
+    return Object.keys(grouped).map(function(product){
+      var item = grouped[product];
+      return {
+        product:product,
+        action:item.actions.length > 1 ? item.actions.join('；') : item.actions[0]
+      };
+    });
   }
 
   function showResult(){
@@ -813,17 +836,20 @@
     const stype       = answers.skin_type || '—';
 
     // ── 顧問邏輯：調理保養 → 核心精華(最多2支) → 眼周 → 面霜 ──
-    var recommendationsHtml = '';
+    var recommendations = [];
     var s01 = step01Data[mainConcern];
     if (s01) {
-      recommendationsHtml += makeRecommendationCard(s01.action, s01.product);
+      recommendations.push(s01);
     }
 
-    recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
+    recommendations = recommendations.concat(getSecondaryRecommendations(s1arr));
     var eyeCare = eyeCareMap[s2val];
-    if (eyeCare) recommendationsHtml += makeRecommendationCard(eyeCare.action, eyeCare.product);
+    if (eyeCare) recommendations.push(eyeCare);
     var creamCare = creamCareMap[s3val];
-    if (creamCare) recommendationsHtml += makeRecommendationCard(creamCare.action, creamCare.product);
+    if (creamCare) recommendations.push(creamCare);
+    var recommendationsHtml = mergeRecommendations(recommendations).map(function(item){
+      return makeRecommendationCard(item.action, item.product);
+    }).join('');
 
     logToSheet(mainConcern, s1arr, [s2val], [s3val]);
 
