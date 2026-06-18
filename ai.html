@@ -588,14 +588,14 @@
 </div>
 
 <script>
-  const BUILD_VERSION = '2026-06-18-firming-v2';
+  const BUILD_VERSION = '2026-06-18-main-cream-v1';
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
   const guData = { store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
-  function logToSheet(mainConcern, s1arr, s2arr, s3arr) {
+  function logToSheet(mainConcern, s1arr, s2arr) {
     var params = new URLSearchParams({
       timestamp: new Date().toLocaleString('zh-TW'),
       date: guData.date,
@@ -606,11 +606,11 @@
       q2_main_concern: mainConcern || '',
       q3_other_concerns: s1arr.join('、'),
       q4_lifestyle: s2arr.join('、'),
-      q5_goal: s3arr.join('、'),
+      q5_goal: '',
       q6_makeup: answers.makeup || '',
       step1: (answers.skin_type || '') + '｜' + (mainConcern || '') + (s1arr.length ? '、' + s1arr.join('、') : ''),
       step2: s2arr.join('、'),
-      step3: s3arr.join('、'),
+      step3: '',
       makeup: answers.makeup || '',
       source: 'chat_ai'
     });
@@ -647,10 +647,6 @@
       q:'最近眼周最讓你在意的是哪一種狀況？',
       hint:'※ 請選一個最在意的',
       opts:['最近熬夜比較多，黑眼圈看起來更明顯','最近看起來比較累，眼周容易浮腫沒精神','最近眼周比較乾，紋路比較明顯','最近開始在意笑紋或表情紋'] },
-    { key:'s3', multi:0,
-      q:'最近肌膚還有哪一種需求想加強？',
-      hint:'※ 請選一個最在意的',
-      opts:['最近膚色看起來比較暗沉，也開始在意斑點或膚色不均','最近保濕常常覺得不太夠，想加強補水鎖水','最近肌膚容易乾燥不舒服，也想加強穩定感','最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯','最近熬夜或壓力比較大，肌膚看起來疲憊沒精神'] }
   ];
 
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
@@ -692,11 +688,14 @@
   };
 
   const creamCareMap = {
-    '最近膚色看起來比較暗沉，也開始在意斑點或膚色不均': { action:'改善暗沉與膚色不均，讓膚色更淨亮勻稱', product:'維他命C淨亮淡斑凝霜' },
-    '最近保濕常常覺得不太夠，想加強補水鎖水':         { action:'加強補水鎖水，維持肌膚長效水潤感', product:'綠茶籽玻尿酸保濕霜' },
-    '最近肌膚容易乾燥不舒服，也想加強穩定感':         { action:'舒緩乾燥不適，同時穩定肌膚保濕屏障', product:'綠茶神經醯胺保濕霜' },
-    '最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯':       { action:'改善粉刺痘痘反覆狀況，修護毛孔與粗糙感', product:'A醇淨膚超修護霜' },
-    '最近熬夜或壓力比較大，肌膚看起來疲憊沒精神':     { action:'修護熬夜與壓力造成的疲憊膚況，恢復彈潤光澤', product:'紅茶極效修護霜' }
+    '敏感泛紅':      { action:'舒緩敏感泛紅不適，幫助肌膚維持穩定保濕感', product:'綠茶籽玻尿酸保濕霜' },
+    '乾燥缺水':      { action:'加強滋潤與鎖水，舒緩乾燥缺水不適', product:'綠茶神經醯胺保濕霜' },
+    '皮膚缺乏光澤':  { action:'改善暗沉與膚色不均，讓膚色更淨亮勻稱', product:'維他命C淨亮淡斑凝霜' },
+    '出油與毛孔粗大':{ action:'穩定出油與毛孔粗大狀況，維持肌膚更細緻清爽', product:'A醇淨膚超修護霜' },
+    '痘痘粉刺':      { action:'改善粉刺痘痘反覆狀況，幫助膚況更穩定平滑', product:'A醇淨膚超修護霜' },
+    '熬夜暗沉':      { action:'修護熬夜造成的疲憊膚況，恢復彈潤光澤', product:'紅茶極效修護霜' },
+    '彈力下降':      { action:'加強緊緻彈力保養，讓肌膚看起來更飽滿有精神', product:'九重完美青春再生活膚霜' },
+    '皮膚粗糙':      { action:'改善粗糙與膚觸不平滑問題，幫助肌膚更細緻', product:'A醇淨膚超修護霜' }
   };
 
   const productAssets = {
@@ -959,7 +958,6 @@
     const mainConcern = answers.main || '';
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
     const s2val       = answers.s2 || '';
-    const s3val       = answers.s3 || '';
     const stype       = answers.skin_type || '—';
 
     // ── 顧問邏輯：調理保養 → 核心精華(最多2支) → 眼周 → 面霜 ──
@@ -972,13 +970,13 @@
     recommendations = recommendations.concat(getSecondaryRecommendations(s1arr));
     var eyeCare = eyeCareMap[s2val];
     if (eyeCare) recommendations.push(eyeCare);
-    var creamCare = creamCareMap[s3val];
+    var creamCare = creamCareMap[mainConcern];
     if (creamCare) recommendations.push(creamCare);
     var recommendationsHtml = mergeRecommendations(recommendations).map(function(item){
       return makeRecommendationCard(item.action, item.product);
     }).join('');
 
-    logToSheet(mainConcern, s1arr, [s2val], [s3val]);
+    logToSheet(mainConcern, s1arr, [s2val]);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
     var concernVal = '✓ ' + mainConcern;
@@ -1002,7 +1000,6 @@
         '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">眼周狀態</div><div class="cg-val">' + (s2val ? ('✓ ' + s2val) : '—') + '</div></div>' +
-        '<div class="cg-row"><div class="cg-label">加強需求</div><div class="cg-val">' + (s3val ? ('✓ ' + s3val) : '—') + '</div></div>' +
       '</div>' +
       '<div class="steps-divider"></div>' +
       '<div class="steps-title">今日推薦保養</div>' +
