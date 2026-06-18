@@ -1,20 +1,25 @@
-<svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <linearGradient id="skin" x1="96" y1="58" x2="510" y2="548" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#F0D6C4"/>
-    <stop offset="1" stop-color="#DAB19A"/>
+  <linearGradient id="base" x1="104" y1="86" x2="616" y2="626" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#EED5C2"/>
+    <stop offset=".54" stop-color="#E0BAA4"/>
+    <stop offset="1" stop-color="#D4A58D"/>
   </linearGradient>
-  <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/>
+  <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency=".84" numOctaves="3" seed="44"/>
     <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer><feFuncA type="table" tableValues="0 0 .055 .085"/></feComponentTransfer>
+    <feComponentTransfer>
+      <feFuncA type="table" tableValues="0 0 .05 .08"/>
+    </feComponentTransfer>
   </filter>
-  <filter id="blur"><feGaussianBlur stdDeviation="8"/></filter>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="8"/>
+  </filter>
 </defs>
-<rect width="600" height="600" rx="54" fill="#F7FBF8"/>
-<rect x="62" y="58" width="476" height="484" rx="42" fill="url(#skin)"/>
-<path d="M154 378C202 324 274 298 364 306C408 311 444 326 478 356" stroke="#F7EFE6" stroke-width="14" stroke-linecap="round" opacity=".84" filter="url(#blur)"/>
-<path d="M148 412C212 350 292 324 386 336C420 341 449 350 474 366" stroke="#C99980" stroke-width="6" stroke-linecap="round" opacity=".65"/>
-<path d="M182 458C235 406 312 382 398 394" stroke="#EBD7CA" stroke-width="10" stroke-linecap="round" opacity=".84"/>
-<rect x="62" y="58" width="476" height="484" rx="42" filter="url(#grain)"/>
+<rect width="720" height="720" rx="54" fill="#F8FBF7"/>
+<rect x="52" y="52" width="616" height="616" rx="40" fill="url(#base)"/>
+<path d="M158 436C226 366 314 336 414 346C474 352 532 376 574 410" stroke="#F7EEE7" stroke-width="16" stroke-linecap="round" filter="url(#soft)"/>
+<path d="M148 480C232 402 330 376 438 388C494 394 540 412 578 438" stroke="#C6947A" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+<path d="M184 550C264 482 356 458 456 470" stroke="#E8D0C1" stroke-width="12" stroke-linecap="round"/>
+<rect x="52" y="52" width="616" height="616" rx="40" filter="url(#noise)"/>
 </svg>
