@@ -295,8 +295,8 @@
     .image-grid {
       display:grid;
       grid-template-columns:repeat(6, minmax(0, 1fr));
-      gap:14px;
-      margin-top:6px;
+      gap:16px;
+      margin-top:8px;
     }
     .image-opt {
       grid-column:span 2;
@@ -310,10 +310,10 @@
     .image-grid .image-opt:nth-child(7) { grid-column:2 / span 2; }
     .image-grid .image-opt:nth-child(8) { grid-column:4 / span 2; }
     .image-opt-card {
-      border-radius:26px;
+      border-radius:28px;
       background:rgba(255,255,255,.97);
       border:1.5px solid var(--green-border);
-      box-shadow:0 10px 24px rgba(81,98,85,.06);
+      box-shadow:0 14px 30px rgba(81,98,85,.08);
       overflow:hidden;
       transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
     }
@@ -325,31 +325,34 @@
     .image-opt:active .image-opt-card { transform:scale(.985); }
     .image-opt-media {
       aspect-ratio:1 / 1;
-      background:linear-gradient(180deg, #F7FBF8 0%, #EDF6F0 100%);
-      border-bottom:1px solid rgba(214,232,219,.9);
+      background:linear-gradient(180deg, #F8FCF8 0%, #EEF6F0 100%);
+      border-bottom:1px solid rgba(214,232,219,.75);
       overflow:hidden;
+      padding:14px 14px 0;
     }
     .image-opt-media img {
       width:100%;
       height:100%;
       display:block;
       object-fit:cover;
+      border-radius:22px;
     }
     .image-opt-body {
-      padding:12px 12px 14px;
+      padding:14px 14px 16px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      min-height:70px;
+      gap:12px;
+      min-height:82px;
     }
     .image-opt-label {
       color:var(--green);
-      font-size:17px;
-      line-height:1.35;
+      font-size:16px;
+      line-height:1.4;
       font-weight:700;
       min-width:0;
       flex:1;
+      word-break:keep-all;
     }
     .image-opt-check {
       width:22px;
@@ -523,10 +526,12 @@
       .question-card { padding:22px 18px; border-radius:24px; }
       .q-main { font-size:18px; }
       .opt-btn { min-height:66px; font-size:17px; padding:0 18px; }
-      .image-grid { gap:10px; }
-      .image-opt-card { border-radius:22px; }
-      .image-opt-label { font-size:13px; }
-      .image-opt-body { min-height:58px; padding:9px 9px 11px; }
+      .image-grid { gap:12px; }
+      .image-opt-card { border-radius:24px; }
+      .image-opt-media { padding:10px 10px 0; }
+      .image-opt-media img { border-radius:18px; }
+      .image-opt-label { font-size:14px; }
+      .image-opt-body { min-height:72px; padding:11px 11px 13px; }
       .image-opt-check { width:18px; height:18px; }
       .hero-brand { font-size:44px; margin-bottom:24px; }
       .hero-title { font-size:34px; margin-bottom:18px; }
