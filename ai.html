@@ -831,6 +831,16 @@
     var concernVal = '✓ ' + mainConcern;
     if (s1arr.length > 0) { concernVal += '<br>' + s1arr.map(function(v){ return '✓ ' + v; }).join('<br>'); }
 
+    const backBtn = document.createElement('button');
+    backBtn.className = 'step-back';
+    backBtn.type = 'button';
+    backBtn.textContent = '← 上一題';
+    backBtn.onclick = function(){
+      step = questions.length - 1;
+      renderCurrentStep();
+    };
+    chat.appendChild(backBtn);
+
     const card = document.createElement('div');
     card.className = 'res-card';
     card.innerHTML =
