@@ -1,25 +1,3 @@
-<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-  <linearGradient id="base" x1="104" y1="86" x2="616" y2="626" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#EED5C2"/>
-    <stop offset=".54" stop-color="#E0BAA4"/>
-    <stop offset="1" stop-color="#D4A58D"/>
-  </linearGradient>
-  <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency=".84" numOctaves="3" seed="44"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer>
-      <feFuncA type="table" tableValues="0 0 .05 .08"/>
-    </feComponentTransfer>
-  </filter>
-  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur stdDeviation="8"/>
-  </filter>
-</defs>
-<rect width="720" height="720" rx="54" fill="#F8FBF7"/>
-<rect x="52" y="52" width="616" height="616" rx="40" fill="url(#base)"/>
-<path d="M158 436C226 366 314 336 414 346C474 352 532 376 574 410" stroke="#F7EEE7" stroke-width="16" stroke-linecap="round" filter="url(#soft)"/>
-<path d="M148 480C232 402 330 376 438 388C494 394 540 412 578 438" stroke="#C6947A" stroke-width="7" stroke-linecap="round" opacity=".7"/>
-<path d="M184 550C264 482 356 458 456 470" stroke="#E8D0C1" stroke-width="12" stroke-linecap="round"/>
-<rect x="52" y="52" width="616" height="616" rx="40" filter="url(#noise)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="443" viewBox="0 0 336 443">
+  <image href="loss-of-firmness.png?v=20260619" width="336" height="443" preserveAspectRatio="xMidYMid slice"/>
 </svg>

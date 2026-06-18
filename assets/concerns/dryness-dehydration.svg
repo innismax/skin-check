@@ -1,24 +1,3 @@
-<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-  <linearGradient id="base" x1="110" y1="86" x2="610" y2="628" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#EFD4C2"/>
-    <stop offset=".5" stop-color="#E0B9A3"/>
-    <stop offset="1" stop-color="#D3A48C"/>
-  </linearGradient>
-  <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency=".95" numOctaves="3" seed="12"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer>
-      <feFuncA type="table" tableValues="0 0 .05 .09"/>
-    </feComponentTransfer>
-  </filter>
-</defs>
-<rect width="720" height="720" rx="54" fill="#F8FBF7"/>
-<rect x="52" y="52" width="616" height="616" rx="40" fill="url(#base)"/>
-<g opacity=".95">
-  <path d="M132 202L224 164M248 262L336 218M136 356L252 296M380 174L466 142M408 286L532 232M266 432L372 368M432 436L542 386M168 548L300 486M386 540L506 482" stroke="#FAF1E9" stroke-width="10" stroke-linecap="round"/>
-  <path d="M144 214L186 196M272 274L316 252M430 186L478 164M442 300L494 278M196 562L252 538M406 554L460 530" stroke="#CC9E84" stroke-width="3" stroke-linecap="round" opacity=".72"/>
-  <path d="M180 248L216 236M324 394L364 378M510 344L550 326" stroke="#E9C9B7" stroke-width="2" stroke-linecap="round" opacity=".62"/>
-</g>
-<rect x="52" y="52" width="616" height="616" rx="40" filter="url(#noise)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="302" height="492" viewBox="0 0 302 492">
+  <image href="dryness-dehydration.png?v=20260619" width="302" height="492" preserveAspectRatio="xMidYMid slice"/>
 </svg>

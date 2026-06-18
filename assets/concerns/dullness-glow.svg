@@ -1,22 +1,3 @@
-<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-  <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency=".82" numOctaves="3" seed="16"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer>
-      <feFuncA type="table" tableValues="0 0 .048 .082"/>
-    </feComponentTransfer>
-  </filter>
-  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur stdDeviation="30"/>
-  </filter>
-</defs>
-<rect width="720" height="720" rx="54" fill="#F8FBF7"/>
-<rect x="52" y="52" width="308" height="616" rx="40" fill="#C39F89"/>
-<rect x="360" y="52" width="308" height="616" rx="40" fill="#F0D4C1"/>
-<ellipse cx="514" cy="270" rx="128" ry="106" fill="#FFF5DA" fill-opacity=".88" filter="url(#glow)"/>
-<ellipse cx="486" cy="430" rx="156" ry="114" fill="#FFEACB" fill-opacity=".64" filter="url(#glow)"/>
-<ellipse cx="250" cy="410" rx="140" ry="92" fill="#9B7A67" fill-opacity=".22" filter="url(#glow)"/>
-<path d="M360 86V634" stroke="#FFF7F1" stroke-opacity=".44" stroke-width="4"/>
-<rect x="52" y="52" width="616" height="616" rx="40" filter="url(#noise)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="302" height="492" viewBox="0 0 302 492">
+  <image href="dullness-glow.png?v=20260619" width="302" height="492" preserveAspectRatio="xMidYMid slice"/>
 </svg>

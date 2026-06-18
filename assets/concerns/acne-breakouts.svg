@@ -1,36 +1,3 @@
-<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-  <linearGradient id="base" x1="114" y1="88" x2="610" y2="620" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#EFD5C3"/>
-    <stop offset=".52" stop-color="#E1B9A4"/>
-    <stop offset="1" stop-color="#D7A48C"/>
-  </linearGradient>
-  <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency=".88" numOctaves="3" seed="31"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer>
-      <feFuncA type="table" tableValues="0 0 .05 .082"/>
-    </feComponentTransfer>
-  </filter>
-  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur stdDeviation="12"/>
-  </filter>
-</defs>
-<rect width="720" height="720" rx="54" fill="#F8FBF7"/>
-<rect x="52" y="52" width="616" height="616" rx="40" fill="url(#base)"/>
-<g filter="url(#soft)">
-  <circle cx="206" cy="222" r="34" fill="#E3606A"/>
-  <circle cx="254" cy="332" r="28" fill="#E96A73"/>
-  <circle cx="382" cy="214" r="36" fill="#D95561"/>
-  <circle cx="468" cy="302" r="30" fill="#E35B67"/>
-  <circle cx="414" cy="430" r="26" fill="#E87072"/>
-</g>
-<g fill="#FFF2D8">
-  <circle cx="206" cy="222" r="9"/>
-  <circle cx="254" cy="332" r="8"/>
-  <circle cx="382" cy="214" r="9"/>
-  <circle cx="468" cy="302" r="8"/>
-  <circle cx="414" cy="430" r="7"/>
-</g>
-<rect x="52" y="52" width="616" height="616" rx="40" filter="url(#noise)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="302" height="492" viewBox="0 0 302 492">
+  <image href="acne-breakouts.png?v=20260619" width="302" height="492" preserveAspectRatio="xMidYMid slice"/>
 </svg>
