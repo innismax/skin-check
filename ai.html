@@ -324,18 +324,18 @@
     }
     .image-opt:active .image-opt-card { transform:scale(.985); }
     .image-opt-media {
-      aspect-ratio:1 / 1;
+      aspect-ratio:303 / 492;
       background:linear-gradient(180deg, #F8FCF8 0%, #EEF6F0 100%);
       border-bottom:1px solid rgba(214,232,219,.75);
       overflow:hidden;
-      padding:14px 14px 0;
+      padding:0;
     }
     .image-opt-media img {
       width:100%;
       height:100%;
       display:block;
       object-fit:cover;
-      border-radius:22px;
+      border-radius:0;
     }
     .image-opt-body {
       padding:14px 14px 16px;
@@ -528,8 +528,8 @@
       .opt-btn { min-height:66px; font-size:17px; padding:0 18px; }
       .image-grid { gap:12px; }
       .image-opt-card { border-radius:24px; }
-      .image-opt-media { padding:10px 10px 0; }
-      .image-opt-media img { border-radius:18px; }
+      .image-opt-media { padding:0; }
+      .image-opt-media img { border-radius:0; }
       .image-opt-label { font-size:14px; }
       .image-opt-body { min-height:72px; padding:11px 11px 13px; }
       .image-opt-check { width:18px; height:18px; }
@@ -731,14 +731,14 @@
   };
 
   const mainConcernImages = {
-    '敏感泛紅':'assets/concerns/sensitive-redness.svg',
-    '乾燥缺水':'assets/concerns/dryness-dehydration.svg',
-    '皮膚缺乏光澤':'assets/concerns/dullness-glow.svg',
-    '出油與毛孔粗大':'assets/concerns/oil-pores.svg',
-    '痘痘粉刺':'assets/concerns/acne-breakouts.svg',
-    '熬夜暗沉':'assets/concerns/tired-dullness.svg',
-    '彈力下降':'assets/concerns/loss-of-firmness.svg',
-    '皮膚粗糙':'assets/concerns/rough-texture.svg'
+    '敏感泛紅':'assets/concerns/sensitive-redness.png',
+    '乾燥缺水':'assets/concerns/dryness-dehydration.png',
+    '皮膚缺乏光澤':'assets/concerns/dullness-glow.png',
+    '出油與毛孔粗大':'assets/concerns/oil-pores.png',
+    '痘痘粉刺':'assets/concerns/acne-breakouts.png',
+    '熬夜暗沉':'assets/concerns/tired-dullness.png',
+    '彈力下降':'assets/concerns/loss-of-firmness.png',
+    '皮膚粗糙':'assets/concerns/rough-texture.png'
   };
 
   function goTo(id){
