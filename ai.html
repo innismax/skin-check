@@ -295,7 +295,7 @@
     .image-grid {
       display:grid;
       grid-template-columns:repeat(6, minmax(0, 1fr));
-      gap:16px;
+      gap:14px;
       margin-top:8px;
     }
     .image-opt {
@@ -310,6 +310,7 @@
     .image-grid .image-opt:nth-child(7) { grid-column:2 / span 2; }
     .image-grid .image-opt:nth-child(8) { grid-column:4 / span 2; }
     .image-opt-card {
+      position:relative;
       border-radius:28px;
       background:rgba(255,255,255,.97);
       border:1.5px solid var(--green-border);
@@ -318,13 +319,28 @@
       transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
     }
     .image-opt.sel .image-opt-card {
-      border-color:var(--green);
-      box-shadow:0 16px 28px rgba(47,165,104,.16);
+      border-color:#228F58;
+      box-shadow:0 18px 34px rgba(47,165,104,.24);
       transform:translateY(-2px);
+    }
+    .image-opt.sel .image-opt-card::after {
+      content:'已選擇';
+      position:absolute;
+      top:12px;
+      right:12px;
+      z-index:2;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(34,143,88,.96);
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.4px;
+      box-shadow:0 8px 16px rgba(34,143,88,.22);
     }
     .image-opt:active .image-opt-card { transform:scale(.985); }
     .image-opt-media {
-      aspect-ratio:303 / 492;
+      aspect-ratio:1 / 1.18;
       background:linear-gradient(180deg, #F8FCF8 0%, #EEF6F0 100%);
       border-bottom:1px solid rgba(214,232,219,.75);
       overflow:hidden;
@@ -335,44 +351,46 @@
       height:100%;
       display:block;
       object-fit:cover;
+      object-position:center top;
       border-radius:0;
     }
     .image-opt-body {
-      padding:14px 14px 16px;
+      padding:12px 14px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      min-height:82px;
+      gap:10px;
+      min-height:64px;
+      background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
     }
     .image-opt-label {
-      color:var(--green);
-      font-size:16px;
-      line-height:1.4;
+      color:#fff;
+      font-size:15px;
+      line-height:1.32;
       font-weight:700;
       min-width:0;
       flex:1;
       word-break:keep-all;
     }
     .image-opt-check {
-      width:22px;
-      height:22px;
+      width:24px;
+      height:24px;
       border-radius:50%;
-      border:2px solid rgba(110,133,115,.28);
+      border:2px solid rgba(255,255,255,.82);
       flex-shrink:0;
       position:relative;
-      background:#fff;
+      background:transparent;
     }
     .image-opt.sel .image-opt-check {
-      border-color:var(--green);
-      background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
+      border-color:#fff;
+      background:#fff;
     }
     .image-opt.sel .image-opt-check::after {
       content:'';
       position:absolute;
       inset:5px;
       border-radius:50%;
-      background:#fff;
+      background:#228F58;
     }
     .step-next {
       width:100%;
@@ -531,7 +549,7 @@
       .image-opt-media { padding:0; }
       .image-opt-media img { border-radius:0; }
       .image-opt-label { font-size:14px; }
-      .image-opt-body { min-height:72px; padding:11px 11px 13px; }
+      .image-opt-body { min-height:60px; padding:10px 11px; }
       .image-opt-check { width:18px; height:18px; }
       .hero-brand { font-size:44px; margin-bottom:24px; }
       .hero-title { font-size:34px; margin-bottom:18px; }
@@ -597,7 +615,7 @@
 </div>
 
 <script>
-  const BUILD_VERSION = '2026-06-18-main-cream-v1';
+  const BUILD_VERSION = '2026-06-19-concern-photo-cards-v2';
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
   const guData = { store:'', name:'', date:'' };
@@ -731,14 +749,14 @@
   };
 
   const mainConcernImages = {
-    '敏感泛紅':'assets/concerns/sensitive-redness.png?v=20260619b',
-    '乾燥缺水':'assets/concerns/dryness-dehydration.png?v=20260619b',
-    '皮膚缺乏光澤':'assets/concerns/dullness-glow.png?v=20260619b',
-    '出油與毛孔粗大':'assets/concerns/oil-pores.png?v=20260619b',
-    '痘痘粉刺':'assets/concerns/acne-breakouts.png?v=20260619b',
-    '熬夜暗沉':'assets/concerns/tired-dullness.png?v=20260619b',
-    '彈力下降':'assets/concerns/loss-of-firmness.png?v=20260619b',
-    '皮膚粗糙':'assets/concerns/rough-texture.png?v=20260619b'
+    '敏感泛紅':'assets/concerns/sensitive-redness.png?v=20260619c',
+    '乾燥缺水':'assets/concerns/dryness-dehydration.png?v=20260619c',
+    '皮膚缺乏光澤':'assets/concerns/dullness-glow.png?v=20260619c',
+    '出油與毛孔粗大':'assets/concerns/oil-pores.png?v=20260619c',
+    '痘痘粉刺':'assets/concerns/acne-breakouts.png?v=20260619c',
+    '熬夜暗沉':'assets/concerns/tired-dullness.png?v=20260619c',
+    '彈力下降':'assets/concerns/loss-of-firmness.png?v=20260619c',
+    '皮膚粗糙':'assets/concerns/rough-texture.png?v=20260619c'
   };
 
   function goTo(id){
