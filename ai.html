@@ -373,6 +373,14 @@
       background:linear-gradient(180deg, #F6F9F4 0%, #EEF4EF 100%);
     }
     .recommend-card:last-child { margin-bottom:0; }
+    .recommend-tag {
+      font-size:10px;
+      letter-spacing:1.4px;
+      color:var(--green);
+      font-weight:700;
+      margin-bottom:6px;
+      text-transform:uppercase;
+    }
     .recommend-action { font-size:13px; color:var(--text-mid); margin-bottom:7px; line-height:1.55; }
     .recommend-product { font-size:16px; color:var(--green); font-weight:700; line-height:1.55; }
     .advice-block { padding:15px 0 2px; color:var(--text-mid); font-size:14px; line-height:1.7; }
@@ -503,12 +511,12 @@
     { key:'s1', multi:2, hint:'（可複選，最多選 2 個）',
       q:'除了剛剛的問題之外，還有其他困擾嗎？',
       opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉'] },
-    { key:'s2', multi:2, hint:'（可複選，最多選 2 個）',
-      q:'最近的生活狀態，哪幾個跟你比較接近呢？',
-      opts:['最近熬夜比較多','長時間待在冷氣房','最近臉容易覺得黏膩不舒服','最近壓力有點大','最近生活作息比較亂','最近常待在戶外'] },
-    { key:'s3', multi:2, hint:'（可複選，最多選 2 個）',
-      q:'今天最希望肌膚變成什麼狀態呢？',
-      opts:['想讓肌膚看起來透亮一點','想讓肌膚感覺水潤有光澤','想讓肌膚維持油水平衡','想讓肌膚維持穩定不容易鬧脾氣','想改善痘痘粉刺問題','想讓肌膚摸起來更細緻','想讓肌膚看起來更緊緻有彈力'] },
+    { key:'s2', multi:0,
+      q:'最近眼周比較像哪一種狀況？',
+      opts:['最近熬夜比較多，黑眼圈看起來更明顯','最近看起來比較累，眼周容易浮腫沒精神','最近眼周比較乾，紋路比較明顯','最近開始在意笑紋或表情紋'] },
+    { key:'s3', multi:0,
+      q:'最近肌膚還有哪一種需求想加強？',
+      opts:['最近膚色看起來比較暗沉，也開始在意斑點或膚色不均','最近保濕常常覺得不太夠，想加強補水鎖水','最近肌膚容易乾燥不舒服，也想加強穩定感','最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯','最近熬夜或壓力比較大，肌膚看起來疲憊沒精神','最近開始在意彈力下降，或紋路感越來越明顯'] },
     { key:'makeup', multi:0,
       q:'平常出門有化妝習慣嗎？',
       opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
@@ -540,31 +548,41 @@
     'A醇淨膚超修護安瓶': '調理粉刺痘痘反覆狀況，優化毛孔與油脂'
   };
 
-  // ── Q5 目標 → 對應商品（用來判斷是否顯示 STEP 03）──
-  const q5ProductMap = {
-    '想讓肌膚看起來透亮一點':      '維他命C淨亮精華',
-    '想讓肌膚感覺水潤有光澤':      '綠茶籽玻尿酸保濕精華',
-    '想讓肌膚維持油水平衡':        'A醇淨膚超修護安瓶',
-    '想讓肌膚維持穩定不容易鬧脾氣':'綠茶籽玻尿酸保濕精華',
-    '想改善痘痘粉刺問題':          'A醇淨膚超修護安瓶',
-    '想讓肌膚摸起來更細緻':        'A醇淨膚超修護安瓶',
-    '想讓肌膚看起來更緊緻有彈力':  '1%A醇PDRN水光安瓶'
+  const eyeCareMap = {
+    '最近熬夜比較多，黑眼圈看起來更明顯':      { action:'針對黑眼圈與眼周暗沉，加強提亮與保濕', product:'維他命C亮白眼部精華' },
+    '最近看起來比較累，眼周容易浮腫沒精神':    { action:'舒緩疲憊泡泡眼，讓眼周更清爽有精神', product:'綠茶玻尿酸保濕滾珠眼部精華' },
+    '最近眼周比較乾，紋路比較明顯':            { action:'加強眼周滋潤修護，改善乾燥與紋路感', product:'九重完美青春再生眼霜' },
+    '最近開始在意笑紋或表情紋':                { action:'聚焦表情紋與細紋，提升眼周與唇周彈力', product:'A醇PDRN眼唇撫紋精華' }
   };
 
-  // ── STEP 03 商品的 action text ──
-  const step03Actions = {
-    '維他命C淨亮精華':      '加強提亮，改善氣色暗沉',
-    '綠茶籽玻尿酸保濕精華': '加強補水，維持水潤光澤',
-    'A醇淨膚超修護安瓶':    '加強調理，改善細緻感',
-    '1%A醇PDRN水光安瓶':    '加強緊緻，改善毛孔與彈力'
+  const creamCareMap = {
+    '最近膚色看起來比較暗沉，也開始在意斑點或膚色不均': { action:'改善暗沉與膚色不均，讓膚色更淨亮勻稱', product:'維他命C淨亮淡斑凝霜' },
+    '最近保濕常常覺得不太夠，想加強補水鎖水':         { action:'加強補水鎖水，維持肌膚長效水潤感', product:'綠茶籽玻尿酸保濕霜' },
+    '最近肌膚容易乾燥不舒服，也想加強穩定感':         { action:'舒緩乾燥不適，同時穩定肌膚保濕屏障', product:'綠茶神經醯胺保濕霜' },
+    '最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯':       { action:'改善粉刺痘痘反覆狀況，修護毛孔與粗糙感', product:'A醇淨膚超修護霜' },
+    '最近熬夜或壓力比較大，肌膚看起來疲憊沒精神':     { action:'修護熬夜與壓力造成的疲憊膚況，恢復彈潤光澤', product:'紅茶極效修護霜' },
+    '最近開始在意彈力下降，或紋路感越來越明顯':       { action:'針對彈力與紋路需求，加強滋養與抗老修護', product:'九重完美青春再生活膚霜' }
   };
 
-  // ── STEP 04：依 Q2 膚質顯示夜間保養建議 ──
-  const nightCareAdvice = {
-    '油性肌': '油性肌：建議搭配乳液',
-    '混合肌': '混合肌：可依膚況選擇乳液或面霜',
-    '乾性肌': '乾性肌：建議搭配潤澤面霜',
-    '敏感肌': '敏感肌：建議搭配舒緩面霜'
+  const productTags = {
+    '綠茶神經醯胺牛奶水精華':'調理保養 × 穩定膚況',
+    '維他命C淨亮棉片':'調理保養 × 提亮光澤',
+    '火山泥PHA毛孔緊緻露':'調理保養 × 毛孔淨化',
+    'A醇淨膚毛孔修護棉片':'調理保養 × 角質毛孔',
+    '紅茶極效修護晶露':'調理保養 × 修護疲憊',
+    '綠茶籽玻尿酸保濕精華':'核心精華 × 補水保濕',
+    '維他命C淨亮精華':'核心精華 × 提亮淨亮',
+    'A醇淨膚超修護安瓶':'核心精華 × 淨膚修護',
+    '維他命C亮白眼部精華':'眼周加強 × 提亮暗沉',
+    '綠茶玻尿酸保濕滾珠眼部精華':'眼周加強 × 舒緩浮腫',
+    '九重完美青春再生眼霜':'眼周加強 × 滋養抗紋',
+    'A醇PDRN眼唇撫紋精華':'眼周加強 × 撫紋彈力',
+    '維他命C淨亮淡斑凝霜':'面霜收尾 × 亮白淡斑',
+    '綠茶籽玻尿酸保濕霜':'面霜收尾 × 補水鎖水',
+    '綠茶神經醯胺保濕霜':'面霜收尾 × 舒緩穩定',
+    'A醇淨膚超修護霜':'面霜收尾 × 淨膚毛孔',
+    '紅茶極效修護霜':'面霜收尾 × 修護疲憊',
+    '九重完美青春再生活膚霜':'面霜收尾 × 抗老彈力'
   };
 
   function goTo(id){
@@ -702,6 +720,7 @@
 
   function makeRecommendationCard(action, product) {
     return '<div class="recommend-card">' +
+      '<div class="recommend-tag">' + (productTags[product] || '今日推薦') + '</div>' +
       '<div class="recommend-action">' + action + '</div>' +
       '<div class="recommend-product">→ ' + product + '</div>' +
     '</div>';
@@ -725,24 +744,16 @@
     }).join('');
   }
 
-  function makeAdviceRow(nightAdvice) {
-    return '<div class="advice-block">' +
-      '<div class="advice-part"><div class="advice-label">☀️ 白天保養</div>' +
-        '建議搭配防曬保護，幫助維持保養效果。<br>→ 維他命C亮白潤色防曬霜（潤色）<br>→ 綠茶玻尿酸保濕防曬精華（無潤色）</div>' +
-      '<div class="advice-part"><div class="advice-label">🌙 夜間保養</div>→ ' + nightAdvice + '</div>' +
-    '</div>';
-  }
-
   function showResult(){
     chat.innerHTML = '';
     const mainConcern = answers.main || '';
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
-    const s2arr       = Array.isArray(answers.s2) ? answers.s2 : (answers.s2 ? [answers.s2] : []);
-    const s3arr       = Array.isArray(answers.s3) ? answers.s3 : (answers.s3 ? [answers.s3] : []);
+    const s2val       = answers.s2 || '';
+    const s3val       = answers.s3 || '';
     const makeup      = answers.makeup || '—';
     const stype       = answers.skin_type || '—';
 
-    // ── 顧問邏輯：調理保養 → 核心精華 → 第二支精華 → 生活建議 ──
+    // ── 顧問邏輯：調理保養 → 核心精華(最多2支) → 眼周 → 面霜 ──
     var recommendationsHtml = '';
     var s01 = step01Data[mainConcern];
     if (s01) {
@@ -750,7 +761,12 @@
     }
 
     recommendationsHtml += makeSecondaryRecommendationCards(s1arr);
-    logToSheet(mainConcern, s1arr, s2arr, s3arr);
+    var eyeCare = eyeCareMap[s2val];
+    if (eyeCare) recommendationsHtml += makeRecommendationCard(eyeCare.action, eyeCare.product);
+    var creamCare = creamCareMap[s3val];
+    if (creamCare) recommendationsHtml += makeRecommendationCard(creamCare.action, creamCare.product);
+
+    logToSheet(mainConcern, s1arr, [s2val], [s3val]);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
     var concernVal = '✓ ' + mainConcern;
@@ -763,16 +779,13 @@
       '<div class="choices-grid">' +
         '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
-        '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (s2arr.length ? s2arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
-        '<div class="cg-row"><div class="cg-label">今天想改善</div><div class="cg-val">' + (s3arr.length ? s3arr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">眼周狀態</div><div class="cg-val">' + (s2val ? ('✓ ' + s2val) : '—') + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">加強需求</div><div class="cg-val">' + (s3val ? ('✓ ' + s3val) : '—') + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
       '</div>' +
       '<div class="steps-divider"></div>' +
       '<div class="steps-title">今日推薦保養</div>' +
-      recommendationsHtml +
-      '<div class="steps-divider" style="margin-top:20px"></div>' +
-      '<div class="steps-title">保養加強建議</div>' +
-      makeAdviceRow(nightCareAdvice[stype]);
+      recommendationsHtml;
 
     chat.appendChild(card);
 
