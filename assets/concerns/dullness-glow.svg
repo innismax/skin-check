@@ -1,0 +1,24 @@
+<svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="600" height="600" rx="52" fill="url(#bg)"/>
+<defs>
+<clipPath id="faceClip">
+<circle cx="300" cy="286" r="144"/>
+</clipPath>
+<linearGradient id="bg" x1="96" y1="47" x2="492" y2="550" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FAFCF8"/>
+<stop offset="1" stop-color="#EBF4EE"/>
+</linearGradient>
+</defs>
+<circle cx="300" cy="286" r="144" fill="#E8D7C6"/>
+<g clip-path="url(#faceClip)">
+<rect x="154" y="130" width="146" height="320" fill="#D4B8A7"/>
+<rect x="300" y="130" width="146" height="320" fill="#FFE8C5"/>
+<circle cx="380" cy="230" r="22" fill="#FFF6D9"/>
+<path d="M380 192V268" stroke="#FFF6D9" stroke-width="8" stroke-linecap="round"/>
+<path d="M342 230H418" stroke="#FFF6D9" stroke-width="8" stroke-linecap="round"/>
+</g>
+<ellipse cx="300" cy="447" rx="118" ry="86" fill="#E7F0EA"/>
+<circle cx="242" cy="273" r="18" fill="#263A31"/>
+<circle cx="358" cy="273" r="18" fill="#263A31"/>
+<path d="M248 342C272 364 328 364 352 342" stroke="#263A31" stroke-width="12" stroke-linecap="round"/>
+</svg>
