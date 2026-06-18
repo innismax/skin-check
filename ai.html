@@ -512,14 +512,11 @@
       q:'除了剛剛的問題之外，還有其他困擾嗎？',
       opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉'] },
     { key:'s2', multi:0,
-      q:'最近眼周比較像哪一種狀況？',
+      q:'最近眼周最讓你在意的是哪一種狀況？',
       opts:['最近熬夜比較多，黑眼圈看起來更明顯','最近看起來比較累，眼周容易浮腫沒精神','最近眼周比較乾，紋路比較明顯','最近開始在意笑紋或表情紋'] },
     { key:'s3', multi:0,
       q:'最近肌膚還有哪一種需求想加強？',
-      opts:['最近膚色看起來比較暗沉，也開始在意斑點或膚色不均','最近保濕常常覺得不太夠，想加強補水鎖水','最近肌膚容易乾燥不舒服，也想加強穩定感','最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯','最近熬夜或壓力比較大，肌膚看起來疲憊沒精神','最近開始在意彈力下降，或紋路感越來越明顯'] },
-    { key:'makeup', multi:0,
-      q:'平常出門有化妝習慣嗎？',
-      opts:['沒有化妝','擦潤色防曬','淡妝','正常妝容'] }
+      opts:['最近膚色看起來比較暗沉，也開始在意斑點或膚色不均','最近保濕常常覺得不太夠，想加強補水鎖水','最近肌膚容易乾燥不舒服，也想加強穩定感','最近粉刺痘痘反覆，毛孔和粗糙感也比較明顯','最近熬夜或壓力比較大，肌膚看起來疲憊沒精神','最近開始在意彈力下降，或紋路感越來越明顯'] }
   ];
 
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
@@ -750,7 +747,6 @@
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
     const s2val       = answers.s2 || '';
     const s3val       = answers.s3 || '';
-    const makeup      = answers.makeup || '—';
     const stype       = answers.skin_type || '—';
 
     // ── 顧問邏輯：調理保養 → 核心精華(最多2支) → 眼周 → 面霜 ──
@@ -781,7 +777,6 @@
         '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">眼周狀態</div><div class="cg-val">' + (s2val ? ('✓ ' + s2val) : '—') + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">加強需求</div><div class="cg-val">' + (s3val ? ('✓ ' + s3val) : '—') + '</div></div>' +
-        '<div class="cg-row"><div class="cg-label">化妝習慣</div><div class="cg-val">' + makeup + '</div></div>' +
       '</div>' +
       '<div class="steps-divider"></div>' +
       '<div class="steps-title">今日推薦保養</div>' +
