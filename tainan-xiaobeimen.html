@@ -330,14 +330,14 @@
       position:relative;
       border-radius:28px;
       background:rgba(255,255,255,.97);
-      border:1.5px solid var(--green-border);
+      border:2px solid rgba(185, 220, 196, .92);
       box-shadow:0 14px 30px rgba(81,98,85,.08);
       overflow:hidden;
       transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
     }
     .image-opt.sel .image-opt-card {
-      border-color:#228F58;
-      box-shadow:0 18px 34px rgba(47,165,104,.24);
+      border-color:#1F9B5E;
+      box-shadow:0 0 0 4px rgba(57,199,124,.16), 0 18px 34px rgba(47,165,104,.24);
       transform:translateY(-2px);
     }
     .image-opt.sel .image-opt-card::after {
@@ -357,7 +357,7 @@
     }
     .image-opt:active .image-opt-card { transform:scale(.985); }
     .image-opt-media {
-      aspect-ratio:1 / 1.18;
+      aspect-ratio:1 / 1.12;
       background:linear-gradient(180deg, #F8FCF8 0%, #EEF6F0 100%);
       border-bottom:1px solid rgba(214,232,219,.75);
       overflow:hidden;
@@ -372,17 +372,17 @@
       border-radius:0;
     }
     .image-opt-body {
-      padding:12px 14px;
+      padding:10px 14px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      min-height:64px;
+      min-height:58px;
       background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
     }
     .image-opt-label {
       color:#fff;
-      font-size:15px;
+      font-size:16px;
       line-height:1.32;
       font-weight:700;
       min-width:0;
@@ -390,7 +390,7 @@
       word-break:keep-all;
     }
     .image-grid.main-grid .image-opt-label {
-      font-size:18px;
+      font-size:20px;
       line-height:1.28;
       font-weight:800;
     }
@@ -579,9 +579,9 @@
       .image-opt-card { border-radius:24px; }
       .image-opt-media { padding:0; }
       .image-opt-media img { border-radius:0; }
-      .image-opt-label { font-size:14px; }
-      .image-grid.main-grid .image-opt-label { font-size:16px; }
-      .image-opt-body { min-height:60px; padding:10px 11px; }
+      .image-opt-label { font-size:15px; }
+      .image-grid.main-grid .image-opt-label { font-size:18px; }
+      .image-opt-body { min-height:56px; padding:10px 11px; }
       .image-opt-check { width:18px; height:18px; }
       .hero-brand { font-size:44px; margin-bottom:24px; }
       .hero-title { font-size:34px; margin-bottom:18px; }
@@ -654,7 +654,7 @@
 </div>
 
 <script>
-  const BUILD_VERSION = '2026-06-19-store-urls-v1';
+  const BUILD_VERSION = '2026-06-19-store-urls-v3';
   const STORE_CONFIG = {
     locked: true,
     region: '南區',
@@ -666,7 +666,8 @@
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQVg6niEuEJhKTV8_-YeySu22qY6xAlOUlD7I2NffQ7Neb6hOYPijuT7txnhnOfR400A/exec';
 
-  function logToSheet(mainConcern, s1arr, eyeVal, lifestyleArr) {
+  function logToSheet(mainConcern, s1arr, eyeVal, lifestyleArr, recommendedProducts) {
+    var products = Array.isArray(recommendedProducts) ? recommendedProducts.slice(0, 4) : [];
     var params = new URLSearchParams({
       timestamp: new Date().toLocaleString('zh-TW'),
       date: guData.date,
@@ -686,6 +687,11 @@
       step2: eyeVal || '',
       step3: lifestyleArr.join('、'),
       step4: lifestyleArr.join('、'),
+      product_1: products[0] || '',
+      product_2: products[1] || '',
+      product_3: products[2] || '',
+      product_4: products[3] || '',
+      product_summary: products.join('、'),
       makeup: answers.makeup || '',
       source: 'chat_ai'
     });
@@ -821,14 +827,14 @@
   };
 
   const mainConcernImages = {
-    '敏感泛紅':'assets/concerns/sensitive-redness.png?v=20260619d',
-    '乾燥缺水':'assets/concerns/dryness-dehydration.png?v=20260619d',
-    '皮膚缺乏光澤':'assets/concerns/dullness-glow.png?v=20260619d',
-    '出油與毛孔粗大':'assets/concerns/oil-pores.png?v=20260619d',
-    '痘痘粉刺':'assets/concerns/acne-breakouts.png?v=20260619d',
-    '熬夜暗沉':'assets/concerns/tired-dullness.png?v=20260619d',
-    '彈力下降':'assets/concerns/loss-of-firmness.png?v=20260619d',
-    '皮膚粗糙':'assets/concerns/rough-texture.png?v=20260619d'
+    '敏感泛紅':'assets/concerns/sensitive-redness.png?v=20260619e',
+    '乾燥缺水':'assets/concerns/dryness-dehydration.png?v=20260619e',
+    '皮膚缺乏光澤':'assets/concerns/dullness-glow.png?v=20260619e',
+    '出油與毛孔粗大':'assets/concerns/oil-pores.png?v=20260619e',
+    '痘痘粉刺':'assets/concerns/acne-breakouts.png?v=20260619e',
+    '熬夜暗沉':'assets/concerns/tired-dullness.png?v=20260619e',
+    '彈力下降':'assets/concerns/loss-of-firmness.png?v=20260619e',
+    '皮膚粗糙':'assets/concerns/rough-texture.png?v=20260619e'
   };
 
   function goTo(id){
@@ -1073,11 +1079,13 @@
     if (eyeCare) recommendations.push(eyeCare);
     var creamCare = creamCareMap[mainConcern];
     if (creamCare) recommendations.push(creamCare);
-    var recommendationsHtml = mergeRecommendations(recommendations).map(function(item){
+    var mergedRecommendations = mergeRecommendations(recommendations);
+    var recommendedProducts = mergedRecommendations.map(function(item){ return item.product; });
+    var recommendationsHtml = mergedRecommendations.map(function(item){
       return makeRecommendationCard(item.action, item.product);
     }).join('');
 
-    logToSheet(mainConcern, s1arr, s2val, lifestyleArr);
+    logToSheet(mainConcern, s1arr, s2val, lifestyleArr, recommendedProducts);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
     var concernVal = '✓ ' + mainConcern;
