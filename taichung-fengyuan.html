@@ -654,7 +654,7 @@
 </div>
 
 <script>
-  const BUILD_VERSION = '2026-06-19-store-urls-v3';
+  const BUILD_VERSION = '2026-06-19-store-urls-v4';
   const STORE_CONFIG = {
     locked: true,
     region: '中區',
@@ -666,8 +666,14 @@
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQVg6niEuEJhKTV8_-YeySu22qY6xAlOUlD7I2NffQ7Neb6hOYPijuT7txnhnOfR400A/exec';
 
+  function padProducts(products, size) {
+    var list = Array.isArray(products) ? products.slice(0, size) : [];
+    while (list.length < size) list.push('');
+    return list;
+  }
+
   function logToSheet(mainConcern, s1arr, eyeVal, lifestyleArr, recommendedProducts) {
-    var products = Array.isArray(recommendedProducts) ? recommendedProducts.slice(0, 4) : [];
+    var products = padProducts(recommendedProducts, 5);
     var params = new URLSearchParams({
       timestamp: new Date().toLocaleString('zh-TW'),
       date: guData.date,
@@ -683,17 +689,13 @@
       q5_lifestyle: lifestyleArr.join('、'),
       q5_goal: eyeVal || '',
       q6_makeup: answers.makeup || '',
-      step1: (answers.skin_type || '') + '｜' + (mainConcern || '') + (s1arr.length ? '、' + s1arr.join('、') : ''),
-      step2: eyeVal || '',
-      step3: lifestyleArr.join('、'),
-      step4: lifestyleArr.join('、'),
       product_1: products[0] || '',
       product_2: products[1] || '',
       product_3: products[2] || '',
       product_4: products[3] || '',
+      product_5: products[4] || '',
       product_summary: products.join('、'),
-      makeup: answers.makeup || '',
-      source: 'chat_ai'
+      makeup: answers.makeup || ''
     });
     fetch(SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' }).catch(function(){});
   }
