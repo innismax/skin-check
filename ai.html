@@ -632,14 +632,14 @@
 </div>
 
 <script>
-  const BUILD_VERSION = '2026-06-19-concern-photo-cards-v2';
+  const BUILD_VERSION = '2026-06-19-add-lifestyle-q5';
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
   const guData = { store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
-  function logToSheet(mainConcern, s1arr, s2arr) {
+  function logToSheet(mainConcern, s1arr, eyeVal, lifestyleArr) {
     var params = new URLSearchParams({
       timestamp: new Date().toLocaleString('zh-TW'),
       date: guData.date,
@@ -649,12 +649,15 @@
       q1_skin_type: answers.skin_type || '',
       q2_main_concern: mainConcern || '',
       q3_other_concerns: s1arr.join('、'),
-      q4_lifestyle: s2arr.join('、'),
-      q5_goal: '',
+      q4_eye: eyeVal || '',
+      q4_lifestyle: lifestyleArr.join('、'),
+      q5_lifestyle: lifestyleArr.join('、'),
+      q5_goal: eyeVal || '',
       q6_makeup: answers.makeup || '',
       step1: (answers.skin_type || '') + '｜' + (mainConcern || '') + (s1arr.length ? '、' + s1arr.join('、') : ''),
-      step2: s2arr.join('、'),
-      step3: '',
+      step2: eyeVal || '',
+      step3: lifestyleArr.join('、'),
+      step4: lifestyleArr.join('、'),
       makeup: answers.makeup || '',
       source: 'chat_ai'
     });
@@ -691,6 +694,9 @@
       q:'最近眼周最讓你在意的是哪一種狀況？',
       hint:'※ 請選一個最在意的',
       opts:['最近熬夜比較多，黑眼圈看起來更明顯','最近看起來比較累，眼周容易浮腫沒精神','最近眼周比較乾，紋路比較明顯','最近開始在意笑紋或表情紋'] },
+    { key:'lifestyle', multi:2, hint:'（可複選，最多選 2 個）',
+      q:'最近哪一種生活狀態，和你比較接近？',
+      opts:['最近熬夜比較多','長時間待在冷氣房','最近壓力比較大','最近常待在戶外','最近生活作息比較亂','最近覺得肌膚特別容易乾燥'] },
   ];
 
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
@@ -1007,6 +1013,7 @@
     const mainConcern = answers.main || '';
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
     const s2val       = answers.s2 || '';
+    const lifestyleArr = Array.isArray(answers.lifestyle) ? answers.lifestyle : (answers.lifestyle ? [answers.lifestyle] : []);
     const stype       = answers.skin_type || '—';
 
     // ── 顧問邏輯：調理保養 → 核心精華(最多2支) → 眼周 → 面霜 ──
@@ -1025,7 +1032,7 @@
       return makeRecommendationCard(item.action, item.product);
     }).join('');
 
-    logToSheet(mainConcern, s1arr, [s2val]);
+    logToSheet(mainConcern, s1arr, s2val, lifestyleArr);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
     var concernVal = '✓ ' + mainConcern;
@@ -1049,6 +1056,7 @@
         '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">眼周狀態</div><div class="cg-val">' + (s2val ? ('✓ ' + s2val) : '—') + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (lifestyleArr.length ? lifestyleArr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
       '</div>' +
       '<div class="steps-divider"></div>' +
       '<div class="steps-title">今日推薦保養</div>' +
