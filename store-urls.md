@@ -1,0 +1,28 @@
+# 門市網址對照
+
+- 北區｜台北西門｜https://innismax.github.io/skin-check/taipei-ximen.html
+- 北區｜信義A11｜https://innismax.github.io/skin-check/xinyi-a11.html
+- 北區｜台北SOGO｜https://innismax.github.io/skin-check/taipei-sogo.html
+- 北區｜台北京站｜https://innismax.github.io/skin-check/taipei-jingzhan.html
+- 北區｜中山MRT｜https://innismax.github.io/skin-check/zhongshan-mrt.html
+- 北區｜南港LaLaport｜https://innismax.github.io/skin-check/nangang-lalaport.html
+- 北區｜北車MRT｜https://innismax.github.io/skin-check/taipei-main-mrt.html
+- 北區｜台北大巨蛋｜https://innismax.github.io/skin-check/taipei-dome.html
+- 北二區｜板橋大遠百｜https://innismax.github.io/skin-check/banqiao-dayuanbai.html
+- 北二區｜桃園站前｜https://innismax.github.io/skin-check/taoyuan-zhanqian.html
+- 北二區｜中壢SOGO｜https://innismax.github.io/skin-check/zhongli-sogo.html
+- 北二區｜新竹巨城｜https://innismax.github.io/skin-check/hsinchu-big-city.html
+- 北二區｜快閃- 林口三井｜https://innismax.github.io/skin-check/linkou-mitsui-popup.html
+- 中區｜台中一中｜https://innismax.github.io/skin-check/taichung-yizhong.html
+- 中區｜台中新光｜https://innismax.github.io/skin-check/taichung-shinkong.html
+- 中區｜台中逢甲｜https://innismax.github.io/skin-check/taichung-fengjia.html
+- 中區｜台中豐原｜https://innismax.github.io/skin-check/taichung-fengyuan.html
+- 中區｜台中漢神｜https://innismax.github.io/skin-check/taichung-hanshin.html
+- 中區｜嘉義文化｜https://innismax.github.io/skin-check/chiayi-wenhua.html
+- 中區｜彰化員林｜https://innismax.github.io/skin-check/changhua-yuanlin.html
+- 南區｜台南Focus｜https://innismax.github.io/skin-check/tainan-focus.html
+- 南區｜台南南紡｜https://innismax.github.io/skin-check/tainan-nanfang.html
+- 南區｜台南新天地｜https://innismax.github.io/skin-check/tainan-xintiandi.html
+- 南區｜台南小北門｜https://innismax.github.io/skin-check/tainan-xiaobeimen.html
+- 南區｜高雄夢時代｜https://innismax.github.io/skin-check/kaohsiung-dream-mall.html
+- 南區｜漢神巨蛋｜https://innismax.github.io/skin-check/hanshin-arena.html
