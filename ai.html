@@ -714,7 +714,7 @@
     return list;
   }
 
-  function logToSheet(mainConcern, s1arr, eyeVal, lifestyleArr, recommendedProducts) {
+  function logToSheet(mainConcern, s1arr, eyeVal, recommendedProducts) {
     var products = padProducts(recommendedProducts, 5);
     var params = new URLSearchParams({
       timestamp: new Date().toLocaleString('zh-TW'),
@@ -727,8 +727,8 @@
       q2_main_concern: mainConcern || '',
       q3_other_concerns: s1arr.join('、'),
       q4_eye: eyeVal || '',
-      q4_lifestyle: lifestyleArr.join('、'),
-      q5_lifestyle: lifestyleArr.join('、'),
+      q4_lifestyle: '',
+      q5_lifestyle: '',
       q5_goal: eyeVal || '',
       q6_makeup: answers.makeup || '',
       product_1: products[0] || '',
@@ -790,9 +790,6 @@
       q:'最近眼周最想改善或預防哪一種狀況？',
       hint:'※ 請選一個最想優先改善的',
       opts:['改善黑眼圈','改善泡泡眼','改善眼周紋路','預防表情紋路'] },
-    { key:'lifestyle', multi:2, hint:'（可複選，最多選 2 個）',
-      q:'最近哪一種生活狀態，和你比較接近？',
-      opts:['最近熬夜比較多','長時間待在冷氣房','最近壓力比較大','最近常待在戶外','最近生活作息比較亂','最近覺得肌膚特別容易乾燥'] },
   ];
 
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
@@ -1141,7 +1138,6 @@
     const mainConcern = answers.main || '';
     const s1arr       = Array.isArray(answers.s1) ? answers.s1 : (answers.s1 ? [answers.s1] : []);
     const s2val       = answers.s2 || '';
-    const lifestyleArr = Array.isArray(answers.lifestyle) ? answers.lifestyle : (answers.lifestyle ? [answers.lifestyle] : []);
     const stype       = answers.skin_type || '—';
 
     // ── 顧問邏輯：調理保養 → 核心精華(最多2支) → 眼周 → 面霜 ──
@@ -1162,7 +1158,7 @@
       return makeRecommendationCard(item.action, item.product);
     }).join('');
 
-    logToSheet(mainConcern, s1arr, s2val, lifestyleArr, recommendedProducts);
+    logToSheet(mainConcern, s1arr, s2val, recommendedProducts);
 
     // 「你的選擇」顯示：主困擾 + 次要困擾
     var concernVal = '✓ ' + mainConcern;
@@ -1186,7 +1182,6 @@
         '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">眼周狀態</div><div class="cg-val">' + (s2val ? ('✓ ' + s2val) : '—') + '</div></div>' +
-        '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (lifestyleArr.length ? lifestyleArr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
       '</div>' +
       '<div class="steps-divider"></div>' +
       '<div class="steps-title">今日推薦保養</div>' +
