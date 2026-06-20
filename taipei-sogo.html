@@ -418,17 +418,57 @@
       flex:1;
     }
     .image-grid.eye-grid .image-opt-label {
-      font-size:19px;
-      line-height:1.22;
+      font-size:22px;
+      line-height:1.2;
       font-weight:800;
       margin-bottom:6px;
     }
     .image-grid.eye-grid .image-opt-note {
       display:block;
       color:rgba(255,255,255,.88);
-      font-size:13px;
+      font-size:16px;
       line-height:1.42;
-      font-weight:600;
+      font-weight:700;
+    }
+    .image-grid.lifestyle-grid .image-opt-card {
+      border-radius:26px;
+    }
+    .image-grid.lifestyle-grid .image-opt-media {
+      aspect-ratio:1.08 / 1;
+    }
+    .image-grid.lifestyle-grid .image-opt-body {
+      min-height:96px;
+      align-items:flex-start;
+      padding:14px 14px 16px;
+    }
+    .image-grid.lifestyle-grid .image-opt-copy {
+      min-width:0;
+      flex:1;
+    }
+    .image-grid.lifestyle-grid .image-opt-label {
+      font-size:22px;
+      line-height:1.2;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .image-grid.lifestyle-grid .image-opt-note {
+      display:block;
+      color:rgba(255,255,255,.88);
+      font-size:15px;
+      line-height:1.4;
+      font-weight:700;
+    }
+    .image-opt-media-placeholder {
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, #EAF8EF 0%, #D5F1DE 100%);
+      color:#228F58;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.4px;
     }
     .image-opt-check {
       width:24px;
@@ -619,9 +659,12 @@
       .image-opt-media img { border-radius:0; }
       .image-opt-label { font-size:15px; }
       .image-grid.main-grid .image-opt-label { font-size:18px; }
-      .image-grid.eye-grid .image-opt-label { font-size:17px; }
-      .image-grid.eye-grid .image-opt-note { font-size:12px; }
-      .image-grid.eye-grid .image-opt-body { min-height:90px; padding:12px; }
+      .image-grid.eye-grid .image-opt-label { font-size:19px; }
+      .image-grid.eye-grid .image-opt-note { font-size:14px; }
+      .image-grid.eye-grid .image-opt-body { min-height:98px; padding:12px; }
+      .image-grid.lifestyle-grid .image-opt-label { font-size:19px; }
+      .image-grid.lifestyle-grid .image-opt-note { font-size:13px; }
+      .image-grid.lifestyle-grid .image-opt-body { min-height:98px; padding:12px; }
       .image-opt-body { min-height:56px; padding:10px 11px; }
       .image-opt-check { width:18px; height:18px; }
       .hero-brand { font-size:44px; margin-bottom:24px; }
@@ -727,8 +770,8 @@
       q2_main_concern: mainConcern || '',
       q3_other_concerns: s1arr.join('、'),
       q4_eye: eyeVal || '',
-      q4_lifestyle: lifestyleArr.join('、'),
-      q5_lifestyle: lifestyleArr.join('、'),
+      q4_lifestyle: Array.isArray(lifestyleArr) ? lifestyleArr.join('、') : '',
+      q5_lifestyle: Array.isArray(lifestyleArr) ? lifestyleArr.join('、') : '',
       q5_goal: eyeVal || '',
       q6_makeup: answers.makeup || '',
       product_1: products[0] || '',
@@ -791,8 +834,8 @@
       hint:'※ 請選一個最想優先改善的',
       opts:['改善黑眼圈','改善泡泡眼','改善眼周紋路','預防表情紋路'] },
     { key:'lifestyle', multi:2, hint:'（可複選，最多選 2 個）',
-      q:'最近哪一種生活狀態，和你比較接近？',
-      opts:['最近熬夜比較多','長時間待在冷氣房','最近壓力比較大','最近常待在戶外','最近生活作息比較亂','最近覺得肌膚特別容易乾燥'] },
+      q:'最近哪種生活情境和你比較接近？',
+      opts:['最近常熬夜','久待冷氣房','下午容易脫妝','喜歡戶外活動','夏天怕曬黑'] },
   ];
 
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
@@ -889,6 +932,14 @@
     '預防表情紋路': { image:'assets/eyes/expression-lines.jpg', note:'笑起來眼周紋路比較明顯' }
   };
 
+  const lifestyleMeta = {
+    '最近常熬夜': { image:'assets/lifestyle/late-night.jpg', note:'追劇、滑手機到很晚' },
+    '久待冷氣房': { image:'assets/lifestyle/ac-room.jpg', note:'長時間待在冷氣空間' },
+    '下午容易脫妝': { image:'assets/lifestyle/makeup-fade.jpg', note:'底妝容易浮粉或斑駁' },
+    '喜歡戶外活動': { image:'assets/lifestyle/outdoor.jpg', note:'白天常在戶外活動' },
+    '夏天怕曬黑': { image:'assets/lifestyle/outdoor.jpg', note:'外出時會特別在意曬黑' }
+  };
+
   function goTo(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -961,6 +1012,31 @@
       });
       eyeGrid += '</div>';
       return eyeGrid;
+    }
+
+    if (q.key === 'lifestyle') {
+      var lifeGrid = '<div class="image-grid lifestyle-grid">';
+      optionList.forEach(function(opt){
+        var isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
+        var meta = lifestyleMeta[opt] || { image:'', note:'' };
+        var media = meta.image
+          ? '<img src="' + meta.image + '" alt="' + escapeHtml(opt) + '">'
+          : '<div class="image-opt-media-placeholder">COMING SOON</div>';
+        lifeGrid += '<button class="image-opt' + isSelected + '" data-value="' + escapeHtml(opt) + '">' +
+          '<div class="image-opt-card">' +
+            '<div class="image-opt-media">' + media + '</div>' +
+            '<div class="image-opt-body">' +
+              '<div class="image-opt-copy">' +
+                '<div class="image-opt-label">' + opt + '</div>' +
+                '<span class="image-opt-note">' + meta.note + '</span>' +
+              '</div>' +
+              '<div class="image-opt-check"></div>' +
+            '</div>' +
+          '</div>' +
+        '</button>';
+      });
+      lifeGrid += '</div>';
+      return lifeGrid;
     }
 
     var list = '<div class="opts-wrap">';
@@ -1186,7 +1262,7 @@
         '<div class="cg-row"><div class="cg-label">膚質</div><div class="cg-val">' + stype + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">肌膚困擾</div><div class="cg-val">' + concernVal + '</div></div>' +
         '<div class="cg-row"><div class="cg-label">眼周狀態</div><div class="cg-val">' + (s2val ? ('✓ ' + s2val) : '—') + '</div></div>' +
-        '<div class="cg-row"><div class="cg-label">生活狀態</div><div class="cg-val">' + (lifestyleArr.length ? lifestyleArr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
+        '<div class="cg-row"><div class="cg-label">生活情境</div><div class="cg-val">' + (lifestyleArr.length ? lifestyleArr.map(function(v){ return '✓ ' + v; }).join('<br>') : '—') + '</div></div>' +
       '</div>' +
       '<div class="steps-divider"></div>' +
       '<div class="steps-title">今日推薦保養</div>' +
