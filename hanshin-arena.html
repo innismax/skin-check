@@ -224,6 +224,9 @@
     .question-card.main-question {
       padding:28px 24px;
     }
+    .question-card.large-question {
+      padding:28px 24px;
+    }
     .step-back {
       display:inline-flex;
       align-items:center;
@@ -247,6 +250,11 @@
       font-weight:600;
     }
     .question-card.main-question .q-main {
+      font-size:22px;
+      line-height:1.55;
+      font-weight:700;
+    }
+    .question-card.large-question .q-main {
       font-size:22px;
       line-height:1.55;
       font-weight:700;
@@ -393,6 +401,34 @@
       font-size:20px;
       line-height:1.28;
       font-weight:800;
+    }
+    .image-grid.eye-grid .image-opt-card {
+      border-radius:26px;
+    }
+    .image-grid.eye-grid .image-opt-media {
+      aspect-ratio:1.08 / 1;
+    }
+    .image-grid.eye-grid .image-opt-body {
+      min-height:96px;
+      align-items:flex-start;
+      padding:14px 14px 16px;
+    }
+    .image-grid.eye-grid .image-opt-copy {
+      min-width:0;
+      flex:1;
+    }
+    .image-grid.eye-grid .image-opt-label {
+      font-size:19px;
+      line-height:1.22;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .image-grid.eye-grid .image-opt-note {
+      display:block;
+      color:rgba(255,255,255,.88);
+      font-size:13px;
+      line-height:1.42;
+      font-weight:600;
     }
     .image-opt-check {
       width:24px;
@@ -573,7 +609,9 @@
       .question-card { padding:22px 18px; border-radius:24px; }
       .q-main { font-size:18px; }
       .question-card.main-question { padding:24px 18px; }
+      .question-card.large-question { padding:24px 18px; }
       .question-card.main-question .q-main { font-size:20px; }
+      .question-card.large-question .q-main { font-size:20px; }
       .opt-btn { min-height:66px; font-size:17px; padding:0 18px; }
       .image-grid { gap:12px; }
       .image-opt-card { border-radius:24px; }
@@ -581,6 +619,9 @@
       .image-opt-media img { border-radius:0; }
       .image-opt-label { font-size:15px; }
       .image-grid.main-grid .image-opt-label { font-size:18px; }
+      .image-grid.eye-grid .image-opt-label { font-size:17px; }
+      .image-grid.eye-grid .image-opt-note { font-size:12px; }
+      .image-grid.eye-grid .image-opt-body { min-height:90px; padding:12px; }
       .image-opt-body { min-height:56px; padding:10px 11px; }
       .image-opt-check { width:18px; height:18px; }
       .hero-brand { font-size:44px; margin-bottom:24px; }
@@ -654,12 +695,13 @@
 </div>
 
 <script>
-  const BUILD_VERSION = '2026-06-19-store-urls-v5';
+  const BUILD_VERSION = '2026-06-20-eye-photo-v1';
   const STORE_CONFIG = {
-    locked: true,
-    region: '南區',
-    store: '漢神巨蛋'
-  };
+  locked: true,
+  region: '南區',
+  store: '漢神巨蛋',
+  sheet: ''
+};
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
   const guData = { region:'', store:'', name:'', date:'' };
@@ -697,6 +739,7 @@
       product_summary: products.join('、'),
       makeup: answers.makeup || ''
     });
+    if (STORE_CONFIG.sheet) params.set('sheet', STORE_CONFIG.sheet);
     fetch(SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' }).catch(function(){});
   }
 
@@ -744,9 +787,9 @@
       q:'除了剛剛的問題之外，還有其他困擾嗎？',
       opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉','想讓肌膚緊緻有彈力'] },
     { key:'s2', multi:0,
-      q:'最近眼周最讓你在意的是哪一種狀況？',
-      hint:'※ 請選一個最在意的',
-      opts:['最近熬夜比較多，黑眼圈看起來更明顯','最近看起來比較累，眼周容易浮腫沒精神','最近眼周比較乾，紋路比較明顯','最近開始在意笑紋或表情紋'] },
+      q:'最近眼周最想改善或預防哪一種狀況？',
+      hint:'※ 請選一個最想優先改善的',
+      opts:['改善黑眼圈','改善泡泡眼','改善眼周紋路','預防表情紋路'] },
     { key:'lifestyle', multi:2, hint:'（可複選，最多選 2 個）',
       q:'最近哪一種生活狀態，和你比較接近？',
       opts:['最近熬夜比較多','長時間待在冷氣房','最近壓力比較大','最近常待在戶外','最近生活作息比較亂','最近覺得肌膚特別容易乾燥'] },
@@ -784,10 +827,10 @@
   };
 
   const eyeCareMap = {
-    '最近熬夜比較多，黑眼圈看起來更明顯':      { action:'針對黑眼圈與眼周暗沉，加強提亮與保濕', product:'維他命C亮白眼部精華' },
-    '最近看起來比較累，眼周容易浮腫沒精神':    { action:'舒緩疲憊泡泡眼，讓眼周更清爽有精神', product:'綠茶玻尿酸保濕滾珠眼部精華' },
-    '最近眼周比較乾，紋路比較明顯':            { action:'加強眼周滋潤修護，改善乾燥與紋路感', product:'九重完美青春再生眼霜' },
-    '最近開始在意笑紋或表情紋':                { action:'聚焦表情紋與細紋，提升眼周與唇周彈力', product:'A醇PDRN眼唇撫紋精華' }
+    '改善黑眼圈':   { action:'針對黑眼圈與眼周暗沉，加強提亮與保濕', product:'維他命C亮白眼部精華' },
+    '改善泡泡眼':   { action:'舒緩疲憊泡泡眼，讓眼周更清爽有精神', product:'綠茶玻尿酸保濕滾珠眼部精華' },
+    '改善眼周紋路': { action:'加強眼周滋潤修護，改善紋路感與乾燥感', product:'九重完美青春再生眼霜' },
+    '預防表情紋路': { action:'聚焦表情紋與細紋，提升眼周與唇周彈力', product:'A醇PDRN眼唇撫紋精華' }
   };
 
   const creamCareMap = {
@@ -837,6 +880,13 @@
     '熬夜暗沉':'assets/concerns/tired-dullness.png?v=20260619e',
     '彈力下降':'assets/concerns/loss-of-firmness.png?v=20260619e',
     '皮膚粗糙':'assets/concerns/rough-texture.png?v=20260619e'
+  };
+
+  const eyeConcernMeta = {
+    '改善黑眼圈': { image:'assets/eyes/dark-circles.jpg', note:'眼下暗沉、黑眼圈明顯' },
+    '改善泡泡眼': { image:'assets/eyes/puffy-eyes.jpg', note:'眼下浮腫、早上腫感明顯' },
+    '改善眼周紋路': { image:'assets/eyes/eye-wrinkles.jpg', note:'魚尾紋比較明顯' },
+    '預防表情紋路': { image:'assets/eyes/expression-lines.jpg', note:'笑起來眼周紋路比較明顯' }
   };
 
   function goTo(id){
@@ -891,6 +941,28 @@
       return grid;
     }
 
+    if (q.key === 's2') {
+      var eyeGrid = '<div class="image-grid eye-grid">';
+      optionList.forEach(function(opt){
+        var isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
+        var meta = eyeConcernMeta[opt] || { image:'', note:'' };
+        eyeGrid += '<button class="image-opt' + isSelected + '" data-value="' + escapeHtml(opt) + '">' +
+          '<div class="image-opt-card">' +
+            '<div class="image-opt-media"><img src="' + meta.image + '" alt="' + escapeHtml(opt) + '"></div>' +
+            '<div class="image-opt-body">' +
+              '<div class="image-opt-copy">' +
+                '<div class="image-opt-label">' + opt + '</div>' +
+                '<span class="image-opt-note">' + meta.note + '</span>' +
+              '</div>' +
+              '<div class="image-opt-check"></div>' +
+            '</div>' +
+          '</div>' +
+        '</button>';
+      });
+      eyeGrid += '</div>';
+      return eyeGrid;
+    }
+
     var list = '<div class="opts-wrap">';
     optionList.forEach(function(opt){
       const isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
@@ -932,7 +1004,10 @@
       html += '<button class="step-back" type="button" data-back-step="1">← 上一題</button>';
     }
 
-    html += '<div class="question-card' + (q.key === 'main' ? ' main-question' : '') + '">' + formatQuestionText(q.q) + '</div>';
+    var questionClass = 'question-card';
+    if (q.key === 'main') questionClass += ' main-question';
+    if (q.key === 's1' || q.key === 's2') questionClass += ' large-question';
+    html += '<div class="' + questionClass + '">' + formatQuestionText(q.q) + '</div>';
 
     if (q.hint) html += '<div class="q-hint">' + q.hint + '</div>';
 
