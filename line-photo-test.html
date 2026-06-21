@@ -201,6 +201,7 @@
       height:42px;
       border-radius:50%;
       background:linear-gradient(135deg, #44D483 0%, #2FA568 100%);
+      border:2px solid rgba(255,255,255,.92);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -210,15 +211,16 @@
       box-shadow:0 10px 20px rgba(47,165,104,.24);
     }
     .h-name {
-      font-size:15px;
+      font-size:19px;
       line-height:1.2;
       font-weight:800;
-      color:#263B31;
+      color:#fff;
+      letter-spacing:.2px;
     }
     .h-sub {
       font-size:12px;
       line-height:1.2;
-      color:#5FAF82;
+      color:rgba(255,255,255,.88);
       font-weight:700;
       margin-top:4px;
     }
@@ -251,6 +253,7 @@
       height:34px;
       border-radius:50%;
       background:linear-gradient(135deg, #44D483 0%, #2FA568 100%);
+      border:2px solid rgba(255,255,255,.92);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -288,6 +291,7 @@
       height:34px;
       border-radius:50%;
       background:linear-gradient(135deg, #44D483 0%, #2FA568 100%);
+      border:2px solid rgba(255,255,255,.92);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -297,7 +301,8 @@
       box-shadow:0 10px 18px rgba(47,165,104,.22);
     }
     .question-bubble {
-      flex:1;
+      flex:none;
+      max-width:78%;
       background:#FCFEFC;
       border-radius:10px 24px 24px 24px;
       box-shadow:0 12px 22px rgba(46,64,55,.08);
@@ -737,6 +742,7 @@
       .dialog-question-row { gap:8px; margin-bottom:10px; }
       .dialog-avatar, .intro-avatar { width:30px; height:30px; font-size:14px; }
       .question-bubble { padding:16px 15px 14px; border-radius:10px 20px 20px 20px; }
+      .question-bubble { max-width:82%; }
       .typing-bubble { min-height:44px; padding:0 14px; }
       .answer-row { margin-left:38px; }
       .answer-bubble { max-width:86%; font-size:15px; padding:13px 14px; }
@@ -1228,13 +1234,6 @@
     const selected = Array.isArray(answers[q.key]) ? answers[q.key] : (answers[q.key] ? [answers[q.key]] : []);
 
     var html = '';
-
-    if (step === 0) {
-      html += '<div class="intro-row">' +
-        '<div class="intro-avatar">😊</div>' +
-        '<div class="intro-bubble">我會用幾個簡單問題，陪你快速看一下今天的肌膚狀態。</div>' +
-      '</div>';
-    }
 
     if (step > 0) {
       html += '<button class="step-back" type="button" data-back-step="1">← 上一題</button>';
