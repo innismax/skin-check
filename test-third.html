@@ -686,7 +686,7 @@
 <body>
 
 <!-- ══ GU 頁 ══ -->
-<div id="screen-gu" class="screen active">
+<div id="screen-gu" class="screen">
   <div class="gu-inner">
     <div class="gu-title">開始測試前</div>
     <div class="gu-sub">請 GU 先完成以下確認</div>
@@ -721,7 +721,7 @@
 </div>
 
 <!-- ══ WELCOME ══ -->
-<div id="screen-welcome" class="screen">
+<div id="screen-welcome" class="screen active">
   <div class="welcome-card">
     <div class="hero-wrap">
       <div class="hero-brand">INNISFREE</div>
@@ -948,6 +948,8 @@
   }
 
   function startChat(){
+    if (!guData.name) guData.name = '測試';
+    if (!guData.date) guData.date = new Date().toISOString().split('T')[0];
     goTo('screen-chat');
     renderCurrentStep();
   }
@@ -1284,7 +1286,9 @@
       }
       document.getElementById('gu-next').classList.remove('ready');
       document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
-      goTo('screen-gu');
+      guData.date = new Date().toISOString().split('T')[0];
+      guData.name = '測試';
+      goTo('screen-welcome');
     };
     chat.appendChild(btn);
     chat.scrollTop = 0;
