@@ -1228,23 +1228,27 @@
     var nextStep = step + 1;
     if (nextStep >= questions.length) {
       step = nextStep;
-      renderCurrentStep();
+      renderCurrentStep({ scrollMode: 'question' });
       return;
     }
     if (typingTimer) clearTimeout(typingTimer);
     botTyping = true;
     pendingStep = nextStep;
-    renderCurrentStep();
+    renderCurrentStep({ scrollMode: 'bottom' });
     typingTimer = setTimeout(function(){
       botTyping = false;
       step = pendingStep;
       pendingStep = null;
       typingTimer = null;
-      renderCurrentStep();
+      renderCurrentStep({ scrollMode: 'question' });
     }, 520);
   }
 
-  function renderCurrentStep() {
+  function renderCurrentStep(options) {
+    options = options || {};
+    var scrollMode = options.scrollMode || 'question';
+    var preservedScrollTop = typeof options.scrollTop === 'number' ? options.scrollTop : 0;
+
     if (step >= questions.length) {
       showResult();
       return;
@@ -1264,7 +1268,11 @@
       html += renderTypingRow();
       chat.innerHTML = html;
       bindBackEvent();
-      chat.scrollTop = chat.scrollHeight;
+      if (scrollMode === 'preserve') {
+        chat.scrollTop = preservedScrollTop;
+      } else {
+        chat.scrollTop = chat.scrollHeight;
+      }
       return;
     }
     html += '<div class="dialog-stage">';
@@ -1287,7 +1295,13 @@
     bindBackEvent();
     bindOptionEvents(q);
     bindNextEvent(q);
-    scrollCurrentQuestionIntoView();
+    if (scrollMode === 'preserve') {
+      chat.scrollTop = preservedScrollTop;
+    } else if (scrollMode === 'bottom') {
+      chat.scrollTop = chat.scrollHeight;
+    } else {
+      scrollCurrentQuestionIntoView();
+    }
   }
 
   function clearAnswersAfter(stepIndex) {
@@ -1309,7 +1323,7 @@
       if (step <= 0) return;
       step -= 1;
       clearAnswersAfter(step);
-      renderCurrentStep();
+      renderCurrentStep({ scrollMode: 'question' });
     });
   }
 
@@ -1340,7 +1354,7 @@
           current.push(value);
         }
         answers[q.key] = current;
-        renderCurrentStep();
+        renderCurrentStep({ scrollMode: 'preserve', scrollTop: chat.scrollTop });
       });
     });
   }
