@@ -686,7 +686,7 @@
 <body>
 
 <!-- ══ GU 頁 ══ -->
-<div id="screen-gu" class="screen active">
+<div id="screen-gu" class="screen">
   <div class="gu-inner">
     <div class="gu-title">開始測試前</div>
     <div class="gu-sub">請 GU 先完成以下確認</div>
@@ -721,7 +721,7 @@
 </div>
 
 <!-- ══ WELCOME ══ -->
-<div id="screen-welcome" class="screen">
+<div id="screen-welcome" class="screen active">
   <div class="welcome-card">
     <div class="hero-wrap">
       <div class="hero-brand">INNISFREE</div>
@@ -747,7 +747,7 @@
   };
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
-  const guData = { region:'', store:'', name:'', date:'' };
+  const guData = { region:'測試', store:'第三版測試', name:'', date:new Date().toISOString().split('T')[0] };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
 
@@ -1272,19 +1272,11 @@
     btn.className = 'restart-btn'; btn.textContent = '再測一次';
     btn.onclick = function(){
       chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
-      document.getElementById('gu-name').value = '';
-      document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
       guData.name = '';
-      if (STORE_CONFIG.locked) {
-        guData.region = STORE_CONFIG.region;
-        guData.store = STORE_CONFIG.store;
-      } else {
-        guData.region = '';
-        guData.store = '';
-      }
-      document.getElementById('gu-next').classList.remove('ready');
-      document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
-      goTo('screen-gu');
+      guData.region = STORE_CONFIG.region;
+      guData.store = STORE_CONFIG.store;
+      guData.date = new Date().toISOString().split('T')[0];
+      goTo('screen-welcome');
     };
     chat.appendChild(btn);
     chat.scrollTop = 0;
