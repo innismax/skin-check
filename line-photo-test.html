@@ -1211,6 +1211,19 @@
     '</div>';
   }
 
+  function scrollCurrentQuestionIntoView() {
+    requestAnimationFrame(function(){
+      var currentRow = chat.querySelector('[data-current-question="true"]');
+      if (!currentRow) {
+        chat.scrollTop = chat.scrollHeight;
+        return;
+      }
+      var rowTop = currentRow.offsetTop;
+      var target = Math.max(0, rowTop - 10);
+      chat.scrollTo({ top: target, behavior: 'smooth' });
+    });
+  }
+
   function goNextWithTyping() {
     var nextStep = step + 1;
     if (nextStep >= questions.length) {
@@ -1255,7 +1268,7 @@
       return;
     }
     html += '<div class="dialog-stage">';
-    html += '<div class="dialog-question-row">' +
+    html += '<div class="dialog-question-row" data-current-question="true">' +
       '<div class="dialog-avatar">😊</div>' +
       '<div class="question-bubble">' + formatQuestionText(q.q) + '</div>' +
     '</div>';
@@ -1274,7 +1287,7 @@
     bindBackEvent();
     bindOptionEvents(q);
     bindNextEvent(q);
-    chat.scrollTop = chat.scrollHeight;
+    scrollCurrentQuestionIntoView();
   }
 
   function clearAnswersAfter(stepIndex) {
