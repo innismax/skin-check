@@ -526,6 +526,9 @@
       line-height:1.28;
       font-weight:800;
     }
+    .image-grid.main-grid .image-opt-media img.concern-firmness-image {
+      object-position:center 24%;
+    }
     .image-grid.main-grid .image-opt-card,
     .image-grid.lifestyle-grid .image-opt-card {
       border-radius:20px;
@@ -1042,6 +1045,10 @@
     '皮膚粗糙':'assets/concerns/rough-texture.png?v=20260619e'
   };
 
+  const mainConcernImageClasses = {
+    '彈力下降':'concern-firmness-image'
+  };
+
   const eyeConcernMeta = {
     '掰掰黑眼圈': { image:'assets/eyes/dark-circles.jpg', note:'眼下暗沉、黑眼圈明顯' },
     '擺脫泡泡眼': { image:'assets/eyes/puffy-eyes.jpg', note:'眼下浮腫、早上腫感明顯' },
@@ -1101,9 +1108,10 @@
       optionList.forEach(function(opt){
         var isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
         var img = mainConcernImages[opt] || '';
+        var imgClass = mainConcernImageClasses[opt] ? (' ' + mainConcernImageClasses[opt]) : '';
         grid += '<button class="image-opt' + isSelected + '" data-value="' + escapeHtml(opt) + '">' +
           '<div class="image-opt-card">' +
-            '<div class="image-opt-media"><img src="' + img + '" alt="' + escapeHtml(opt) + '"></div>' +
+            '<div class="image-opt-media"><img class="' + imgClass.trim() + '" src="' + img + '" alt="' + escapeHtml(opt) + '"></div>' +
             '<div class="image-opt-body">' +
               '<div class="image-opt-label">' + opt + '</div>' +
               '<div class="image-opt-check"></div>' +
