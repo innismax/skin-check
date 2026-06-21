@@ -222,11 +222,25 @@
       letter-spacing:.2px;
     }
     .h-sub {
-      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      font-size:13px;
       line-height:1.2;
-      color:rgba(255,255,255,.88);
-      font-weight:700;
+      color:rgba(255,255,255,.97);
+      font-weight:800;
       margin-top:4px;
+      text-shadow:0 1px 8px rgba(20,58,37,.12);
+    }
+    .h-status-dot {
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#E9FFF0;
+      box-shadow:
+        0 0 0 3px rgba(109, 235, 154, .22),
+        0 0 12px rgba(207,255,224,.55);
+      flex-shrink:0;
     }
 
     /* ══ CHAT AREA ══ */
@@ -846,7 +860,7 @@
       <div class="h-av">😊</div>
       <div>
         <div class="h-name">INNISFREE 肌膚顧問</div>
-        <div class="h-sub">● 線上中</div>
+        <div class="h-sub"><span class="h-status-dot"></span><span>線上中</span></div>
       </div>
     </div>
     <div class="chat-body" id="chat"></div>
