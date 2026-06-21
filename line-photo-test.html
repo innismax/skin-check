@@ -342,49 +342,47 @@
       color:var(--red);
       font-weight:700;
     }
+    .step-meta {
+      margin:0 0 10px 44px;
+      color:rgba(255,255,255,.86);
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.8px;
+    }
     .opts-wrap {
       margin-left:44px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
     }
     .opt-btn {
       width:100%;
-      min-height:74px;
+      min-height:58px;
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      justify-content:center;
+      gap:8px;
       background:rgba(255,253,249,.95);
       border:1.5px solid var(--green-border);
       color:var(--green);
-      font-size:18px;
-      font-weight:600;
-      padding:0 22px;
-      border-radius:999px;
+      font-size:17px;
+      font-weight:700;
+      padding:12px 14px;
+      border-radius:20px;
       cursor:pointer;
       font-family:inherit;
       transition:all .15s;
       box-shadow:0 8px 16px rgba(81,98,85,.05);
-      text-align:left;
+      text-align:center;
     }
     .opt-btn::after {
-      content:'';
-      width:18px;
-      height:18px;
-      border-radius:50%;
-      border:2px solid rgba(110,133,115,.28);
-      flex-shrink:0;
+      content:none;
     }
     .opt-btn.sel {
       background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
       color:#fff;
       border-color:#2FA568;
       box-shadow:0 12px 22px rgba(47,165,104,.18);
-    }
-    .opt-btn.sel::after {
-      border-color:rgba(255,255,255,.92);
-      background:radial-gradient(circle at center, rgba(255,255,255,.92) 0 38%, transparent 41%);
     }
     .opt-btn:active { transform:scale(.985); }
     .image-grid {
@@ -584,38 +582,9 @@
       cursor:default;
       box-shadow:none;
     }
-    .progress-card {
-      margin:18px 0 0 44px;
-      background:rgba(255,253,249,.98);
-      border-radius:24px;
-      box-shadow:0 12px 22px rgba(89,105,92,.06);
-      padding:16px 18px 18px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .step-next.single-hidden {
+      display:none;
     }
-    .progress-track {
-      display:grid;
-      grid-template-columns:repeat(5, 1fr);
-      align-items:center;
-      gap:8px;
-    }
-    .progress-dot {
-      height:16px;
-      border-radius:999px;
-      background:rgba(209,219,209,.9);
-      position:relative;
-      overflow:hidden;
-    }
-    .progress-dot.active { background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%); }
-    .progress-dot.done { background:rgba(122,212,163,.84); }
-    .progress-text {
-      text-align:center;
-      color:var(--text-mid);
-      font-size:14px;
-      letter-spacing:1px;
-    }
-
     /* ══ RESULT CARD ══ */
     .res-card {
       background:rgba(255,253,249,.96); border-radius:28px; padding:24px 20px;
@@ -723,9 +692,10 @@
       .question-bubble { padding:16px 15px 14px; border-radius:10px 20px 20px 20px; }
       .q-main { font-size:18px; }
       .q-main .q-note { font-size:16px; }
-      .step-back, .q-hint, .opts-wrap, .image-grid, .progress-card, .step-next { margin-left:38px; }
+      .step-back, .step-meta, .q-hint, .opts-wrap, .image-grid, .step-next { margin-left:38px; }
       .step-next { max-width:calc(100% - 38px); }
-      .opt-btn { min-height:66px; font-size:17px; padding:0 18px; }
+      .opts-wrap { grid-template-columns:1fr 1fr; gap:9px; }
+      .opt-btn { min-height:54px; font-size:16px; padding:10px 12px; border-radius:18px; }
       .image-grid { gap:10px; grid-template-columns:repeat(2, minmax(0, 1fr)); }
       .image-opt-card { border-radius:18px; }
       .image-opt-media { padding:0; }
@@ -1135,20 +1105,6 @@
     return list;
   }
 
-  function renderProgress(current) {
-    var dots = '';
-    for (var i = 0; i < questions.length; i++) {
-      var cls = 'progress-dot';
-      if (i < current) cls += ' done';
-      if (i === current) cls += ' active';
-      dots += '<div class="' + cls + '"></div>';
-    }
-    return '<div class="progress-card">' +
-      '<div class="progress-track">' + dots + '</div>' +
-      '<div class="progress-text">第 ' + (current + 1) + ' 題，共 ' + questions.length + ' 題</div>' +
-    '</div>';
-  }
-
   function renderCurrentStep() {
     if (step >= questions.length) {
       showResult();
@@ -1178,11 +1134,13 @@
     '</div>';
 
     if (q.hint) html += '<div class="q-hint">' + q.hint + '</div>';
+    html += '<div class="step-meta">Q' + (step + 1) + ' / ' + questions.length + '</div>';
 
     var hasSelection = selected.length > 0;
     html += renderOptions(q, optionList, selected);
-    html += renderProgress(step);
-    html += '<button class="step-next" type="button"' + (hasSelection ? '' : ' disabled') + '>下一題 →</button>';
+    if (q.multi > 1) {
+      html += '<button class="step-next" type="button"' + (hasSelection ? '' : ' disabled') + '>下一題 →</button>';
+    }
     html += '</div>';
 
     chat.innerHTML = html;
@@ -1217,7 +1175,15 @@
         if (q.multi <= 1) {
           answers[q.key] = value;
           clearAnswersAfter(step);
-          renderCurrentStep();
+          btns.forEach(function(other){
+            other.style.pointerEvents = 'none';
+            if (other !== btn) other.classList.remove('sel');
+          });
+          btn.classList.add('sel');
+          setTimeout(function(){
+            step += 1;
+            renderCurrentStep();
+          }, 220);
           return;
         }
 
