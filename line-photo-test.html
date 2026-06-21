@@ -456,6 +456,34 @@
       border-color:#2FA568;
       box-shadow:0 12px 22px rgba(47,165,104,.18);
     }
+    .opt-btn.with-state {
+      justify-content:space-between;
+      text-align:left;
+      padding:12px 16px;
+    }
+    .opt-btn-label {
+      flex:1;
+    }
+    .opt-btn-state {
+      display:none;
+      flex-shrink:0;
+      margin-left:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:.4px;
+      color:#fff;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.42);
+      box-shadow:0 6px 12px rgba(23,84,52,.12);
+    }
+    .opt-btn.sel .opt-btn-state {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
     .opt-btn:active { transform:scale(.985); }
     .image-grid {
       margin-left:44px;
@@ -1177,7 +1205,14 @@
     var list = '<div class="opts-wrap">';
     optionList.forEach(function(opt){
       const isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
-      list += '<button class="opt-btn' + isSelected + '" data-value="' + opt + '">' + opt + '</button>';
+      if (q.key === 's1') {
+        list += '<button class="opt-btn with-state' + isSelected + '" data-value="' + opt + '">' +
+          '<span class="opt-btn-label">' + opt + '</span>' +
+          '<span class="opt-btn-state">已選擇</span>' +
+        '</button>';
+      } else {
+        list += '<button class="opt-btn' + isSelected + '" data-value="' + opt + '">' + opt + '</button>';
+      }
     });
     list += '</div>';
     return list;
