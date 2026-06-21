@@ -322,6 +322,36 @@
       white-space:pre-line;
       text-align:left;
     }
+    .typing-row {
+      display:flex;
+      align-items:flex-end;
+      gap:10px;
+      margin:0 0 14px;
+    }
+    .typing-bubble {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:48px;
+      padding:0 16px;
+      background:#FCFEFC;
+      border-radius:10px 24px 24px 24px;
+      border:1px solid rgba(223,236,226,.95);
+      box-shadow:0 12px 22px rgba(46,64,55,.08);
+    }
+    .typing-dot {
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#7CB896;
+      animation:typingPulse 1s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay:.15s; }
+    .typing-dot:nth-child(3) { animation-delay:.3s; }
+    @keyframes typingPulse {
+      0%, 80%, 100% { transform:translateY(0); opacity:.35; }
+      40% { transform:translateY(-3px); opacity:1; }
+    }
     .step-back {
       display:inline-flex;
       align-items:center;
@@ -707,6 +737,7 @@
       .dialog-question-row { gap:8px; margin-bottom:10px; }
       .dialog-avatar, .intro-avatar { width:30px; height:30px; font-size:14px; }
       .question-bubble { padding:16px 15px 14px; border-radius:10px 20px 20px 20px; }
+      .typing-bubble { min-height:44px; padding:0 14px; }
       .answer-row { margin-left:38px; }
       .answer-bubble { max-width:86%; font-size:15px; padding:13px 14px; }
       .q-main { font-size:18px; }
@@ -819,6 +850,7 @@
   };
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
+  let botTyping = false, pendingStep = null, typingTimer = null;
   const guData = { region:'', store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
@@ -1155,6 +1187,37 @@
     return html;
   }
 
+  function renderTypingRow() {
+    return '<div class="typing-row">' +
+      '<div class="dialog-avatar">😊</div>' +
+      '<div class="typing-bubble">' +
+        '<span class="typing-dot"></span>' +
+        '<span class="typing-dot"></span>' +
+        '<span class="typing-dot"></span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function goNextWithTyping() {
+    var nextStep = step + 1;
+    if (nextStep >= questions.length) {
+      step = nextStep;
+      renderCurrentStep();
+      return;
+    }
+    if (typingTimer) clearTimeout(typingTimer);
+    botTyping = true;
+    pendingStep = nextStep;
+    renderCurrentStep();
+    typingTimer = setTimeout(function(){
+      botTyping = false;
+      step = pendingStep;
+      pendingStep = null;
+      typingTimer = null;
+      renderCurrentStep();
+    }, 520);
+  }
+
   function renderCurrentStep() {
     if (step >= questions.length) {
       showResult();
@@ -1178,6 +1241,13 @@
     }
 
     html += renderCompletedConversation();
+    if (botTyping) {
+      html += renderTypingRow();
+      chat.innerHTML = html;
+      bindBackEvent();
+      chat.scrollTop = chat.scrollHeight;
+      return;
+    }
     html += '<div class="dialog-stage">';
     html += '<div class="dialog-question-row">' +
       '<div class="dialog-avatar">😊</div>' +
@@ -1211,6 +1281,12 @@
     const backBtn = chat.querySelector('.step-back');
     if (!backBtn) return;
     backBtn.addEventListener('click', function(){
+      if (typingTimer) {
+        clearTimeout(typingTimer);
+        typingTimer = null;
+      }
+      botTyping = false;
+      pendingStep = null;
       if (step <= 0) return;
       step -= 1;
       clearAnswersAfter(step);
@@ -1232,8 +1308,7 @@
           });
           btn.classList.add('sel');
           setTimeout(function(){
-            step += 1;
-            renderCurrentStep();
+            goNextWithTyping();
           }, 220);
           return;
         }
@@ -1259,8 +1334,7 @@
       const selected = Array.isArray(currentValue) ? currentValue : (currentValue ? [currentValue] : []);
       if (!selected.length) return;
       clearAnswersAfter(step);
-      step++;
-      renderCurrentStep();
+      goNextWithTyping();
     });
   }
 
@@ -1383,6 +1457,12 @@
     btn.className = 'restart-btn'; btn.textContent = '再測一次';
     btn.onclick = function(){
       chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
+      botTyping = false;
+      pendingStep = null;
+      if (typingTimer) {
+        clearTimeout(typingTimer);
+        typingTimer = null;
+      }
       document.getElementById('gu-name').value = '';
       document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
       guData.name = '';
