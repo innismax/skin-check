@@ -622,7 +622,7 @@
       width:100%;
       min-height:58px;
       margin:16px 0 0 44px;
-      border:none;
+      border:2px solid rgba(255,255,255,.92);
       border-radius:999px;
       background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
       color:#fff;
@@ -1511,7 +1511,9 @@
       goTo('screen-welcome');
     };
     chat.appendChild(btn);
-    chat.scrollTop = chat.scrollHeight;
+    requestAnimationFrame(function(){
+      chat.scrollTo({ top: 0, behavior: 'auto' });
+    });
   }
 </script>
 </body>
