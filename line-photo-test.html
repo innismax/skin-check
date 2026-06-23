@@ -856,11 +856,6 @@
     </div>
 
     <div class="gu-block">
-      <span class="gu-label">GU 姓名</span>
-      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="checkGU()">
-    </div>
-
-    <div class="gu-block">
       <span class="gu-label">日期</span>
       <input class="gu-input" id="gu-date" type="date">
     </div>
@@ -973,7 +968,7 @@
   function checkGU(){
     guData.name = document.getElementById('gu-name').value.trim();
     const hasStore = STORE_CONFIG.locked ? STORE_CONFIG.store : guData.store;
-    const ready = hasStore && guData.name;
+    const ready = !!hasStore;
     document.getElementById('gu-next').classList.toggle('ready', !!ready);
   }
 
