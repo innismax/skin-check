@@ -870,28 +870,53 @@
     storeEl.textContent = STORE_CONFIG.store;
     pickerEl.style.display = 'none';
   }
-
     let guManageMode = false;
+    let guNameMemory = {};
+
+  function normalizeGUNames(names) {
+    var seen = {};
+    return (Array.isArray(names) ? names : []).map(function(item) {
+      return String(item || '').trim();
+    }).filter(function(item) {
+      if (!item || seen[item]) return false;
+      seen[item] = true;
+      return true;
+    });
+  }
 
   function getGUStorageKey() {
     return 'innisfree-gu-names::' + (STORE_CONFIG.store || guData.store || window.location.pathname);
   }
 
   function loadGUNames() {
+    var key = getGUStorageKey();
+    if (Array.isArray(guNameMemory[key])) {
+      return guNameMemory[key].slice();
+    }
     try {
-      var saved = JSON.parse(localStorage.getItem(getGUStorageKey()) || '[]');
-      return Array.isArray(saved) ? saved.filter(Boolean) : [];
+      var saved = JSON.parse(localStorage.getItem(key) || '[]');
+      var normalized = normalizeGUNames(Array.isArray(saved) ? saved : []);
+      guNameMemory[key] = normalized.slice();
+      return normalized;
     } catch (error) {
+      guNameMemory[key] = [];
       return [];
     }
   }
 
   function saveGUNames(names) {
-    localStorage.setItem(getGUStorageKey(), JSON.stringify(names));
+    var key = getGUStorageKey();
+    var normalized = normalizeGUNames(names);
+    guNameMemory[key] = normalized.slice();
+    try {
+      localStorage.setItem(key, JSON.stringify(normalized));
+    } catch (error) {}
+    return normalized;
   }
 
   function renderGUNameList() {
     var wrap = document.getElementById('gu-name-list');
+    if (!wrap) return;
     var names = loadGUNames();
     wrap.innerHTML = '';
 
@@ -924,22 +949,24 @@
 
   function promptAddGUName() {
     var name = window.prompt('請輸入 GU 名字');
-    if (!name) return;
+    if (name == null) return;
     name = name.trim();
     if (!name) return;
     var names = loadGUNames();
     if (names.indexOf(name) === -1) {
       names.push(name);
-      saveGUNames(names);
     }
+    saveGUNames(names);
     guManageMode = false;
-    document.getElementById('gu-manage-btn').classList.remove('active');
+    var manageBtn = document.getElementById('gu-manage-btn');
+    if (manageBtn) manageBtn.classList.remove('active');
     pickGUName(name);
   }
 
   function toggleGUManage() {
     guManageMode = !guManageMode;
-    document.getElementById('gu-manage-btn').classList.toggle('active', guManageMode);
+    var manageBtn = document.getElementById('gu-manage-btn');
+    if (manageBtn) manageBtn.classList.toggle('active', guManageMode);
     renderGUNameList();
   }
 
@@ -949,7 +976,8 @@
     saveGUNames(names);
     if (guData.name === name) guData.name = '';
     guManageMode = false;
-    document.getElementById('gu-manage-btn').classList.remove('active');
+    var manageBtn = document.getElementById('gu-manage-btn');
+    if (manageBtn) manageBtn.classList.remove('active');
     renderGUNameList();
     checkGU();
   }
@@ -960,6 +988,7 @@
     if (manageBtn) manageBtn.classList.remove('active');
     renderGUNameList();
   }
+
 
   function pickStore(btn){
     document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
