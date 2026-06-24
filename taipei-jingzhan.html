@@ -1094,11 +1094,29 @@
   function initGUNamePicker() {
     guManageMode = false;
     var manageBtn = document.getElementById('gu-manage-btn');
+    var addInput = document.getElementById('gu-add-input');
+    var addSave = document.querySelector('.gu-add-save');
+    var addCancel = document.querySelector('.gu-add-cancel');
     if (manageBtn) manageBtn.classList.remove('active');
+    if (addSave) addSave.onclick = submitGUName;
+    if (addCancel) addCancel.onclick = closeGUAddPanel;
+    if (addInput) {
+      addInput.onkeydown = function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          submitGUName();
+        }
+      };
+    }
     closeGUAddPanel();
     updateGUCurrentName();
     renderGUNameList();
   }
+
+  window.toggleGUAddPanel = toggleGUAddPanel;
+  window.closeGUAddPanel = closeGUAddPanel;
+  window.submitGUName = submitGUName;
+  window.toggleGUManage = toggleGUManage;
 
 
   function pickStore(btn){
