@@ -768,6 +768,15 @@
     </div>
 
     <div class="gu-block">
+      <span class="gu-label">GU 姓名</span>
+      <div class="gu-name-tools">
+        <button type="button" class="gu-mini-btn" onclick="promptAddGUName()">+ 新增人員</button>
+        <button type="button" class="gu-mini-btn" id="gu-manage-btn" onclick="toggleGUManage()">管理名單</button>
+      </div>
+      <div class="gu-name-list" id="gu-name-list"></div>
+    </div>
+
+    <div class="gu-block">
       <span class="gu-label">日期</span>
       <input class="gu-input" id="gu-date" type="date">
     </div>
@@ -845,6 +854,7 @@
   // 自動填今天日期
   document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
   initStoreSetup();
+  initGUNamePicker();
   checkGU();
 
   function initStoreSetup() {
@@ -991,7 +1001,7 @@
 
   function checkGU(){
     const hasStore = STORE_CONFIG.locked ? STORE_CONFIG.store : guData.store;
-    const ready = !!hasStore;
+    const ready = !!hasStore && !!guData.name;
     document.getElementById('gu-next').classList.toggle('ready', !!ready);
   }
 
