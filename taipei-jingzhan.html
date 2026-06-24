@@ -62,130 +62,6 @@
       background:var(--green-pale); border-color:var(--green);
       color:var(--green); font-weight:700;
     }
-    .gu-name-tools {
-      display:flex;
-      gap:8px;
-      margin-bottom:12px;
-    }
-    .gu-mini-btn {
-      flex:1;
-      min-height:42px;
-      border:1.5px solid var(--green-border);
-      border-radius:14px;
-      background:rgba(255,255,252,.94);
-      color:var(--green-deep);
-      font-size:14px;
-      font-weight:700;
-      font-family:inherit;
-      cursor:pointer;
-      transition:all .18s ease;
-    }
-    .gu-mini-btn.active {
-      background:var(--green-pale);
-      border-color:var(--green);
-      color:var(--green);
-    }
-    .gu-name-list {
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-    .gu-current {
-      margin-bottom:12px;
-      min-height:46px;
-      padding:12px 16px;
-      border:1.5px solid var(--green-border);
-      border-radius:16px;
-      background:rgba(255,255,252,.94);
-      color:var(--text-soft);
-      font-size:14px;
-      font-weight:700;
-      display:flex;
-      align-items:center;
-    }
-    .gu-current.ready {
-      color:var(--green-deep);
-      background:var(--green-pale);
-      border-color:var(--green);
-    }
-    .gu-add-panel {
-      display:none;
-      gap:10px;
-      margin-bottom:12px;
-      align-items:center;
-    }
-    .gu-add-panel.show {
-      display:flex;
-    }
-    .gu-add-input {
-      flex:1;
-      min-width:0;
-      height:46px;
-      padding:0 14px;
-      border:1.5px solid var(--green-border);
-      border-radius:14px;
-      background:rgba(255,255,252,.96);
-      color:var(--text);
-      font-size:15px;
-      font-family:inherit;
-      outline:none;
-    }
-    .gu-add-input:focus {
-      border-color:var(--green);
-    }
-    .gu-add-save,
-    .gu-add-cancel {
-      height:46px;
-      padding:0 14px;
-      border-radius:14px;
-      font-size:14px;
-      font-weight:700;
-      font-family:inherit;
-      cursor:pointer;
-    }
-    .gu-add-save {
-      border:none;
-      background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
-      color:#fff;
-    }
-    .gu-add-cancel {
-      border:1.5px solid var(--green-border);
-      background:rgba(255,255,252,.94);
-      color:var(--text-mid);
-    }
-    .gu-name-chip {
-      min-height:48px;
-      padding:0 18px;
-      border:1.5px solid var(--green-border);
-      border-radius:999px;
-      background:rgba(255,255,252,.94);
-      color:var(--text-mid);
-      font-size:15px;
-      font-weight:700;
-      font-family:inherit;
-      cursor:pointer;
-      transition:all .18s ease;
-    }
-    .gu-name-chip.sel {
-      background:linear-gradient(135deg, #39C77C 0%, #2FA568 100%);
-      border-color:transparent;
-      color:#fff;
-      box-shadow:0 12px 22px rgba(57,199,124,.22);
-    }
-    .gu-name-chip.manage {
-      border-color:#E3B3B3;
-      color:#A94E4E;
-      background:#FFF8F8;
-    }
-    .gu-empty {
-      width:100%;
-      padding:14px 16px;
-      border:1.5px dashed var(--green-border);
-      border-radius:16px;
-      color:var(--text-soft);
-      font-size:14px;
-      background:rgba(255,255,252,.72);
-    }
     .gu-input {
       width:100%; padding:14px 16px; border:1.5px solid var(--green-border);
       border-radius:16px; font-size:15px; font-family:inherit;
@@ -832,17 +708,7 @@
 
     <div class="gu-block">
       <span class="gu-label">GU 姓名</span>
-      <div class="gu-name-tools">
-        <button type="button" class="gu-mini-btn" onclick="toggleGUAddPanel()">+ 新增人員</button>
-        <button type="button" class="gu-mini-btn" id="gu-manage-btn" onclick="toggleGUManage()">管理名單</button>
-      </div>
-      <div class="gu-add-panel" id="gu-add-panel">
-        <input class="gu-add-input" id="gu-add-input" type="text" placeholder="請輸入 GU 名字">
-        <button type="button" class="gu-add-save" onclick="submitGUName()">加入</button>
-        <button type="button" class="gu-add-cancel" onclick="closeGUAddPanel()">取消</button>
-      </div>
-      <div class="gu-current" id="gu-current-name">尚未選擇人員</div>
-      <div class="gu-name-list" id="gu-name-list"></div>
+      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="guData.name=this.value.trim();checkGU()">
     </div>
 
     <div class="gu-block">
@@ -923,7 +789,6 @@
   // 自動填今天日期
   document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
   initStoreSetup();
-  initGUNamePicker();
   checkGU();
 
   function initStoreSetup() {
@@ -939,197 +804,18 @@
     storeEl.textContent = STORE_CONFIG.store;
     pickerEl.style.display = 'none';
   }
-    var guManageMode = false;
-    var guNameMemory = {};
-
-  function normalizeGUNames(names) {
-    var seen = {};
-    return (Array.isArray(names) ? names : []).map(function(item) {
-      return String(item || '').trim();
-    }).filter(function(item) {
-      if (!item || seen[item]) return false;
-      seen[item] = true;
-      return true;
-    });
-  }
-
-  function getGUStorageKey() {
-    return 'innisfree-gu-names::' + (STORE_CONFIG.store || guData.store || window.location.pathname);
-  }
-
-  function loadGUNames() {
-    var key = getGUStorageKey();
-    if (Array.isArray(guNameMemory[key])) {
-      return guNameMemory[key].slice();
-    }
-    try {
-      var saved = JSON.parse(localStorage.getItem(key) || '[]');
-      var normalized = normalizeGUNames(Array.isArray(saved) ? saved : []);
-      guNameMemory[key] = normalized.slice();
-      return normalized;
-    } catch (error) {
-      guNameMemory[key] = [];
-      return [];
-    }
-  }
-
-  function saveGUNames(names) {
-    var key = getGUStorageKey();
-    var normalized = normalizeGUNames(names);
-    guNameMemory[key] = normalized.slice();
-    try {
-      localStorage.setItem(key, JSON.stringify(normalized));
-    } catch (error) {}
-    return normalized;
-  }
-
-  function updateGUCurrentName() {
-    var current = document.getElementById('gu-current-name');
-    if (!current) return;
-    if (guData.name) {
-      current.textContent = '目前已選：' + guData.name;
-      current.classList.add('ready');
-    } else {
-      current.textContent = '尚未選擇人員';
-      current.classList.remove('ready');
-    }
-  }
-
-  function renderGUNameList(namesOverride) {
-    var wrap = document.getElementById('gu-name-list');
-    if (!wrap) return;
-    var names = normalizeGUNames(Array.isArray(namesOverride) ? namesOverride : loadGUNames());
-    wrap.innerHTML = '';
-
-    if (!names.length) {
-      wrap.innerHTML = '<div class="gu-empty">請先新增門市人員名字</div>';
-      return;
-    }
-
-    names.forEach(function(name) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'gu-name-chip' + (guData.name === name ? ' sel' : '') + (guManageMode ? ' manage' : '');
-      btn.textContent = guManageMode ? (name + ' ×') : name;
-      btn.onclick = function() {
-        if (guManageMode) {
-          removeGUName(name);
-          return;
-        }
-        pickGUName(name);
-      };
-      wrap.appendChild(btn);
-    });
-  }
-
-  function pickGUName(name) {
-    guData.name = name;
-    updateGUCurrentName();
-    renderGUNameList();
-    checkGU();
-  }
-
-  function toggleGUAddPanel() {
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.remove('active');
-    var panel = document.getElementById('gu-add-panel');
-    var input = document.getElementById('gu-add-input');
-    if (!panel || !input) return;
-    panel.classList.toggle('show');
-    if (panel.classList.contains('show')) {
-      input.value = '';
-      input.focus();
-    }
-    renderGUNameList();
-  }
-
-  function closeGUAddPanel() {
-    var panel = document.getElementById('gu-add-panel');
-    var input = document.getElementById('gu-add-input');
-    if (panel) panel.classList.remove('show');
-    if (input) input.value = '';
-  }
-
-  function submitGUName() {
-    var input = document.getElementById('gu-add-input');
-    if (!input) return;
-    var name = input.value.trim();
-    if (!name) return;
-    var names = loadGUNames();
-    if (names.indexOf(name) === -1) {
-      names.push(name);
-    }
-    names = saveGUNames(names);
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.remove('active');
-    guData.name = name;
-    updateGUCurrentName();
-    renderGUNameList(names);
-    closeGUAddPanel();
-    checkGU();
-  }
-
-  function toggleGUManage() {
-    guManageMode = !guManageMode;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.toggle('active', guManageMode);
-    renderGUNameList();
-  }
-
-  function removeGUName(name) {
-    if (!window.confirm('要刪除 ' + name + ' 嗎？')) return;
-    var names = loadGUNames().filter(function(item) { return item !== name; });
-    saveGUNames(names);
-    if (guData.name === name) guData.name = '';
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.remove('active');
-    updateGUCurrentName();
-    renderGUNameList();
-    checkGU();
-  }
-
-  function initGUNamePicker() {
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    var addInput = document.getElementById('gu-add-input');
-    var addSave = document.querySelector('.gu-add-save');
-    var addCancel = document.querySelector('.gu-add-cancel');
-    if (manageBtn) manageBtn.classList.remove('active');
-    if (addSave) addSave.onclick = submitGUName;
-    if (addCancel) addCancel.onclick = closeGUAddPanel;
-    if (addInput) {
-      addInput.onkeydown = function(event) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          submitGUName();
-        }
-      };
-    }
-    closeGUAddPanel();
-    updateGUCurrentName();
-    renderGUNameList();
-  }
-
-  window.toggleGUAddPanel = toggleGUAddPanel;
-  window.closeGUAddPanel = closeGUAddPanel;
-  window.submitGUName = submitGUName;
-  window.toggleGUManage = toggleGUManage;
-
-
   function pickStore(btn){
     document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
     btn.classList.add('sel');
     guData.store = btn.dataset.store;
     guData.region = '';
-    renderGUNameList();
     checkGU();
   }
 
   function checkGU(){
     const hasStore = STORE_CONFIG.locked ? STORE_CONFIG.store : guData.store;
+    const nameInput = document.getElementById('gu-name');
+    if (nameInput) guData.name = nameInput.value.trim();
     const ready = !!hasStore && !!guData.name;
     document.getElementById('gu-next').classList.toggle('ready', !!ready);
   }
@@ -1590,9 +1276,8 @@
       chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
       document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
       guData.name = '';
-      guManageMode = false;
-      document.getElementById('gu-manage-btn').classList.remove('active');
-      renderGUNameList();
+      var nameInput = document.getElementById('gu-name');
+      if (nameInput) nameInput.value = '';
       if (STORE_CONFIG.locked) {
         guData.region = STORE_CONFIG.region;
         guData.store = STORE_CONFIG.store;
