@@ -100,9 +100,6 @@
     }
     .gu-name-fallback {
       margin-top:12px;
-      display:none;
-    }
-    .gu-name-fallback.show {
       display:block;
     }
     .gu-btn {
@@ -745,7 +742,7 @@
 
     <div class="gu-block">
       <span class="gu-label">GU 姓名</span>
-      <div class="gu-name-status" id="gu-name-status">名單載入中...</div>
+      <div class="gu-name-status" id="gu-name-status">名單載入中，也可直接手動輸入</div>
       <div class="gu-name-list" id="gu-name-list"></div>
       <div class="gu-name-fallback" id="gu-name-fallback">
         <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="guData.name=this.value.trim();checkGU()">
@@ -874,8 +871,7 @@
     listEl.innerHTML = '';
 
     if (guNameState.list.length) {
-      statusEl.textContent = '請直接點選 GU 姓名';
-      fallbackEl.classList.remove('show');
+      statusEl.textContent = '可直接點選 GU 姓名，也可手動輸入';
       guNameState.list.forEach(function(name){
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -894,7 +890,6 @@
     }
 
     statusEl.textContent = '目前沒有可選名單，請手動輸入';
-    fallbackEl.classList.add('show');
   }
 
   function loadGUNameOptions() {
