@@ -68,6 +68,43 @@
       color:var(--text); background:rgba(255,255,252,.94); outline:none;
     }
     .gu-input:focus { border-color:var(--green); }
+    .gu-name-status {
+      font-size:13px;
+      color:var(--text-soft);
+      margin-bottom:10px;
+    }
+    .gu-name-list {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .gu-name-chip {
+      appearance:none;
+      border:1.5px solid var(--green-border);
+      background:rgba(255,255,252,.94);
+      color:var(--green-deep);
+      border-radius:999px;
+      padding:11px 16px;
+      font-size:15px;
+      font-weight:700;
+      font-family:inherit;
+      cursor:pointer;
+      transition:all .15s;
+      box-shadow:0 8px 16px rgba(81,98,85,.04);
+    }
+    .gu-name-chip.sel {
+      background:var(--green);
+      border-color:var(--green);
+      color:#fff;
+      box-shadow:0 10px 18px rgba(57,199,124,.18);
+    }
+    .gu-name-fallback {
+      margin-top:12px;
+      display:none;
+    }
+    .gu-name-fallback.show {
+      display:block;
+    }
     .gu-btn {
       width:100%; padding:17px; background:linear-gradient(135deg, #617769 0%, #2E4037 100%); color:#fff;
       border:none; border-radius:50px; font-size:15px; font-weight:600;
@@ -708,7 +745,11 @@
 
     <div class="gu-block">
       <span class="gu-label">GU 姓名</span>
-      <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="guData.name=this.value.trim();checkGU()">
+      <div class="gu-name-status" id="gu-name-status">名單載入中...</div>
+      <div class="gu-name-list" id="gu-name-list"></div>
+      <div class="gu-name-fallback" id="gu-name-fallback">
+        <input class="gu-input" id="gu-name" type="text" placeholder="請輸入你的名字" oninput="guData.name=this.value.trim();checkGU()">
+      </div>
     </div>
 
     <div class="gu-block">
@@ -748,8 +789,10 @@
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
   const guData = { region:'', store:'', name:'', date:'' };
+  const guNameState = { list:[], loaded:false };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
+  const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/gviz/tq?tqx=out:csv&sheet=%E5%8F%B0%E5%8C%97%E4%BA%AC%E7%AB%99&range=U3:U';
 
   function padProducts(products, size) {
     var list = Array.isArray(products) ? products.slice(0, size) : [];
@@ -789,6 +832,7 @@
   // 自動填今天日期
   document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
   initStoreSetup();
+  loadGUNameOptions();
   checkGU();
 
   function initStoreSetup() {
@@ -812,10 +856,68 @@
     checkGU();
   }
 
+  function parseSimpleCsv(text) {
+    return String(text || '')
+      .split(/\r?\n/)
+      .map(function(line){
+        return line.trim().replace(/^"/, '').replace(/"$/, '').replace(/""/g, '"').trim();
+      })
+      .filter(Boolean);
+  }
+
+  function renderGUNameOptions() {
+    var listEl = document.getElementById('gu-name-list');
+    var statusEl = document.getElementById('gu-name-status');
+    var fallbackEl = document.getElementById('gu-name-fallback');
+    if (!listEl || !statusEl || !fallbackEl) return;
+
+    listEl.innerHTML = '';
+
+    if (guNameState.list.length) {
+      statusEl.textContent = '請直接點選 GU 姓名';
+      fallbackEl.classList.remove('show');
+      guNameState.list.forEach(function(name){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gu-name-chip' + (guData.name === name ? ' sel' : '');
+        btn.textContent = name;
+        btn.addEventListener('click', function(){
+          guData.name = name;
+          var input = document.getElementById('gu-name');
+          if (input) input.value = name;
+          renderGUNameOptions();
+          checkGU();
+        });
+        listEl.appendChild(btn);
+      });
+      return;
+    }
+
+    statusEl.textContent = '目前沒有可選名單，請手動輸入';
+    fallbackEl.classList.add('show');
+  }
+
+  function loadGUNameOptions() {
+    fetch(GU_NAME_CSV_URL, { cache:'no-store' })
+      .then(function(res){ return res.text(); })
+      .then(function(text){
+        guNameState.list = parseSimpleCsv(text);
+        guNameState.loaded = true;
+        renderGUNameOptions();
+        checkGU();
+      })
+      .catch(function(){
+        guNameState.list = [];
+        guNameState.loaded = true;
+        renderGUNameOptions();
+        checkGU();
+      });
+  }
+
   function checkGU(){
     const hasStore = STORE_CONFIG.locked ? STORE_CONFIG.store : guData.store;
     const nameInput = document.getElementById('gu-name');
-    if (nameInput) guData.name = nameInput.value.trim();
+    if ((!guData.name || !guNameState.list.length) && nameInput) guData.name = nameInput.value.trim();
     const ready = !!hasStore && !!guData.name;
     document.getElementById('gu-next').classList.toggle('ready', !!ready);
   }
