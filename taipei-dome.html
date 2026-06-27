@@ -767,12 +767,22 @@
       </div>
     </div>
 
+
+    <div class="gu-block">
+      <span class="gu-label">GU 姓名</span>
+      <div class="gu-name-status" id="gu-name-status">名單載入中，也可直接手動輸入</div>
+      <div class="gu-name-list" id="gu-name-list"></div>
+      <div class="gu-name-fallback" id="gu-name-fallback">
+        <input class="gu-input" id="gu-name" type="text" placeholder="若沒有名單可直接輸入" oninput="guData.name=this.value.trim(); renderGUNameOptions(); checkGU()">
+      </div>
+    </div>
+
     <div class="gu-block">
       <span class="gu-label">日期</span>
       <input class="gu-input" id="gu-date" type="date">
     </div>
 
-    <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
+    <button class="gu-btn" id="gu-next" onclick="guData.name=document.getElementById('gu-name').value.trim(); guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
   </div>
 </div>
 
@@ -806,6 +816,8 @@
   const guData = { region:'', store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
+  const guNameState = { list:[], loaded:false };
+  const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/gviz/tq?tqx=out:csv&gid=2063594066&range=U3:U';
 
   function padProducts(products, size) {
     var list = Array.isArray(products) ? products.slice(0, size) : [];
@@ -845,6 +857,7 @@
   // 自動填今天日期
   document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
   initStoreSetup();
+  loadGUNameOptions();
   checkGU();
 
   function initStoreSetup() {
@@ -860,123 +873,62 @@
     storeEl.textContent = STORE_CONFIG.store;
     pickerEl.style.display = 'none';
   }
-    let guManageMode = false;
-    let guNameMemory = {};
-
-  function normalizeGUNames(names) {
-    var seen = {};
-    return (Array.isArray(names) ? names : []).map(function(item) {
-      return String(item || '').trim();
-    }).filter(function(item) {
-      if (!item || seen[item]) return false;
-      seen[item] = true;
-      return true;
-    });
+      function parseSimpleCsv(text) {
+    return String(text || '')
+      .split(/
+?
+/)
+      .map(function(line){
+        return line.trim().replace(/^"/, '').replace(/"$/, '').replace(/""/g, '"').trim();
+      })
+      .filter(Boolean);
   }
 
-  function getGUStorageKey() {
-    return 'innisfree-gu-names::' + (STORE_CONFIG.store || guData.store || window.location.pathname);
-  }
+  function renderGUNameOptions() {
+    var listEl = document.getElementById('gu-name-list');
+    var statusEl = document.getElementById('gu-name-status');
+    var fallbackEl = document.getElementById('gu-name-fallback');
+    if (!listEl || !statusEl || !fallbackEl) return;
 
-  function loadGUNames() {
-    var key = getGUStorageKey();
-    if (Array.isArray(guNameMemory[key])) {
-      return guNameMemory[key].slice();
-    }
-    try {
-      var saved = JSON.parse(localStorage.getItem(key) || '[]');
-      var normalized = normalizeGUNames(Array.isArray(saved) ? saved : []);
-      guNameMemory[key] = normalized.slice();
-      return normalized;
-    } catch (error) {
-      guNameMemory[key] = [];
-      return [];
-    }
-  }
+    listEl.innerHTML = '';
 
-  function saveGUNames(names) {
-    var key = getGUStorageKey();
-    var normalized = normalizeGUNames(names);
-    guNameMemory[key] = normalized.slice();
-    try {
-      localStorage.setItem(key, JSON.stringify(normalized));
-    } catch (error) {}
-    return normalized;
-  }
-
-  function renderGUNameList() {
-    var wrap = document.getElementById('gu-name-list');
-    if (!wrap) return;
-    var names = loadGUNames();
-    wrap.innerHTML = '';
-
-    if (!names.length) {
-      wrap.innerHTML = '<div class="gu-empty">請先新增門市人員名字</div>';
+    if (guNameState.list.length) {
+      statusEl.textContent = '可直接點選 GU 姓名，也可手動輸入';
+      guNameState.list.forEach(function(name){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gu-name-chip' + (guData.name === name ? ' sel' : '');
+        btn.textContent = name;
+        btn.addEventListener('click', function(){
+          guData.name = name;
+          var input = document.getElementById('gu-name');
+          if (input) input.value = name;
+          renderGUNameOptions();
+          checkGU();
+        });
+        listEl.appendChild(btn);
+      });
       return;
     }
 
-    names.forEach(function(name) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'gu-name-chip' + (guData.name === name ? ' sel' : '') + (guManageMode ? ' manage' : '');
-      btn.textContent = guManageMode ? (name + ' ×') : name;
-      btn.onclick = function() {
-        if (guManageMode) {
-          removeGUName(name);
-          return;
-        }
-        pickGUName(name);
-      };
-      wrap.appendChild(btn);
-    });
+    statusEl.textContent = '目前沒有可選名單，請手動輸入';
   }
 
-  function pickGUName(name) {
-    guData.name = name;
-    renderGUNameList();
-    checkGU();
-  }
-
-  function promptAddGUName() {
-    var name = window.prompt('請輸入 GU 名字');
-    if (name == null) return;
-    name = name.trim();
-    if (!name) return;
-    var names = loadGUNames();
-    if (names.indexOf(name) === -1) {
-      names.push(name);
-    }
-    saveGUNames(names);
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.remove('active');
-    pickGUName(name);
-  }
-
-  function toggleGUManage() {
-    guManageMode = !guManageMode;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.toggle('active', guManageMode);
-    renderGUNameList();
-  }
-
-  function removeGUName(name) {
-    if (!window.confirm('要刪除 ' + name + ' 嗎？')) return;
-    var names = loadGUNames().filter(function(item) { return item !== name; });
-    saveGUNames(names);
-    if (guData.name === name) guData.name = '';
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.remove('active');
-    renderGUNameList();
-    checkGU();
-  }
-
-  function initGUNamePicker() {
-    guManageMode = false;
-    var manageBtn = document.getElementById('gu-manage-btn');
-    if (manageBtn) manageBtn.classList.remove('active');
-    renderGUNameList();
+  function loadGUNameOptions() {
+    fetch(GU_NAME_CSV_URL, { cache:'no-store' })
+      .then(function(res){ return res.text(); })
+      .then(function(text){
+        guNameState.list = parseSimpleCsv(text);
+        guNameState.loaded = true;
+        renderGUNameOptions();
+        checkGU();
+      })
+      .catch(function(){
+        guNameState.list = [];
+        guNameState.loaded = true;
+        renderGUNameOptions();
+        checkGU();
+      });
   }
 
 
@@ -985,13 +937,14 @@
     btn.classList.add('sel');
     guData.store = btn.dataset.store;
     guData.region = '';
-    renderGUNameList();
     checkGU();
   }
 
   function checkGU(){
     const hasStore = STORE_CONFIG.locked ? STORE_CONFIG.store : guData.store;
-    const ready = !!hasStore;
+    const nameInput = document.getElementById('gu-name');
+    if ((!guData.name || !guNameState.list.length) && nameInput) guData.name = nameInput.value.trim();
+    const ready = !!hasStore && !!guData.name;
     document.getElementById('gu-next').classList.toggle('ready', !!ready);
   }
 
@@ -1451,9 +1404,9 @@
       chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
       document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
       guData.name = '';
-      guManageMode = false;
-      document.getElementById('gu-manage-btn').classList.remove('active');
-      renderGUNameList();
+      var guInput = document.getElementById('gu-name');
+      if (guInput) guInput.value = '';
+      if (typeof renderGUNameOptions === 'function') renderGUNameOptions();
       if (STORE_CONFIG.locked) {
         guData.region = STORE_CONFIG.region;
         guData.store = STORE_CONFIG.store;

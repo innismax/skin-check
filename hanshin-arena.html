@@ -845,7 +845,7 @@
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
   const guNameState = { list:[], loaded:false };
-  const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/1W40UuQoF3xWT71H0ijS9iXQYH2zmLxFRm1DalJUleEg/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('高雄巨蛋') + '&range=U3:U';
+  const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/1W40UuQoF3xWT71H0ijS9iXQYH2zmLxFRm1DalJUleEg/gviz/tq?tqx=out:csv&gid=1966747111&range=U3:U';
 
   function padProducts(products, size) {
     var list = Array.isArray(products) ? products.slice(0, size) : [];
@@ -1431,9 +1431,9 @@
       chat.innerHTML = ''; step = 0; answers = {}; selectedOpts = [];
       document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
       guData.name = '';
-      guManageMode = false;
-      document.getElementById('gu-manage-btn').classList.remove('active');
-      renderGUNameList();
+      var guInput = document.getElementById('gu-name');
+      if (guInput) guInput.value = '';
+      if (typeof renderGUNameOptions === 'function') renderGUNameOptions();
       if (STORE_CONFIG.locked) {
         guData.region = STORE_CONFIG.region;
         guData.store = STORE_CONFIG.store;

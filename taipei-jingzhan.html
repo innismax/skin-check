@@ -754,7 +754,7 @@
       <input class="gu-input" id="gu-date" type="date">
     </div>
 
-    <button class="gu-btn" id="gu-next" onclick="guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
+    <button class="gu-btn" id="gu-next" onclick="guData.name=document.getElementById('gu-name').value.trim(); guData.date=document.getElementById('gu-date').value; goTo('screen-welcome')">確認，帶客人開始 →</button>
   </div>
 </div>
 
@@ -789,7 +789,7 @@
   const guNameState = { list:[], loaded:false };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
-  const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/gviz/tq?tqx=out:csv&sheet=%E5%8F%B0%E5%8C%97%E4%BA%AC%E7%AB%99&range=U3:U';
+  const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/gviz/tq?tqx=out:csv&gid=316571749&range=U3:U';
 
   function padProducts(products, size) {
     var list = Array.isArray(products) ? products.slice(0, size) : [];
