@@ -854,7 +854,7 @@
     '乾性肌':'Dry skin',
     '敏感肌':'Sensitive skin',
     '敏感泛紅':'Redness & sensitivity',
-    '乾燥缺水':'Dryness & dehydration',
+    '乾燥緊繃':'Dryness & dehydration',
     '皮膚缺乏光澤':'Dullness',
     '出油與毛孔粗大':'Oiliness & visible pores',
     '痘痘粉刺':'Acne & clogged pores',
@@ -919,7 +919,7 @@
     '加強眼周滋潤修護，改善紋路感與乾燥感':'Nourish the eye area and soften the look of dryness lines.',
     '聚焦表情紋與細紋，提升眼周與唇周彈力':'Support smoother-looking expression lines around the eyes and lips.',
     '舒緩敏感泛紅不適，幫助肌膚維持穩定保濕感':'Help calm visible redness and keep skin comfortably hydrated.',
-    '加強滋潤與鎖水，舒緩乾燥缺水不適':'Boost moisture retention and ease dehydrated, tight skin.',
+    '加強滋潤與鎖水，舒緩乾燥緊繃不適':'Boost moisture retention and ease dehydrated, tight skin.',
     '改善暗沉與膚色不均，讓膚色更淨亮勻稱':'Help improve dullness and uneven tone for a clearer, brighter look.',
     '穩定出油與毛孔粗大狀況，維持肌膚更細緻清爽':'Help keep oiliness and visible pores in check for a smoother, cleaner feel.',
     '改善粉刺痘痘反覆狀況，幫助膚況更穩定平滑':'Help care for recurring blemish concerns and keep skin smoother.',
@@ -1168,10 +1168,10 @@
     { key:'main', multi:0,
       q:'What skin concern is bothering you the most lately?',
       hint:'Choose the one you want to improve first',
-      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','痘痘粉刺','熬夜暗沉','彈力下降'] },
+      opts:['敏感泛紅','乾燥緊繃','皮膚缺乏光澤','痘痘粉刺','熬夜暗沉','彈力下降'] },
     { key:'s1', multi:2, hint:'Select up to 2',
       q:'Besides that, are there any other skin concerns?',
-      opts:['敏感泛紅','乾燥缺水','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉','想讓肌膚緊緻有彈力'] },
+      opts:['敏感泛紅','乾燥緊繃','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉','想讓肌膚緊緻有彈力'] },
     { key:'s2', multi:0,
       q:'What would you most like to improve or prevent around the eyes lately?',
       hint:'Choose the one you want to focus on first',
@@ -1184,7 +1184,7 @@
   // ── STEP 01：依主要肌膚困擾推薦調理保養 ──
   const step01Data = {
     '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感', product:'綠茶神經醯胺牛奶水精華' },
-    '乾燥缺水':  { action:'補充水分，舒緩乾燥緊繃感', product:'綠茶神經醯胺牛奶水精華' },
+    '乾燥緊繃':  { action:'補充水分，舒緩乾燥緊繃感', product:'綠茶神經醯胺牛奶水精華' },
     '皮膚缺乏光澤':{ action:'改善暗沉，提升肌膚光澤感', product:'維他命C淨亮棉片' },
     '出油與毛孔粗大':{ action:'調理油脂與毛孔問題', product:'火山泥PHA毛孔緊緻露' },
     '痘痘粉刺':  { action:'調理角質與毛孔阻塞問題', product:'A醇淨膚毛孔修護棉片' },
@@ -1196,7 +1196,7 @@
   // ── STEP 02：依肌膚困擾決定核心精華 ──
   const step02Data = {
     '敏感泛紅':  { action:'補水舒緩，強化肌膚穩定度',     product:'綠茶籽玻尿酸保濕精華' },
-    '乾燥缺水':  { action:'深層補水，持續維持保濕感',     product:'綠茶籽玻尿酸保濕精華' },
+    '乾燥緊繃':  { action:'深層補水，持續維持保濕感',     product:'綠茶籽玻尿酸保濕精華' },
     '皮膚缺乏光澤':{ action:'提亮氣色，提升肌膚光澤感',   product:'維他命C淨亮精華' },
     '出油與毛孔粗大':{ action:'調理膚況，優化毛孔與油脂', product:'A醇積雪草超淨膚安瓶' },
     '痘痘粉刺':  { action:'調理粉刺痘痘反覆狀況',         product:'A醇積雪草超淨膚安瓶' },
@@ -1221,7 +1221,7 @@
 
   const creamCareMap = {
     '敏感泛紅':      { action:'舒緩敏感泛紅不適，幫助肌膚維持穩定保濕感', product:'綠茶籽玻尿酸保濕霜' },
-    '乾燥缺水':      { action:'加強滋潤與鎖水，舒緩乾燥缺水不適', product:'綠茶神經醯胺保濕霜' },
+    '乾燥緊繃':      { action:'加強滋潤與鎖水，舒緩乾燥緊繃不適', product:'綠茶神經醯胺保濕霜' },
     '皮膚缺乏光澤':  { action:'改善暗沉與膚色不均，讓膚色更淨亮勻稱', product:'維他命C淨亮淡斑凝霜' },
     '出油與毛孔粗大':{ action:'穩定出油與毛孔粗大狀況，維持肌膚更細緻清爽', product:'A醇淨膚超修護霜' },
     '痘痘粉刺':      { action:'改善粉刺痘痘反覆狀況，幫助膚況更穩定平滑', product:'A醇淨膚超修護霜' },
@@ -1259,7 +1259,7 @@
 
   const mainConcernImages = {
     '敏感泛紅':'assets/concerns/sensitive-redness.png?v=20260619e',
-    '乾燥缺水':'assets/concerns/dryness-dehydration.png?v=20260619e',
+    '乾燥緊繃':'assets/concerns/dryness-dehydration.png?v=20260619e',
     '皮膚缺乏光澤':'assets/concerns/dullness-glow.png?v=20260619e',
     '出油與毛孔粗大':'assets/concerns/oil-pores.png?v=20260619e',
     '痘痘粉刺':'assets/concerns/acne-breakouts.png?v=20260619e',
