@@ -645,7 +645,7 @@
 
   // ── 初始化日期為今天 ──
   window.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = formatLocalDate(new Date());
     document.getElementById('ba-date').value = today;
   });
 
@@ -762,7 +762,14 @@
   }
 
   // ── 送資料到 Google Sheets ──
-  function logToSheet() {
+  function formatLocalDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function logToSheet() {
     sel.ba   = document.getElementById('ba-name').value.trim();
     sel.customer = document.getElementById('customer-name').value.trim();
     sel.date = document.getElementById('ba-date').value;
@@ -880,7 +887,7 @@
     document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('ba-name').value = '';
     document.getElementById('customer-name').value = '';
-    const today = new Date().toISOString().split('T')[0];
+    const today = formatLocalDate(new Date());
     document.getElementById('ba-date').value = today;
     ['s1-next','s2-next','s3-next'].forEach(id => document.getElementById(id).disabled = true);
     document.getElementById('ba-next').disabled = true;

@@ -808,7 +808,14 @@
   };
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
-  const guData = { region:'測試', store:'第三版測試', name:'', date:new Date().toISOString().split('T')[0] };
+  function formatLocalDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+const guData = { region:'測試', store:'第三版測試', name:'', date:formatLocalDate(new Date()) };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
 
@@ -848,7 +855,7 @@
   }
 
   // 自動填今天日期
-  document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gu-date').value = formatLocalDate(new Date());
   initStoreSetup();
   checkGU();
 
@@ -1462,7 +1469,7 @@
       guData.name = '';
       guData.region = STORE_CONFIG.region;
       guData.store = STORE_CONFIG.store;
-      guData.date = new Date().toISOString().split('T')[0];
+      guData.date = formatLocalDate(new Date());
       goTo('screen-welcome');
     };
     chat.appendChild(btn);

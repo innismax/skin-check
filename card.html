@@ -388,7 +388,14 @@
 <script>
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
-  const guData = { store:'', name:'', date:'' };
+  function formatLocalDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+const guData = { store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVrr8W7UYDdp7IHk6oWG7NIxX8WXSSyW15q2teYgxUQg8NerwZMHYTp91h_xvLzakEmg/exec';
 
@@ -415,7 +422,7 @@
   }
 
   // 自動填今天日期
-  document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gu-date').value = formatLocalDate(new Date());
 
   function pickStore(btn){
     document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
@@ -732,7 +739,7 @@
           document.querySelectorAll('.store-btn').forEach(function(b){ b.classList.remove('sel'); });
           guData.store = ''; guData.name = '';
           document.getElementById('gu-next').classList.remove('ready');
-          document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+          document.getElementById('gu-date').value = formatLocalDate(new Date());
           goTo('screen-gu');
         };
         chat.appendChild(btn);

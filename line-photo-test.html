@@ -901,7 +901,14 @@
   const chat = document.getElementById('chat');
   let step = 0, answers = {}, selectedOpts = [];
   let botTyping = false, pendingStep = null, typingTimer = null;
-  const guData = { region:'', store:'', name:'', date:'' };
+  function formatLocalDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+const guData = { region:'', store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
 
@@ -941,7 +948,7 @@
   }
 
   // 自動填今天日期
-  document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gu-date').value = formatLocalDate(new Date());
   initStoreSetup();
 
   function initStoreSetup() {
@@ -1103,7 +1110,7 @@
 
   function startChat(){
     guData.name = '測試';
-    guData.date = document.getElementById('gu-date').value || new Date().toISOString().split('T')[0];
+    guData.date = document.getElementById('gu-date').value || formatLocalDate(new Date());
     if (STORE_CONFIG.locked) {
       guData.region = STORE_CONFIG.region;
       guData.store = STORE_CONFIG.store;
@@ -1551,7 +1558,7 @@
         guData.store = '';
       }
       document.getElementById('gu-next').classList.remove('ready');
-      document.getElementById('gu-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('gu-date').value = formatLocalDate(new Date());
       goTo('screen-welcome');
     };
     chat.appendChild(btn);
