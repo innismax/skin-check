@@ -141,7 +141,7 @@ window.RETAIL_STORE_CONFIGS = {
     region: '北區',
     store: '信義A11',
     guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/gviz/tq?tqx=out:csv&gid=823116745&range=U3:U',
-    fallbackNames: ['Zoni', '小白', 'Wendy', 'Niny', '妙竹']
+    fallbackNames: ['Zoni', '小白', 'Wendy', 'Niny', 'Mio']
   },
   'zhongli-sogo': {
     region: '北二區',
