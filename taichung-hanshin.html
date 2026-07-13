@@ -492,6 +492,11 @@
       line-height:1.28;
       font-weight:800;
     }
+    .image-grid.main-grid.seven-layout .image-opt:last-child {
+      grid-column:1 / -1;
+      width:calc(50% - 7px);
+      justify-self:center;
+    }
     .image-grid.eye-grid .image-opt-card {
       border-radius:26px;
     }
@@ -989,7 +994,7 @@ const guData = { region:'', store:'', name:'', date:'' };
     { key:'main', multi:0,
       q:'最近最困擾你的肌膚問題是？',
       hint:'※ 請選一個最想優先改善的',
-      opts:['敏感泛紅','乾燥緊繃','皮膚缺乏光澤','痘痘粉刺','熬夜暗沉','彈力下降'] },
+      opts:['敏感泛紅','乾燥緊繃','皮膚缺乏光澤','外油內乾','痘痘粉刺','熬夜暗沉','彈力下降'] },
     { key:'s1', multi:2, hint:'（可複選，最多選 2 個）',
       q:'除了剛剛的問題之外，還有其他困擾嗎？',
       opts:['敏感泛紅','乾燥緊繃','皮膚缺乏光澤','出油與毛孔粗大','痘痘粉刺','熬夜暗沉','想讓肌膚緊緻有彈力'] },
@@ -1007,6 +1012,7 @@ const guData = { region:'', store:'', name:'', date:'' };
     '敏感泛紅':  { action:'穩定膚況，降低肌膚不適感', product:'綠茶神經醯胺牛奶水精華' },
     '乾燥緊繃':  { action:'補充水分，舒緩乾燥緊繃感', product:'綠茶神經醯胺牛奶水精華' },
     '皮膚缺乏光澤':{ action:'改善暗沉，提升肌膚光澤感', product:'維他命C淨亮棉片' },
+    '外油內乾':  { action:'先補水平衡外油內乾，幫助膚況更穩定清爽', product:'綠茶神經醯胺牛奶水精華' },
     '出油與毛孔粗大':{ action:'調理油脂與毛孔問題', product:'火山泥PHA毛孔緊緻露' },
     '痘痘粉刺':  { action:'調理角質與毛孔阻塞問題', product:'A醇淨膚毛孔修護棉片' },
     '熬夜暗沉':  { action:'修護疲憊膚況，恢復肌膚活力', product:'紅茶極效修護晶露' },
@@ -1044,6 +1050,7 @@ const guData = { region:'', store:'', name:'', date:'' };
     '敏感泛紅':      { action:'舒緩敏感泛紅不適，幫助肌膚維持穩定保濕感', product:'綠茶籽玻尿酸保濕霜' },
     '乾燥緊繃':      { action:'加強滋潤與鎖水，舒緩乾燥緊繃不適', product:'綠茶神經醯胺保濕霜' },
     '皮膚缺乏光澤':  { action:'改善暗沉與膚色不均，讓膚色更淨亮勻稱', product:'維他命C淨亮淡斑凝霜' },
+    '外油內乾':      { action:'清爽鎖水並平衡外油內乾，讓膚況更穩定舒服', product:'綠茶B5涼感平衡水凝霜' },
     '出油與毛孔粗大':{ action:'穩定出油與毛孔粗大狀況，維持肌膚更細緻清爽', product:'A醇淨膚超修護霜' },
     '痘痘粉刺':      { action:'改善粉刺痘痘反覆狀況，幫助膚況更穩定平滑', product:'A醇淨膚超修護霜' },
     '熬夜暗沉':      { action:'修護熬夜造成的疲憊膚況，恢復彈潤光澤', product:'紅茶極效修護霜' },
@@ -1069,6 +1076,7 @@ const guData = { region:'', store:'', name:'', date:'' };
     '維他命C淨亮淡斑凝霜':'assets/products/vitamin-c-brightening-cream.png?v=2',
     '綠茶籽玻尿酸保濕霜':'assets/products/green-tea-seed-hyaluronic-cream.png?v=2',
     '綠茶神經醯胺保濕霜':'assets/products/green-tea-ceramide-cream.png?v=2',
+    '綠茶B5涼感平衡水凝霜':'assets/products/green-tea-b5-gel-cream.png?v=20260630a',
     'A醇淨膚超修護霜':'assets/products/retinol-cica-barrier-defense-cream.png?v=2',
     '紅茶極效修護霜':'assets/products/black-tea-youth-enhancing-cream.png?v=3',
     '九重完美青春再生活膚霜':'assets/products/perfect9-intensive-cream.png?v=2'
@@ -1082,6 +1090,7 @@ const guData = { region:'', store:'', name:'', date:'' };
     '敏感泛紅':'assets/concerns/sensitive-redness.png?v=20260619e',
     '乾燥緊繃':'assets/concerns/dryness-dehydration.png?v=20260619e',
     '皮膚缺乏光澤':'assets/concerns/dullness-glow.png?v=20260619e',
+    '外油內乾':'assets/concerns/oily-dehydrated.png?v=20260630a',
     '出油與毛孔粗大':'assets/concerns/oil-pores.png?v=20260619e',
     '痘痘粉刺':'assets/concerns/acne-breakouts.png?v=20260619e',
     '熬夜暗沉':'assets/concerns/tired-dullness.png?v=20260619e',
@@ -1138,7 +1147,8 @@ const guData = { region:'', store:'', name:'', date:'' };
 
   function renderOptions(q, optionList, selected) {
     if (q.key === 'main') {
-      var grid = '<div class="image-grid main-grid">';
+      var mainGridClass = 'image-grid main-grid' + (optionList.length === 7 ? ' seven-layout' : '');
+      var grid = '<div class="' + mainGridClass + '">';
       optionList.forEach(function(opt){
         var isSelected = selected.indexOf(opt) > -1 ? ' sel' : '';
         var img = mainConcernImages[opt] || '';
