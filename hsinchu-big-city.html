@@ -852,6 +852,7 @@ const guData = { region:'', store:'', name:'', date:'' };
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-rJ7ASWIdTubDutjc70HEA4gfOy1e4QLJqyQmoXkxzyT98KIfhfq2ou2d9FfA0ld9gw/exec';
   const guNameState = { list:[], loaded:false };
+  const FALLBACK_GU_NAMES = ['Jamie', 'Nina', 'Lulu', 'Amber', 'Elvis', 'Jelly', 'Alice'];
   const GU_NAME_CSV_URL = 'https://docs.google.com/spreadsheets/d/1JD4UPoIaZHYLI7o9eYxOMWBiVRTwCMf1TS0g10PoKVg/gviz/tq?tqx=out:csv&gid=146977095&range=U11:U';
 
   function padProducts(products, size) {
@@ -926,9 +927,13 @@ const guData = { region:'', store:'', name:'', date:'' };
 
     listEl.innerHTML = '';
 
-    if (guNameState.list.length) {
-      statusEl.textContent = '可直接點選 GU 姓名，也可手動輸入';
-      guNameState.list.forEach(function(name){
+    var displayNames = guNameState.list.length ? guNameState.list : FALLBACK_GU_NAMES;
+
+    if (displayNames.length) {
+      statusEl.textContent = guNameState.list.length
+        ? '可直接點選 GU 姓名，也可手動輸入'
+        : '目前顯示備援名單，也可直接手動輸入';
+      displayNames.forEach(function(name){
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'gu-name-chip' + (guData.name === name ? ' sel' : '');
