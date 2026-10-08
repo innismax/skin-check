@@ -38,8 +38,8 @@ window.RETAIL_STORE_CONFIGS = {
   'linkou-mitsui-popup': {
     region: '北二區',
     store: '快閃- 林口三井',
-    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1JD4UPoIaZHYLI7o9eYxOMWBiVRTwCMf1TS0g10PoKVg/gviz/tq?tqx=out:csv&gid=918481113&range=U3:U',
-    fallbackNames: []
+    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/export?format=csv&gid=489076607&range=U11:U',
+    fallbackNames: ['Tina', 'Kelly', 'Nancy', 'HSIN', 'Jubee', '33', '支援']
   },
   'nangang-lalaport': {
     region: '北區',
