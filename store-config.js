@@ -12,10 +12,10 @@ window.RETAIL_STORE_CONFIGS = {
     fallbackNames: []
   },
   'chiayi-wenhua': {
-    region: '中區',
+    region: '南區',
     store: '嘉義文化',
-    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1hk5x4z5Q0Lkj9tUlYNIU56Y0piMeNGkFRBo2VJH5ycw/gviz/tq?tqx=out:csv&gid=1991333685&range=U3:U',
-    fallbackNames: []
+    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1W40UuQoF3xWT71H0ijS9iXQYH2zmLxFRm1DalJUleEg/export?format=csv&gid=1026705964&range=U8:U',
+    fallbackNames: ['Kasey', 'Ally', 'Debby', 'Mina']
   },
   'hanshin-arena': {
     region: '南區',
@@ -24,9 +24,9 @@ window.RETAIL_STORE_CONFIGS = {
     fallbackNames: []
   },
   'hsinchu-big-city': {
-    region: '北二區',
+    region: '南區',
     store: '新竹巨城',
-    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1JD4UPoIaZHYLI7o9eYxOMWBiVRTwCMf1TS0g10PoKVg/gviz/tq?tqx=out:csv&gid=146977095&range=U11:U',
+    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1W40UuQoF3xWT71H0ijS9iXQYH2zmLxFRm1DalJUleEg/export?format=csv&gid=1565707322&range=U11:U',
     fallbackNames: ['Jamie', 'Nina', 'Lulu', 'Amber', 'Elvis', 'Jelly', 'Alice']
   },
   'kaohsiung-dream-mall': {
@@ -36,7 +36,7 @@ window.RETAIL_STORE_CONFIGS = {
     fallbackNames: []
   },
   'linkou-mitsui-popup': {
-    region: '北二區',
+    region: '北區',
     store: '快閃- 林口三井',
     guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/19cd5-sbq6GSBRnl25N0_OK-KAsw2dlMLCN-6lPDXJEE/export?format=csv&gid=489076607&range=U11:U',
     fallbackNames: ['Tina', 'Kelly', 'Nancy', 'HSIN', 'Jubee', '33', '支援']
@@ -132,10 +132,10 @@ window.RETAIL_STORE_CONFIGS = {
     fallbackNames: ['LiLi', 'DaDa', 'Jenny', 'Molly', 'Miffy']
   },
   'taoyuan-zhanqian': {
-    region: '北二區',
+    region: '中區',
     store: '桃園站前',
-    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1JD4UPoIaZHYLI7o9eYxOMWBiVRTwCMf1TS0g10PoKVg/gviz/tq?tqx=out:csv&gid=685579824&range=U3:U',
-    fallbackNames: []
+    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1hk5x4z5Q0Lkj9tUlYNIU56Y0piMeNGkFRBo2VJH5ycw/export?format=csv&gid=188391910&range=U9:U',
+    fallbackNames: ['Eddie', 'joy', 'mandy', 'Lena', 'yuki', 'Elio']
   },
   'xinyi-a11': {
     region: '北區',
@@ -144,10 +144,10 @@ window.RETAIL_STORE_CONFIGS = {
     fallbackNames: ['Zoni', '小白', 'Wendy', 'Niny', 'Mio']
   },
   'zhongli-sogo': {
-    region: '北二區',
+    region: '中區',
     store: '中壢SOGO',
-    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1JD4UPoIaZHYLI7o9eYxOMWBiVRTwCMf1TS0g10PoKVg/gviz/tq?tqx=out:csv&gid=606510029&range=U3:U',
-    fallbackNames: []
+    guNameCsvUrl: 'https://docs.google.com/spreadsheets/d/1hk5x4z5Q0Lkj9tUlYNIU56Y0piMeNGkFRBo2VJH5ycw/export?format=csv&gid=1119556928&range=U9:U',
+    fallbackNames: ['Miko', 'Lena', 'Heron']
   },
   'zhongshan-mrt': {
     region: '北區',
